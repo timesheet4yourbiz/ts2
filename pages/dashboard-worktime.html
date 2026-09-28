@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>WORKTIME — Dashboard</title>
+
+    <!-- =====================================================
+         WORKTIME DASHBOARD — STEP 2
+         Premium Control Center
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/main.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/dashboard-worktime.css"
+    >
+
+    <!-- Chart.js -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js"
+    ></script>
+
+</head>
+
+
+<body class="wt-dashboard-page">
+
+
+<!-- =========================================================
+     TOP NAVIGATION
+     ========================================================= -->
+
+<header class="wt-topbar">
+
+    <div class="wt-topbar-left">
+
+        <a
+            href="../pages/dashboard-worktime.html"
+            class="wt-brand"
+        >
+
+            <div class="wt-brand-mark">
+                W
+            </div>
+
+            <div class="wt-brand-text">
+
+                <strong>
+                    WORKTIME
+                </strong>
+
+                <span>
+                    Workforce Management
+                </span>
+
+            </div>
+
+        </a>
+
+    </div>
+
+
+    <nav class="wt-main-nav">
+
+        <a
+            href="../pages/dashboard-worktime.html"
+            class="wt-nav-item active"
+        >
+
+            <span class="wt-nav-icon">
+                ▦
+            </span>
+
+            <span>
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <a
+            href="../pages/timesheet.html"
+            class="wt-nav-item"
+        >
+
+            <span class="wt-nav-icon">
+                ◷
+            </span>
+
+            <span>
+                Timesheet
+            </span>
+
+        </a>
+
+
+        <a
+            href="../pages/time-tracker.html"
+            class="wt-nav-item"
+        >
+
+            <span class="wt-nav-icon">
+                ▶
+            </span>
+
+            <span>
+                Time Tracker
+            </span>
+
+        </a>
+
+
+        <a
+            href="../pages/reports.html"
+            class="wt-nav-item"
+        >
+
+            <span class="wt-nav-icon">
+                ▤
+            </span>
+
+            <span>
+                Reports
+            </span>
+
+        </a>
+
+
+        <a
+            href="../pages/analytics.html"
+            class="wt-nav-item"
+        >
+
+            <span class="wt-nav-icon">
+                ◒
+            </span>
+
+            <span>
+                Analytics
+            </span>
+
+        </a>
+
+    </nav>
+
+
+    <div class="wt-topbar-right">
+
+        <button
+            type="button"
+            class="wt-icon-button"
+            id="notificationBell"
+            aria-label="Notifications"
+        >
+
+            <span>
+                ♢
+            </span>
+
+            <i
+                class="wt-notification-dot"
+            ></i>
+
+        </button>
+
+
+        <div class="wt-user-menu">
+
+            <div
+                class="wt-user-avatar"
+                id="userAvatar"
+            >
+                U
+            </div>
+
+            <div class="wt-user-details">
+
+                <strong id="userName">
+                    WORKTIME User
+                </strong>
+
+                <span id="userEmail">
+                    Loading...
+                </span>
+
+            </div>
+
+            <span class="wt-user-chevron">
+                ▾
+            </span>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     MAIN CONTENT
+     ========================================================= -->
+
+<main class="wt-dashboard-container">
+
+
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
+
+    <section class="wt-dashboard-hero">
+
+        <div class="wt-hero-glow glow-one"></div>
+        <div class="wt-hero-glow glow-two"></div>
+
+        <div class="wt-hero-content">
+
+            <div class="wt-hero-label">
+
+                <span class="wt-live-dot"></span>
+
+                WORKTIME CONTROL CENTER
+
+            </div>
+
+
+            <h1>
+                Good evening,
+                <span id="heroUserName">
+                    User
+                </span>
+                <span class="hero-wave">
+                    👋
+                </span>
+            </h1>
+
+
+            <p>
+                Monitor workforce activity,
+                project hours and team productivity
+                from one place.
+            </p>
+
+
+            <div class="wt-hero-meta">
+
+                <div class="wt-hero-period">
+
+                    <span class="wt-meta-icon">
+                        ◷
+                    </span>
+
+                    <span id="dashDateRangeText">
+                        Current Week
+                    </span>
+
+                </div>
+
+
+                <div class="wt-hero-divider"></div>
+
+
+                <div class="wt-hero-status">
+
+                    <span class="wt-status-pulse"></span>
+
+                    Live Workforce Data
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="wt-hero-side">
+
+            <div class="wt-hero-mini-card">
+
+                <span>
+                    TRACKED THIS PERIOD
+                </span>
+
+                <strong id="heroTotalTracked">
+                    0:00
+                </strong>
+
+                <small>
+                    Total recorded work time
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FILTER BAR
+         ===================================================== -->
+
+    <section class="wt-filter-section">
+
+        <div class="wt-filter-header">
+
+            <div>
+
+                <span class="wt-section-kicker">
+                    DATA FILTER
+                </span>
+
+                <h2>
+                    Dashboard Overview
+                </h2>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="wt-filter-reset"
+                id="resetDashboardFilters"
+            >
+
+                ↻
+
+                Reset Filters
+
+            </button>
+
+        </div>
+
+
+        <div class="wt-filter-grid">
+
+
+            <!-- PROJECT -->
+
+            <div class="wt-filter-field">
+
+                <label for="filterProject">
+                    PROJECT
+                </label>
+
+                <div class="wt-select-wrapper">
+
+                    <span class="wt-field-icon">
+                        ▣
+                    </span>
+
+                    <select
+                        id="filterProject"
+                    >
+
+                        <option value="all">
+                            All Projects
+                        </option>
+
+                    </select>
+
+                    <span class="wt-select-arrow">
+                        ▾
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- TEAM -->
+
+            <div class="wt-filter-field">
+
+                <label for="filterTeam">
+                    TEAM
+                </label>
+
+                <div class="wt-select-wrapper">
+
+                    <span class="wt-field-icon">
+                        ◉
+                    </span>
+
+                    <select
+                        id="filterTeam"
+                    >
+
+                        <option value="all">
+                            All Teams
+                        </option>
+
+                    </select>
+
+                    <span class="wt-select-arrow">
+                        ▾
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- PERIOD -->
+
+            <div class="wt-filter-field wt-period-field">
+
+                <label>
+                    REPORTING PERIOD
+                </label>
+
+                <div class="wt-period-control">
+
+                    <button
+                        type="button"
+                        id="prevDashBtn"
+                        class="wt-period-arrow"
+                        aria-label="Previous period"
+                    >
+                        ‹
+                    </button>
+
+
+                    <div class="wt-period-display">
+
+                        <span class="wt-period-calendar">
+                            ▣
+                        </span>
+
+                        <strong id="filterPeriodText">
+                            This Week
+                        </strong>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="nextDashBtn"
+                        class="wt-period-arrow"
+                        aria-label="Next period"
+                    >
+                        ›
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CURRENT STATUS -->
+
+            <div class="wt-filter-summary">
+
+                <span class="wt-summary-icon">
+                    ✓
+                </span>
+
+                <div>
+
+                    <small>
+                        STATUS
+                    </small>
+
+                    <strong>
+                        Data Synced
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         KPI CARDS
+         ===================================================== -->
+
+    <section class="wt-kpi-grid">
+
+
+        <!-- TOTAL TIME -->
+
+        <article class="wt-kpi-card">
+
+            <div class="wt-kpi-top">
+
+                <div class="wt-kpi-icon blue">
+                    ◷
+                </div>
+
+                <span class="wt-kpi-label">
+                    TOTAL TRACKED TIME
+                </span>
+
+            </div>
+
+
+            <div class="wt-kpi-value-row">
+
+                <strong id="kpiTotalTime">
+                    0:00
+                </strong>
+
+                <span class="wt-kpi-trend">
+                    Current period
+                </span>
+
+            </div>
+
+
+            <div class="wt-kpi-footer">
+                Recorded working hours
+            </div>
+
+        </article>
+
+
+
+        <!-- ACTIVE PROJECTS -->
+
+        <article class="wt-kpi-card">
+
+            <div class="wt-kpi-top">
+
+                <div class="wt-kpi-icon purple">
+                    ▣
+                </div>
+
+                <span class="wt-kpi-label">
+                    ACTIVE PROJECTS
+                </span>
+
+            </div>
+
+
+            <div class="wt-kpi-value-row">
+
+                <strong id="kpiActiveProjects">
+                    0
+                </strong>
+
+                <span class="wt-kpi-trend">
+                    Projects
+                </span>
+
+            </div>
+
+
+            <div class="wt-kpi-footer">
+                Projects with tracked activity
+            </div>
+
+        </article>
+
+
+
+        <!-- TEAM MEMBERS -->
+
+        <article class="wt-kpi-card">
+
+            <div class="wt-kpi-top">
+
+                <div class="wt-kpi-icon green">
+                    ◉
+                </div>
+
+                <span class="wt-kpi-label">
+                    TEAM MEMBERS
+                </span>
+
+            </div>
+
+
+            <div class="wt-kpi-value-row">
+
+                <strong id="kpiTeamMembers">
+                    0
+                </strong>
+
+                <span class="wt-kpi-trend">
+                    Members
+                </span>
+
+            </div>
+
+
+            <div class="wt-kpi-footer">
+                Members with activity
+            </div>
+
+        </article>
+
+
+
+        <!-- TOP PROJECT -->
+
+        <article class="wt-kpi-card wt-kpi-highlight">
+
+            <div class="wt-kpi-top">
+
+                <div class="wt-kpi-icon orange">
+                    ★
+                </div>
+
+                <span class="wt-kpi-label">
+                    TOP PROJECT
+                </span>
+
+            </div>
+
+
+            <div class="wt-kpi-project-name">
+
+                <strong id="kpiTopProject">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="wt-kpi-footer">
+                Highest tracked project
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ANALYTICS HEADER
+         ===================================================== -->
+
+    <div class="wt-content-heading">
+
+        <div>
+
+            <span class="wt-section-kicker">
+                WORKFORCE ANALYTICS
+            </span>
+
+            <h2>
+                Time & Project Insights
+            </h2>
+
+        </div>
+
+
+        <span class="wt-heading-note">
+            Based on selected reporting period
+        </span>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MAIN CHART + DISTRIBUTION
+         ===================================================== -->
+
+    <section class="wt-primary-grid">
+
+
+        <!-- TRACKED HOURS -->
+
+        <article class="wt-panel wt-chart-panel">
+
+            <div class="wt-panel-header">
+
+                <div>
+
+                    <span class="wt-panel-kicker">
+                        TIME TRACKING
+                    </span>
+
+                    <h3>
+                        Tracked Hours by Day
+                    </h3>
+
+                </div>
+
+
+                <div class="wt-panel-chip">
+                    Hours
+                </div>
+
+            </div>
+
+
+            <div class="wt-chart-wrapper">
+
+                <canvas
+                    id="stackedBarChart"
+                ></canvas>
+
+            </div>
+
+
+            <div class="wt-chart-footer">
+
+                <span>
+                    Daily tracked hours by project
+                </span>
+
+                <span>
+                    WORKTIME
+                </span>
+
+            </div>
+
+        </article>
+
+
+
+        <!-- PROJECT DISTRIBUTION -->
+
+        <article class="wt-panel wt-distribution-panel">
+
+            <div class="wt-panel-header">
+
+                <div>
+
+                    <span class="wt-panel-kicker">
+                        DISTRIBUTION
+                    </span>
+
+                    <h3>
+                        Project Distribution
+                    </h3>
+
+                </div>
+
+
+                <span class="wt-panel-menu">
+                    •••
+                </span>
+
+            </div>
+
+
+            <div class="wt-donut-area">
+
+                <div class="wt-donut-wrapper">
+
+                    <canvas
+                        id="donutChart"
+                    ></canvas>
+
+
+                    <div class="wt-donut-center">
+
+                        <strong id="donutTotal">
+                            0:00
+                        </strong>
+
+                        <span>
+                            Total Time
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="projectDistributionLegend"
+                    class="wt-project-legend"
+                >
+
+                    <div class="wt-empty-state">
+                        No data
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SECONDARY ANALYTICS
+         ===================================================== -->
+
+    <section class="wt-secondary-grid">
+
+
+        <!-- TOP PROJECTS -->
+
+        <article class="wt-panel">
+
+            <div class="wt-panel-header">
+
+                <div>
+
+                    <span class="wt-panel-kicker">
+                        PROJECT PERFORMANCE
+                    </span>
+
+                    <h3>
+                        Top Projects
+                    </h3>
+
+                </div>
+
+
+                <span class="wt-panel-note">
+                    By tracked time
+                </span>
+
+            </div>
+
+
+            <div
+                id="topProjectsList"
+                class="wt-ranking-list"
+            >
+
+                <div class="wt-empty-state">
+                    No tracked project data
+                </div>
+
+            </div>
+
+        </article>
+
+
+
+        <!-- TEAM PERFORMANCE -->
+
+        <article class="wt-panel">
+
+            <div class="wt-panel-header">
+
+                <div>
+
+                    <span class="wt-panel-kicker">
+                        TEAM PERFORMANCE
+                    </span>
+
+                    <h3>
+                        Team Performance
+                    </h3>
+
+                </div>
+
+
+                <span class="wt-panel-note">
+                    By tracked time
+                </span>
+
+            </div>
+
+
+            <div
+                id="teamPerformanceList"
+                class="wt-team-performance"
+            >
+
+                <div class="wt-empty-state">
+                    No team activity
+                </div>
+
+            </div>
+
+        </article>
+
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PROJECT STATUS
+         ===================================================== -->
+
+    <section class="wt-status-grid">
+
+
+        <!-- PROJECT STATUS -->
+
+        <article class="wt-panel wt-status-panel">
+
+            <div class="wt-panel-header">
+
+                <div>
+
+                    <span class="wt-panel-kicker">
+                        PROJECT HEALTH
+                    </span>
+
+                    <h3>
+                        Project Status
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+            <div class="wt-status-content">
+
+
+                <div class="wt-status-chart-wrapper">
+
+                    <canvas
+                        id="projectStatusChart"
+                    ></canvas>
+
+
+                    <div class="wt-status-chart-center">
+
+                        <strong
+                            id="projectStatusTotal"
+                        >
+                            0
+                        </strong>
+
+                        <span>
+                            Projects
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="projectStatusLegend"
+                    class="wt-status-legend"
+                >
+
+                    <div class="wt-status-row">
+
+                        <b class="tracked"></b>
+
+                        <span>
+                            Tracked
+                        </span>
+
+                        <strong>
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="wt-status-row">
+
+                        <b class="idle"></b>
+
+                        <span>
+                            No Activity
+                        </span>
+
+                        <strong>
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+
+        <!-- WORKTIME INSIGHT -->
+
+        <article class="wt-panel wt-insight-panel">
+
+            <div class="wt-insight-background"></div>
+
+            <div class="wt-insight-content">
+
+                <span class="wt-panel-kicker">
+                    WORKTIME INSIGHT
+                </span>
+
+                <h3>
+                    Workforce Activity
+                </h3>
+
+                <p>
+                    Monitor team activity,
+                    project engagement and
+                    tracked working hours
+                    from this dashboard.
+                </p>
+
+
+                <div class="wt-insight-points">
+
+                    <div>
+
+                        <span>
+                            ✓
+                        </span>
+
+                        Real-time tracking
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            ✓
+                        </span>
+
+                        Project visibility
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            ✓
+                        </span>
+
+                        Team productivity
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         TEAM ACTIVITIES
+         ===================================================== -->
+
+    <section class="wt-team-section">
+
+
+        <div class="wt-content-heading wt-team-heading">
+
+            <div>
+
+                <span class="wt-section-kicker">
+                    WORKFORCE MONITORING
+                </span>
+
+                <h2>
+                    Team Activities
+                </h2>
+
+                <p>
+                    Current team tracking activity
+                    for the selected period.
+                </p>
+
+            </div>
+
+
+            <div class="wt-team-tools">
+
+                <div class="wt-search-box">
+
+                    <span>
+                        ⌕
+                    </span>
+
+                    <input
+                        type="search"
+                        id="teamActivitySearch"
+                        placeholder="Search team member..."
+                    >
+
+                </div>
+
+
+                <select
+                    id="recordsPerPage"
+                    class="wt-records-select"
+                >
+
+                    <option value="10">
+                        10 rows
+                    </option>
+
+                    <option value="20" selected>
+                        20 rows
+                    </option>
+
+                    <option value="50">
+                        50 rows
+                    </option>
+
+                    <option value="all">
+                        All
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TABLE -->
+
+        <div class="wt-table-container">
+
+            <table
+                class="wt-team-table"
+                id="teamActivitiesTable"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th
+                            class="sortable-header"
+                            data-sort="index"
+                        >
+                            #
+                        </th>
+
+
+                        <th
+                            class="sortable-header"
+                            data-sort="member"
+                        >
+                            TEAM MEMBER
+                        </th>
+
+
+                        <th>
+                            CURRENT TASK
+                        </th>
+
+
+                        <th>
+                            STATUS
+                        </th>
+
+
+                        <th
+                            class="sortable-header"
+                            data-sort="today"
+                        >
+                            CURRENT TIMER
+                        </th>
+
+
+                        <th
+                            class="sortable-header"
+                            data-sort="tracked"
+                        >
+                            TOTAL TRACKED
+                        </th>
+
+
+                        <th>
+                            ACTIVITY
+                        </th>
+
+
+                        <th>
+                            ACTION
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="teamActivitiesBody"
+                >
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="wt-table-loading"
+                        >
+
+                            <div class="wt-loading-spinner"></div>
+
+                            Loading team activity...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+
+        <!-- TABLE FOOTER -->
+
+        <div class="wt-table-footer">
+
+
+            <div class="wt-table-summary">
+
+                Showing team activity records
+
+            </div>
+
+
+            <div class="wt-pagination">
+
+                <button
+                    type="button"
+                    id="btnFirst"
+                    class="wt-page-button"
+                    title="First page"
+                >
+                    «
+                </button>
+
+
+                <button
+                    type="button"
+                    id="btnPrev"
+                    class="wt-page-button"
+                    title="Previous page"
+                >
+                    ‹
+                </button>
+
+
+                <div class="wt-page-number">
+
+                    <input
+                        type="number"
+                        id="currentPageInput"
+                        value="1"
+                        min="1"
+                    >
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="btnNext"
+                    class="wt-page-button"
+                    title="Next page"
+                >
+                    ›
+                </button>
+
+
+                <button
+                    type="button"
+                    id="btnLast"
+                    class="wt-page-button"
+                    title="Last page"
+                >
+                    »
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="wt-dashboard-footer">
+
+        <div>
+
+            <strong>
+                WORKTIME
+            </strong>
+
+            <span>
+                Workforce Management System
+            </span>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Dashboard
+            </span>
+
+            <span class="footer-divider">
+                •
+            </span>
+
+            <span>
+                Live Data
+            </span>
+
+        </div>
+
+    </footer>
+
+
+</main>
+
+
+
+<!-- =========================================================
+     SCRIPTS
+     ========================================================= -->
+
+<script
+    type="module"
+    src="../js/dashboard-worktime.js"
+></script>
+
+
+<!-- =========================================================
+     SMALL UI ENHANCEMENTS
+     ========================================================= -->
+
+<script>
+
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        /*
+         * -----------------------------------------------------
+         * USER EMAIL → HERO
+         * -----------------------------------------------------
+         */
+
+        const emailElement =
+            document.getElementById(
+                'userEmail'
+            );
+
+        const heroName =
+            document.getElementById(
+                'heroUserName'
+            );
+
+        const userName =
+            document.getElementById(
+                'userName'
+            );
+
+        const userAvatar =
+            document.getElementById(
+                'userAvatar'
+            );
+
+
+        const updateUserDisplay =
+            () => {
+
+                const email =
+                    emailElement
+                        ?.textContent
+                        ?.trim();
+
+                if (
+                    !email ||
+                    email ===
+                    'Loading...'
+                ) {
+                    return;
+                }
+
+
+                const firstPart =
+                    email
+                        .split('@')[0]
+                        .replace(
+                            /[._-]+/g,
+                            ' '
+                        );
+
+
+                const displayName =
+                    firstPart
+                        .replace(
+                            /\b\w/g,
+                            letter =>
+                                letter.toUpperCase()
+                        );
+
+
+                if (heroName) {
+
+                    heroName.textContent =
+                        displayName;
+                }
+
+
+                if (userName) {
+
+                    userName.textContent =
+                        displayName;
+                }
+
+
+                if (userAvatar) {
+
+                    userAvatar.textContent =
+                        displayName
+                            .split(' ')
+                            .map(
+                                word =>
+                                    word.charAt(0)
+                            )
+                            .join('')
+                            .substring(
+                                0,
+                                2
+                            )
+                            .toUpperCase();
+                }
+
+            };
+
+
+        setTimeout(
+            updateUserDisplay,
+            800
+        );
+
+
+
+        /*
+         * -----------------------------------------------------
+         * RESET FILTERS
+         * -----------------------------------------------------
+         */
+
+        const resetButton =
+            document.getElementById(
+                'resetDashboardFilters'
+            );
+
+
+        resetButton?.addEventListener(
+            'click',
+            () => {
+
+                const project =
+                    document.getElementById(
+                        'filterProject'
+                    );
+
+                const team =
+                    document.getElementById(
+                        'filterTeam'
+                    );
+
+
+                if (project) {
+
+                    project.value =
+                        'all';
+
+                    project.dispatchEvent(
+                        new Event(
+                            'change'
+                        )
+                    );
+
+                }
+
+
+                if (team) {
+
+                    team.value =
+                        'all';
+
+                    team.dispatchEvent(
+                        new Event(
+                            'change'
+                        )
+                    );
+
+                }
+
+            }
+        );
+
+
+
+        /*
+         * -----------------------------------------------------
+         * SEARCH TEAM TABLE
+         * -----------------------------------------------------
+         */
+
+        const search =
+            document.getElementById(
+                'teamActivitySearch'
+            );
+
+
+        search?.addEventListener(
+            'input',
+            () => {
+
+                const keyword =
+                    search.value
+                        .toLowerCase()
+                        .trim();
+
+
+                document
+                    .querySelectorAll(
+                        '#teamActivitiesBody tr'
+                    )
+                    .forEach(
+                        row => {
+
+                            const text =
+                                row.textContent
+                                    .toLowerCase();
+
+                            row.style.display =
+                                text.includes(
+                                    keyword
+                                )
+                                    ? ''
+                                    : 'none';
+
+                        }
+                    );
+
+            }
+        );
+
+
+
+        /*
+         * -----------------------------------------------------
+         * UPDATE PERIOD LABEL
+         * -----------------------------------------------------
+         */
+
+        const dateRange =
+            document.getElementById(
+                'dashDateRangeText'
+            );
+
+        const periodText =
+            document.getElementById(
+                'filterPeriodText'
+            );
+
+
+        const observer =
+            new MutationObserver(
+                () => {
+
+                    if (
+                        dateRange &&
+                        periodText
+                    ) {
+
+                        const value =
+                            dateRange.textContent
+                                .trim();
+
+                        if (value) {
+
+                            periodText.textContent =
+                                value;
+                        }
+
+                    }
+
+                }
+            );
+
+
+        if (dateRange) {
+
+            observer.observe(
+                dateRange,
+                {
+                    childList: true,
+                    characterData: true,
+                    subtree: true
+                }
+            );
+
+        }
+
+
+
+        /*
+         * -----------------------------------------------------
+         * HERO TOTAL TIME
+         * -----------------------------------------------------
+         */
+
+        const kpiTotal =
+            document.getElementById(
+                'kpiTotalTime'
+            );
+
+        const heroTotal =
+            document.getElementById(
+                'heroTotalTracked'
+            );
+
+
+        const totalObserver =
+            new MutationObserver(
+                () => {
+
+                    if (
+                        kpiTotal &&
+                        heroTotal
+                    ) {
+
+                        heroTotal.textContent =
+                            kpiTotal.textContent;
+                    }
+
+                }
+            );
+
+
+        if (kpiTotal) {
+
+            totalObserver.observe(
+                kpiTotal,
+                {
+                    childList: true,
+                    characterData: true,
+                    subtree: true
+                }
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
