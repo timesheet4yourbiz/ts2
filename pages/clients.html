@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients - WorkTime</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    
+</head>
+<body>
+
+    <div class="app-container">
+        <div id="sidebar-container"></div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <h3>Clients</h3>
+                <div class="user-info"><span id="userEmail">Loading...</span></div>
+            </header>
+
+            <div class="content-area">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="margin: 0; font-size: 1.5rem; color: var(--text-main); font-weight: 600;">Client Directory</h2>
+                    <button id="openModalBtn" class="btn-primary">+ Add Client</button>
+                </div>
+
+                <div class="card" style="padding: 0;">
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--border-color); color: #94a3b8; text-transform: uppercase; font-size: 0.75rem;">
+                                    <th style="padding: 1rem 1.5rem; font-weight: 600;">Client Name</th>
+                                    <th style="padding: 1rem 1.5rem; font-weight: 600;">Status</th>
+                                    <th style="padding: 1rem 1.5rem; font-weight: 600; width: 100px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsList">
+                                <tr><td colspan="3" style="padding: 1.5rem; text-align: center;">Loading clients...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Form: Add Client -->
+    <div id="clientModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 style="margin: 0; font-size: 1.1rem; font-weight: 600;">Create New Client</h3>
+                <button id="closeModalBtn" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #94a3b8;">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Client Name</label>
+                <input type="text" id="clientNameInput" class="form-control" placeholder="e.g. FFCM Engineering">
+            </div>
+            <div class="modal-actions">
+                <button id="cancelBtn" class="btn-cancel">Cancel</button>
+                <button id="saveClientBtn" class="btn-primary">Create Client</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/clients.js"></script>
+</body>
+</html>

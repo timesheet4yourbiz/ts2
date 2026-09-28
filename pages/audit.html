@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Logs - WorkTime System</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    
+</head>
+<body>
+
+    <div class="app-container">
+        <div id="sidebar-container"></div>
+        <main class="main-content">
+            <header class="topbar">
+                <h3>Audit Logs (System Trail)</h3>
+                <div class="user-info"><span id="userEmail">Loading...</span></div>
+            </header>
+
+            <div class="content-area">
+                <div class="card">
+                    <h2>System Activity Logs</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Menunjukkan 50 rekod log sistem yang terakhir.</p>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>User ID</th>
+                                    <th>Action</th>
+                                    <th>Table Name</th>
+                                    <th>Record ID</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditList">
+                                <tr><td colspan="5" style="text-align: center;">Loading logs...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="../js/audit.js"></script>
+</body>
+</html>

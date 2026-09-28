@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departments - WorkTime System</title>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    
+</head>
+<body>
+
+    <div class="app-container">
+        <div id="sidebar-container"></div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <h3>Departments</h3>
+                <div class="user-info">
+                    <span id="userEmail">Loading...</span>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <div class="card">
+                    <div class="header-actions">
+                        <h2>Department List</h2>
+                        <button id="addDeptBtn" class="btn-sm">+ Add Department</button>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="deptTable">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Department Name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deptList">
+                                <tr><td colspan="3">Loading departments...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Department Modal -->
+    <div id="deptModal" class="modal">
+        <div class="modal-content">
+            <h3>Add New Department</h3>
+            <form id="deptForm">
+                <div class="form-group">
+                    <label>Department Code</label>
+                    <input type="text" id="deptCode" required placeholder="e.g. IT, HR, FIN">
+                </div>
+                <div class="form-group">
+                    <label>Department Name</label>
+                    <input type="text" id="deptName" required placeholder="Information Technology">
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button type="submit" id="saveBtn" class="btn-sm" style="flex: 1;">Save</button>
+                    <button type="button" id="closeModalBtn" class="btn-sm btn-cancel" style="flex: 1;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="../js/departments.js"></script>
+</body>
+</html>

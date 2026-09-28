@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - WorkTime</title>
+    <!-- Pastikan fail CSS dipanggil -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div id="sidebar-container"></div>
+    
+    <!-- KANDUNGAN UTAMA -->
+    <div class="main-content">
+        <div class="top-header">
+            <h1 class="page-title">My Profile</h1>
+            <span id="userEmail" style="color:#64748b; font-size:0.85rem;">Loading...</span>
+        </div>
+
+        <!-- MAKLUMAT DIRI (GLACIER CARD) -->
+        <div class="glacier-card" style="max-width: 650px; margin-top: 0; margin-bottom: 24px;">
+            <h2 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-top: 0; margin-bottom: 24px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+                Account Details
+            </h2>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.95rem; color: #334155;">
+                <div><span style="font-weight: 600; width: 120px; display: inline-block;">Email:</span> <span id="profileEmail">Loading...</span></div>
+                <div><span style="font-weight: 600; width: 120px; display: inline-block;">Name:</span> <span id="profileName">Loading...</span></div>
+                <div>
+                    <span style="font-weight: 600; width: 120px; display: inline-block;">System Role:</span> 
+                    <span id="profileRole" class="status-badge status-active">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TUKAR KATA LALUAN (GLACIER CARD) -->
+        <div class="glacier-card" style="max-width: 650px; margin-top: 0;">
+            <h2 style="font-size: 1.1rem; font-weight: 600; color: #ef4444; margin-top: 0; margin-bottom: 8px;">
+                Change Password
+            </h2>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 24px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+                Update your password to keep your account secure. (Min. 8 characters)
+            </p>
+            
+            <form id="changePwdForm">
+                
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: #475569; margin-bottom: 8px;">New Password</label>
+                    <input type="password" id="newPwd" required minlength="8" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='#0ea5e9'" onblur="this.style.borderColor='#cbd5e1'">
+                </div>
+
+                <div style="margin-bottom: 32px;">
+                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: #475569; margin-bottom: 8px;">Confirm New Password</label>
+                    <input type="password" id="confirmPwd" required minlength="8" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='#0ea5e9'" onblur="this.style.borderColor='#cbd5e1'">
+                </div>
+
+                <button type="submit" id="btnUpdatePwd" style="background-color: #10b981; color: white; border: none; width: 100%; padding: 12px; font-size: 0.9rem; font-weight: 600; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#059669'" onmouseout="this.style.backgroundColor='#10b981'">
+                    UPDATE PASSWORD
+                </button>
+
+            </form>
+        </div>
+
+    </div>
+    
+    <script type="module" src="../js/profile.js"></script>
+</body>
+</html>
