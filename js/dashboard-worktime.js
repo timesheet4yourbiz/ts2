@@ -1,6 +1,6 @@
 import { initNotificationBell } from './notifications.js';
 import { supabase } from './supabase.js';
-import { getBranding, applyBranding } from './branding.js';
+// import { getBranding, applyBranding } from './branding.js';
 
 let filterState = {
     startDate: '',
@@ -107,9 +107,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         await loadProjectDropdown();
         await refreshDashboardData();
-        const branding = await getBranding();
-        applyBranding(branding);
-        applyWorktimeBranding(branding);
+       // const branding = await getBranding();
+       // applyBranding(branding);
+       // applyWorktimeBranding(branding);
 
     } catch (error) {
         console.error("Dashboard Init Error:", error);
