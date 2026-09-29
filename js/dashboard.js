@@ -141,13 +141,64 @@ function bindPaginationControls() {
 }
 
 function getStatusAndBadge(member) {
-    if (member.isTracking) return `\x3Cspan class="bg-blue-50 text-blue-600 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-blue-100"\x3EIn progress\x3C/span\x3E`;
-    if (!member.latest) return `\x3Cspan class="bg-gray-50 text-gray-500 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-gray-200"\x3ENo activity\x3C/span\x3E`;
+    if (member.isTracking) return '(BUKA)span class="bg-blue-50 text-blue-600 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-blue-100"(TUTUP)In progress(BUKA)/span(TUTUP)';
+    if (!member.latest) return '(BUKA)span class="bg-gray-50 text-gray-500 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-gray-200"(TUTUP)No activity(BUKA)/span(TUTUP)';
     const now = new Date(), past = new Date(member.latest.start_time), today = new Date(); today.setHours(0,0,0,0); const pastDay = new Date(past); pastDay.setHours(0,0,0,0);
     const diffDays = Math.floor((today - pastDay) / (1000 * 60 * 60 * 24)), diffHrs = Math.floor((now - past) / 3600000);
-    if (diffDays === 0) return `\x3Cspan class="bg-emerald-50 text-emerald-600 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-emerald-100"\x3EIn a day\x3C/span\x3E`;
-    if (diffDays > 0 && 30 > diffDays) { let txt = 24 > diffHrs ? `\({diffHrs} hours ago` : `\){diffDays} days ago`; return `\x3Cspan class="bg-amber-50 text-amber-600 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-amber-100"\x3E${txt}\x3C/span\x3E`; }
-    return `\x3Cspan class="bg-gray-50 text-gray-500 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-gray-200"\x3ENo activity\x3C/span\x3E`;
+    if (diffDays === 0) return '(BUKA)span class="bg-emerald-50 text-emerald-600 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-emerald-100"(TUTUP)In a day(BUKA)/span(TUTUP)';
+    if (diffDays > 0 && 30 > diffDays) { let txt = 24 > diffHrs ? diffHrs + ' hours ago' : diffDays + ' days ago'; return '(BUKA)span class="bg-amber-50 text-amber-600 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-amber-100"(TUTUP)' + txt + '(BUKA)/span(TUTUP)'; }
+    return '(BUKA)span class="bg-gray-50 text-gray-500 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-gray-200"(TUTUP)No activity(BUKA)/span(TUTUP)';
+}
+
+function renderTeamActivities() {
+    const tbody = document.getElementById('teamActivitiesBody'); if (!tbody) return; tbody.innerHTML = '';
+    const totalRecs = teamDataList.length; if (totalRecs === 0) { tbody.innerHTML = '(BUKA)tr(TUTUP)(BUKA)td colspan="7" class="py-6 text-center text-gray-400"(TUTUP)No data found.(BUKA)/td(TUTUP)(BUKA)/tr(TUTUP)'; return; }
+    let pagedData = teamDataList;
+    if (recordsPerPage !== 'all') { const maxPage = Math.ceil(totalRecs / recordsPerPage); if (currentPage > maxPage) currentPage = maxPage; const startIndex = (currentPage - 1) * recordsPerPage; pagedData = teamDataList.slice(startIndex, startIndex + recordsPerPage); }
+    
+    pagedData.forEach((member, index) => {
+        const init = getInitials(member.name), actualIndex = (recordsPerPage !== 'all' ? (currentPage - 1) * recordsPerPage : 0) + index + 1;
+        let taskName = 'No recent activity', projName = '-', projColor = 'transparent';
+        if (member.latest) { taskName = member.latest.description || 'Untitled Task'; projName = member.latest.project ? member.latest.project.project_name : 'No Project'; projColor = getProjectColor(projName); }
+        const badgeHtml = getStatusAndBadge(member); let currentTimerHtml = '-';
+        
+        if (member.isTracking) { 
+            currentTimerHtml = formatHMS(member.todaySec) + ' (BUKA)span class="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block ml-1 animate-pulse"(TUTUP)(BUKA)/span(TUTUP)'; 
+        } else if (member.latest && member.todaySec > 0) { 
+            currentTimerHtml = formatHMS(member.todaySec); 
+        } else if (member.latest && badgeHtml.includes('hours ago')) { 
+            currentTimerHtml = formatHMS(member.latest.duration_seconds || 0); 
+        }
+        
+        let barSegments = '';
+        for (const [pName, pSec] of Object.entries(member.projects)) { 
+            if (pSec > 0 && member.totalSec > 0) { 
+                const perc = (pSec / member.totalSec) * 100; 
+                barSegments += '(BUKA)div class="h-full" style="width: ' + perc + '%; background-color: ' + getProjectColor(pName) + ';"(TUTUP)(BUKA)/div(TUTUP)'; 
+            } 
+        }
+        let breakdownHtml = '(BUKA)div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex"(TUTUP)' + barSegments + '(BUKA)/div(TUTUP)';
+        
+        tbody.innerHTML += '(BUKA)tr class="hover:bg-slate-50/80 transition-colors"(TUTUP)' +
+            '(BUKA)td class="py-3 px-3 text-center text-slate-800 font-semibold"(TUTUP)' + actualIndex + '(BUKA)/td(TUTUP)' +
+            '(BUKA)td class="py-3 px-3"(TUTUP)(BUKA)div class="flex items-center gap-3"(TUTUP)' +
+            '(BUKA)div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-[10px] shadow-sm shrink-0" style="background: ' + getProjectColor(member.name) + ';"(TUTUP)' + init + '(BUKA)/div(TUTUP)' +
+            '(BUKA)div class="min-w-0"(TUTUP)(BUKA)div class="font-semibold text-slate-800 text-[11px] truncate capitalize"(TUTUP)' + formatCapitalize(member.name) + '(BUKA)/div(TUTUP)' +
+            '(BUKA)div class="text-gray-400 text-[10px] truncate"(TUTUP)' + (member.email || '-') + '(BUKA)/div(TUTUP)(BUKA)/div(TUTUP)(BUKA)/div(TUTUP)(BUKA)/td(TUTUP)' +
+            '(BUKA)td class="py-3 px-3"(TUTUP)(BUKA)div class="font-semibold text-slate-800 text-[11px] mb-1 truncate max-w-[150px]"(TUTUP)' + taskName + '(BUKA)/div(TUTUP)' +
+            '(BUKA)div class="text-gray-500 text-[10px] flex items-center gap-1.5 truncate max-w-[150px]"(TUTUP)' + (member.latest ? '(BUKA)span class="w-2 h-2 rounded-full shrink-0" style="background: ' + projColor + ';"(TUTUP)(BUKA)/span(TUTUP) ' + formatCapitalize(projName) : '-') + '(BUKA)/div(TUTUP)(BUKA)/td(TUTUP)' +
+            '(BUKA)td class="py-3 px-3"(TUTUP)' + badgeHtml + '(BUKA)/td(TUTUP)' +
+            '(BUKA)td class="py-3 px-3 text-center font-semibold text-slate-700"(TUTUP)' + currentTimerHtml + '(BUKA)/td(TUTUP)' +
+            '(BUKA)td class="py-3 px-3 font-semibold text-slate-800"(TUTUP)' + formatHMS(member.totalSec) + '(BUKA)/td(TUTUP)' +
+            '(BUKA)td class="py-3 px-3 min-w-[100px]"(TUTUP)' + breakdownHtml + '(BUKA)/td(TUTUP)' +
+            '(BUKA)td class="py-3 px-3 text-center relative"(TUTUP)(BUKA)div class="action-dropdown inline-block"(TUTUP)' +
+            '(BUKA)button class="action-dots-btn p-1.5 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100"(TUTUP)' +
+            '(BUKA)svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)circle cx="12" cy="12" r="1"(TUTUP)(BUKA)/circle(TUTUP)(BUKA)circle cx="12" cy="5" r="1"(TUTUP)(BUKA)/circle(TUTUP)(BUKA)circle cx="12" cy="19" r="1"(TUTUP)(BUKA)/circle(TUTUP)(BUKA)/svg(TUTUP)' +
+            '(BUKA)/button(TUTUP)' +
+            '(BUKA)div class="action-menu-popup hidden absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg w-40 z-50 text-left overflow-hidden"(TUTUP)' +
+            '(BUKA)div class="action-menu-item chase-btn px-4 py-2 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-2" data-empid="' + member.id + '" data-empname="' + formatCapitalize(member.name) + '"(TUTUP)' +
+            '🔔 Send Reminder(BUKA)/div(TUTUP)(BUKA)/div(TUTUP)(BUKA)/div(TUTUP)(BUKA)/td(TUTUP)(BUKA)/tr(TUTUP)';
+    });
 }
 
 function renderTeamActivities() {
