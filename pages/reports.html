@@ -1,1 +1,1226 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | WORKTIME</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy: #071a3b;
+            --navy-2: #102b55;
+            --blue: #0d6efd;
+            --blue-2: #1677ff;
+            --blue-soft: #eef6ff;
+            --line: #d9e5f3;
+            --text: #10224a;
+            --muted: #60779b;
+            --white: #ffffff;
+            --green: #11b66a;
+            --red: #ef4444;
+            --orange: #f59e0b;
+            --purple: #7c3aed;
+            --shadow: 0 8px 24px rgba(16, 48, 91, .07);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { margin: 0; min-height: 100%; }
+
+        body {
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 10% 15%, rgba(22,119,255,.07), transparent 28%),
+                linear-gradient(180deg, #f8fbff 0%, #eef6ff 100%);
+            font-size: 14px;
+        }
+
+        button, input, select { font: inherit; }
+
+        button { cursor: pointer; }
+
+        .app {
+            min-height: 100vh;
+        }
+
+        /* =========================
+           TOP NAVIGATION
+           ========================= */
+        .topbar {
+            height: 60px;
+            background: rgba(255,255,255,.97);
+            border-bottom: 1px solid #e4edf7;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 22px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 12px rgba(7,26,59,.04);
+        }
+
+        .brand {
+            min-width: 195px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--navy);
+        }
+
+        .brand-mark {
+            width: 34px;
+            height: 38px;
+            position: relative;
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+        }
+
+        .brand-mark::before,
+        .brand-mark::after {
+            content: "";
+            position: absolute;
+            width: 19px;
+            height: 19px;
+            transform: rotate(30deg) skew(-4deg);
+            border-radius: 4px;
+        }
+
+        .brand-mark::before {
+            background: linear-gradient(135deg, #0d6efd 0 52%, #f59e0b 52% 100%);
+            top: 3px;
+            left: 3px;
+        }
+
+        .brand-mark::after {
+            background: linear-gradient(135deg, #0b2d60 0 52%, #ef4444 52% 100%);
+            bottom: 3px;
+            right: 1px;
+        }
+
+        .brand-copy strong {
+            display: block;
+            font-size: 20px;
+            line-height: 18px;
+            letter-spacing: -.8px;
+            font-weight: 800;
+        }
+
+        .brand-copy strong span { color: var(--blue); }
+
+        .brand-copy small {
+            display: block;
+            margin-top: 3px;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .35px;
+            color: #34527d;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nav-link {
+            height: 40px;
+            padding: 0 11px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #122b54;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: .2s ease;
+        }
+
+        .nav-link:hover { background: #f0f6ff; }
+
+        .nav-link.active {
+            color: white;
+            background: linear-gradient(135deg, #0d6efd, #187bff);
+            box-shadow: 0 6px 14px rgba(13,110,253,.22);
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-grid;
+            place-items: center;
+            font-size: 15px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 0 0 auto;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 9px;
+            color: var(--navy);
+            display: grid;
+            place-items: center;
+            position: relative;
+        }
+
+        .notification-dot {
+            position: absolute;
+            right: -2px;
+            top: -4px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 4px;
+            border-radius: 99px;
+            background: #ef3340;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 800;
+            display: grid;
+            place-items: center;
+            border: 2px solid #fff;
+        }
+
+        .date-range {
+            height: 40px;
+            min-width: 190px;
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            background: #fff;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #19325c;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .date-range span:last-child { color: var(--navy); }
+
+        .profile {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding-left: 3px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            color: white;
+            background: #1677ff;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .profile-text { line-height: 1.15; }
+        .profile-text strong { display: block; font-size: 11px; }
+        .profile-text small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+
+        /* =========================
+           PAGE
+           ========================= */
+        .page {
+            width: min(1480px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 10px 0 36px;
+        }
+
+        .hero {
+            min-height: 104px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 18px 22px;
+            background:
+                linear-gradient(90deg, rgba(236,247,255,.98) 0%, rgba(236,247,255,.94) 38%, rgba(236,247,255,.32) 72%, rgba(7,48,103,.94) 100%),
+                url("https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1800&q=85") center/cover;
+            border: 1px solid #d8e7f7;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-icon {
+            width: 62px;
+            height: 62px;
+            border: 1px solid #0d6efd;
+            border-radius: 14px;
+            background: rgba(255,255,255,.8);
+            color: var(--blue);
+            display: grid;
+            place-items: center;
+            font-size: 29px;
+            box-shadow: 0 8px 18px rgba(13,110,253,.10);
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: 30px;
+            letter-spacing: -.9px;
+            color: #0b1d44;
+        }
+
+        .hero p {
+            margin: 3px 0 0;
+            color: #4d6b94;
+            font-size: 14px;
+        }
+
+        .hero-slogan {
+            margin-left: auto;
+            color: rgba(255,255,255,.88);
+            font-size: 14px;
+            line-height: 1.28;
+            letter-spacing: .4px;
+            font-weight: 500;
+            text-align: left;
+            min-width: 90px;
+            z-index: 2;
+        }
+
+        .hero-slogan::after {
+            content: "";
+            display: block;
+            width: 26px;
+            height: 3px;
+            background: #f3c230;
+            margin-top: 7px;
+        }
+
+        /* =========================
+           REPORT TYPE CARDS
+           ========================= */
+        .report-types {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 9px;
+            margin-top: 10px;
+        }
+
+        .report-type {
+            min-height: 88px;
+            background: rgba(255,255,255,.95);
+            border: 1px solid #dce8f5;
+            border-radius: 10px;
+            padding: 14px 14px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            text-align: left;
+            box-shadow: 0 4px 13px rgba(16,48,91,.03);
+            transition: .2s ease;
+        }
+
+        .report-type:hover {
+            transform: translateY(-1px);
+            border-color: #a8cfff;
+            box-shadow: var(--shadow);
+        }
+
+        .report-type.active {
+            border-color: #2680ff;
+            box-shadow: 0 0 0 1px rgba(38,128,255,.12);
+        }
+
+        .type-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            font-size: 25px;
+            flex: 0 0 auto;
+        }
+
+        .type-blue { background: #e9f2ff; color: #1268ef; }
+        .type-green { background: #e5f9ef; color: #11b66a; }
+        .type-orange { background: #fff4df; color: #f59e0b; }
+        .type-purple { background: #f1eaff; color: #7c3aed; }
+        .type-red { background: #ffe9ed; color: #ef476f; }
+        .type-gray { background: #f0f4f9; color: #58708f; }
+
+        .type-copy strong {
+            display: block;
+            font-size: 13px;
+            color: #0b2148;
+            margin-bottom: 5px;
+        }
+
+        .type-copy span {
+            display: block;
+            color: #60779b;
+            font-size: 11px;
+            line-height: 1.35;
+        }
+
+        /* =========================
+           CARDS / FILTER
+           ========================= */
+        .panel {
+            background: rgba(255,255,255,.98);
+            border: 1px solid #dce8f5;
+            border-radius: 11px;
+            box-shadow: 0 5px 18px rgba(16,48,91,.035);
+        }
+
+        .filter-panel {
+            margin-top: 10px;
+            padding: 14px 16px 16px;
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .panel-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .panel-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #eaf3ff;
+            color: #0d6efd;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+        }
+
+        .panel-title {
+            margin: 0;
+            font-size: 16px;
+            color: #0a214a;
+        }
+
+        .panel-subtitle {
+            margin: 2px 0 0;
+            font-size: 11px;
+            color: #60779b;
+        }
+
+        .outline-btn {
+            height: 36px;
+            border: 1px solid #c9d9ed;
+            background: #fff;
+            color: #18345d;
+            border-radius: 7px;
+            padding: 0 13px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .outline-btn:hover { background: #f6faff; }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px 16px;
+        }
+
+        .field label {
+            display: block;
+            margin: 0 0 5px;
+            color: #0c2854;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .control {
+            width: 100%;
+            height: 39px;
+            border: 1px solid #d4e1f0;
+            background: #fff;
+            border-radius: 7px;
+            padding: 0 12px;
+            color: #17345f;
+            outline: none;
+            font-size: 12px;
+            transition: .15s ease;
+        }
+
+        .control:focus {
+            border-color: #4b94ff;
+            box-shadow: 0 0 0 3px rgba(13,110,253,.09);
+        }
+
+        .select-wrap,
+        .date-wrap {
+            position: relative;
+        }
+
+        .select-wrap::after {
+            content: "⌄";
+            position: absolute;
+            right: 12px;
+            top: 9px;
+            color: #28486f;
+            pointer-events: none;
+            font-size: 16px;
+        }
+
+        .select-wrap select { appearance: none; padding-right: 32px; }
+
+        .filter-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            gap: 8px;
+            grid-row: span 2;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            height: 39px;
+            border-radius: 7px;
+            border: 1px solid transparent;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 14px;
+        }
+
+        .primary-btn {
+            color: white;
+            background: linear-gradient(135deg, #0d6efd, #197cff);
+            box-shadow: 0 6px 14px rgba(13,110,253,.15);
+        }
+
+        .primary-btn:hover { filter: brightness(.97); }
+
+        .secondary-btn {
+            background: #fff;
+            color: #142e55;
+            border-color: #c9d9ed;
+        }
+
+        /* =========================
+           PREVIEW
+           ========================= */
+        .preview-panel {
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .preview-head {
+            min-height: 63px;
+            padding: 10px 16px;
+            border-bottom: 1px solid #e1ebf6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .preview-title {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .preview-actions {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .action-btn {
+            height: 36px;
+            padding: 0 14px;
+            border-radius: 7px;
+            background: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            border: 1px solid #c9d9ed;
+            color: #132f59;
+        }
+
+        .action-btn:hover { background: #f7fbff; }
+
+        .action-btn.pdf { border-color: #ff8a8a; color: #ef3333; }
+        .action-btn.excel { background: #12b968; border-color: #12b968; color: #fff; }
+        .action-btn.template { background: #fff; }
+
+        .report-sheet {
+            padding: 9px 17px 17px;
+            background: #fff;
+        }
+
+        .report-sheet-head {
+            display: grid;
+            grid-template-columns: 1fr 1.35fr 110px;
+            align-items: center;
+            gap: 15px;
+            min-height: 58px;
+            margin-bottom: 2px;
+        }
+
+        .sheet-brand {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .sheet-logo {
+            width: 43px;
+            height: 43px;
+            border-radius: 10px;
+            background: conic-gradient(from 25deg, #0c64e9, #0b2a5a, #f0443d, #0c64e9);
+            clip-path: polygon(50% 0, 90% 23%, 90% 76%, 50% 100%, 10% 76%, 10% 23%);
+            position: relative;
+        }
+
+        .sheet-logo::after {
+            content: "";
+            position: absolute;
+            inset: 9px;
+            background: #fff;
+            clip-path: polygon(50% 0, 90% 23%, 90% 76%, 50% 100%, 10% 76%, 10% 23%);
+        }
+
+        .sheet-brand strong {
+            font-size: 24px;
+            letter-spacing: -1px;
+            color: #0b214b;
+            line-height: 1;
+        }
+
+        .sheet-brand strong span { color: #1677ff; }
+
+        .sheet-brand small {
+            display: block;
+            margin-top: 3px;
+            font-size: 9px;
+            font-weight: 800;
+            color: #35557f;
+            letter-spacing: .2px;
+        }
+
+        .sheet-title {
+            text-align: center;
+        }
+
+        .sheet-title h2 {
+            margin: 0;
+            font-size: 25px;
+            color: #0a214a;
+            letter-spacing: -.6px;
+        }
+
+        .sheet-title p {
+            margin: 3px 0 0;
+            font-size: 11px;
+            color: #6682a8;
+            font-weight: 700;
+        }
+
+        .month-badge {
+            justify-self: end;
+            width: 110px;
+            min-height: 54px;
+            border-radius: 6px;
+            background: #0b2148;
+            color: #fff;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.15;
+            font-weight: 800;
+            padding: 7px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 7px;
+        }
+
+        table.report-table {
+            width: 100%;
+            min-width: 980px;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+            font-size: 11px;
+        }
+
+        .report-table th,
+        .report-table td {
+            border-right: 1px solid #d7e3f0;
+            border-bottom: 1px solid #d7e3f0;
+            padding: 8px 8px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .report-table th:first-child,
+        .report-table td:first-child { border-left: 1px solid #d7e3f0; }
+
+        .report-table thead th {
+            background: #0c2549;
+            color: #fff;
+            font-weight: 700;
+            font-size: 11px;
+            height: 49px;
+        }
+
+        .report-table thead th:first-child { border-top-left-radius: 7px; }
+        .report-table thead th:last-child { border-top-right-radius: 7px; }
+
+        .report-table .date-range {
+            display: block;
+            min-width: auto;
+            height: auto;
+            border: 0;
+            padding: 2px 0 0;
+            color: #b8c9df;
+            font-size: 9px;
+            font-weight: 500;
+            background: transparent;
+        }
+
+        .report-table .total-head { background: #173d6f; }
+
+        .report-table tbody tr:nth-child(even) td { background: #fbfdff; }
+        .report-table tbody tr:hover td { background: #f2f8ff; }
+
+        .report-table td {
+            color: #16345f;
+            height: 29px;
+        }
+
+        .report-table td.index {
+            width: 42px;
+            color: #4c678d;
+        }
+
+        .report-table td.project-name {
+            text-align: left;
+            font-weight: 600;
+            max-width: 260px;
+            white-space: normal;
+        }
+
+        .report-table td.client-name {
+            color: #4d678c;
+        }
+
+        .report-table td.total-col {
+            background: #f0f7ff !important;
+            font-weight: 800;
+            color: #0b214a;
+        }
+
+        .report-table tfoot td {
+            background: #dff2ff;
+            color: #0b214a;
+            font-weight: 800;
+            border-bottom: 0;
+            height: 44px;
+        }
+
+        .report-table tfoot td:first-child {
+            text-align: left;
+            padding-left: 66px;
+            border-bottom-left-radius: 7px;
+        }
+
+        .report-table tfoot td:last-child {
+            color: #0877d7;
+            font-size: 20px;
+            border-bottom-right-radius: 7px;
+        }
+
+        .empty-state {
+            padding: 28px !important;
+            color: #6b819e !important;
+            text-align: center !important;
+            background: #fff !important;
+        }
+
+        .loading {
+            opacity: .6;
+            pointer-events: none;
+        }
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            z-index: 100;
+            min-width: 260px;
+            max-width: 420px;
+            padding: 12px 15px;
+            border-radius: 9px;
+            background: #0b2148;
+            color: #fff;
+            box-shadow: 0 12px 30px rgba(7,26,59,.2);
+            font-size: 12px;
+            font-weight: 600;
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: .25s ease;
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.error { background: #b42318; }
+
+        /* =========================
+           RESPONSIVE
+           ========================= */
+        @media (max-width: 1250px) {
+            .topbar { gap: 10px; padding: 0 14px; }
+            .brand { min-width: 170px; }
+            .nav-link { padding: 0 7px; font-size: 11px; }
+            .nav-link .nav-icon { display: none; }
+            .date-range { min-width: 160px; }
+            .report-types { grid-template-columns: repeat(3, minmax(0,1fr)); }
+        }
+
+        @media (max-width: 980px) {
+            .nav { overflow-x: auto; scrollbar-width: none; }
+            .nav::-webkit-scrollbar { display: none; }
+            .profile-text { display: none; }
+            .filter-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+            .filter-actions { grid-column: span 2; grid-row: auto; flex-direction: row; }
+            .filter-actions > * { flex: 1; }
+            .report-sheet-head { grid-template-columns: 1fr 1fr; }
+            .sheet-title { order: 3; grid-column: span 2; }
+            .month-badge { justify-self: end; }
+        }
+
+        @media (max-width: 680px) {
+            .topbar { height: auto; min-height: 60px; flex-wrap: wrap; padding: 9px 12px; }
+            .brand { min-width: 160px; }
+            .top-actions { margin-left: auto; }
+            .date-range { display: none; }
+            .page { width: min(100% - 20px, 1480px); padding-top: 7px; }
+            .hero { min-height: 120px; padding: 16px; }
+            .hero h1 { font-size: 25px; }
+            .hero-slogan { display: none; }
+            .report-types { grid-template-columns: 1fr; }
+            .filter-grid { grid-template-columns: 1fr; }
+            .filter-actions { grid-column: auto; flex-direction: column; }
+            .preview-head { align-items: flex-start; flex-direction: column; }
+            .preview-actions { width: 100%; overflow-x: auto; }
+            .report-sheet { padding: 8px; }
+            .report-sheet-head { grid-template-columns: 1fr; }
+            .sheet-title { order: 2; grid-column: auto; }
+            .month-badge { justify-self: start; order: 3; }
+        }
+
+        /* =========================
+           PRINT / A4
+           ========================= */
+        @media print {
+            @page { size: A4 landscape; margin: 7mm; }
+
+            body {
+                background: #fff !important;
+                font-size: 9px;
+            }
+
+            .topbar,
+            .hero,
+            .report-types,
+            .filter-panel,
+            .preview-head,
+            .toast {
+                display: none !important;
+            }
+
+            .page {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .preview-panel {
+                margin: 0 !important;
+                border: 0 !important;
+                box-shadow: none !important;
+            }
+
+            .report-sheet {
+                padding: 0 !important;
+            }
+
+            .report-sheet-head {
+                min-height: 52px;
+            }
+
+            .sheet-brand strong { font-size: 19px; }
+            .sheet-title h2 { font-size: 19px; }
+            .month-badge { width: 90px; min-height: 45px; font-size: 11px; }
+
+            table.report-table {
+                min-width: 0;
+                font-size: 8px;
+            }
+
+            .report-table th,
+            .report-table td {
+                padding: 5px 4px;
+            }
+
+            .report-table thead th { font-size: 8px; }
+            .report-table .date-range { font-size: 7px; }
+            .report-table tfoot td:last-child { font-size: 14px; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="app">
+
+    <!-- TOP NAVIGATION -->
+    <header class="topbar">
+        <a class="brand" href="dashboard.html" aria-label="WORKTIME">
+            <div class="brand-mark"></div>
+            <div class="brand-copy">
+                <strong>CRANE<span>TRACK</span></strong>
+                <small>TIME | PROJECT | TEAM</small>
+            </div>
+        </a>
+
+        <nav class="nav" aria-label="Main navigation">
+            <a class="nav-link" href="dashboard.html"><span class="nav-icon">⌂</span>Dashboard</a>
+            <a class="nav-link" href="time-tracking.html"><span class="nav-icon">◷</span>Time Tracking</a>
+            <a class="nav-link" href="timesheet.html"><span class="nav-icon">▣</span>Timesheet</a>
+            <a class="nav-link" href="calendar.html"><span class="nav-icon">▦</span>Calendar</a>
+            <a class="nav-link" href="projects.html"><span class="nav-icon">▣</span>Projects</a>
+            <a class="nav-link" href="tasks.html"><span class="nav-icon">☷</span>Tasks</a>
+            <a class="nav-link" href="clients.html"><span class="nav-icon">♙</span>Clients</a>
+            <a class="nav-link" href="team.html"><span class="nav-icon">♧</span>Team</a>
+            <a class="nav-link active" href="reports.html"><span class="nav-icon">▥</span>Reports</a>
+        </nav>
+
+        <div class="top-actions">
+            <button class="icon-btn" type="button" title="Search">⌕</button>
+
+            <div class="date-range">
+                <span>▣</span>
+                <span id="topDateRange">Aug 01, 2026 - Aug 31, 2026</span>
+                <span>⌄</span>
+            </div>
+
+            <button class="icon-btn" type="button" title="Notifications">
+                ♧
+                <span class="notification-dot">3</span>
+            </button>
+
+            <div class="profile">
+                <div class="avatar" id="avatarInitial">M</div>
+                <div class="profile-text">
+                    <strong id="profileName">MOHAMAD</strong>
+                    <small id="profileRole">Administrator</small>
+                </div>
+                <span>⌄</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="page">
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-icon">▤</div>
+                <div>
+                    <h1>Reports</h1>
+                    <p>Generate, analyse and export your project and workforce reports</p>
+                </div>
+            </div>
+
+            <div class="hero-slogan">
+                PLAN<br>
+                EXECUTE<br>
+                MONITOR<br>
+                ACHIEVE
+            </div>
+        </section>
+
+        <!-- REPORT TYPE -->
+        <section class="report-types">
+            <button class="report-type active" type="button" data-report-type="project">
+                <span class="type-icon type-blue">▥</span>
+                <span class="type-copy">
+                    <strong>Project Man-Hour</strong>
+                    <span>Weekly or monthly man-hour<br>by project and task</span>
+                </span>
+            </button>
+
+            <button class="report-type" type="button" data-report-type="historical">
+                <span class="type-icon type-green">▣</span>
+                <span class="type-copy">
+                    <strong>Historical Project</strong>
+                    <span>Man-hour by year<br>with budget comparison</span>
+                </span>
+            </button>
+
+            <button class="report-type" type="button" data-report-type="budget">
+                <span class="type-icon type-orange">▤</span>
+                <span class="type-copy">
+                    <strong>Budget vs Actual</strong>
+                    <span>Project budget analysis<br>and variance report</span>
+                </span>
+            </button>
+
+            <button class="report-type" type="button" data-report-type="team">
+                <span class="type-icon type-purple">♧</span>
+                <span class="type-copy">
+                    <strong>Team Man-Hour</strong>
+                    <span>Man-hour by employee<br>and team</span>
+                </span>
+            </button>
+
+            <button class="report-type" type="button" data-report-type="client">
+                <span class="type-icon type-red">▥</span>
+                <span class="type-copy">
+                    <strong>Client Report</strong>
+                    <span>Man-hour by client<br>and project</span>
+                </span>
+            </button>
+
+            <button class="report-type" type="button" data-report-type="custom">
+                <span class="type-icon type-gray">▤</span>
+                <span class="type-copy">
+                    <strong>Custom Report</strong>
+                    <span>Create your own<br>custom report</span>
+                </span>
+            </button>
+        </section>
+
+        <!-- FILTER -->
+        <section class="panel filter-panel">
+            <div class="panel-head">
+                <div class="panel-title-wrap">
+                    <div class="panel-icon">▽</div>
+                    <div>
+                        <h2 class="panel-title">Report Filter</h2>
+                        <p class="panel-subtitle">Set your criteria to generate the report</p>
+                    </div>
+                </div>
+
+                <button class="outline-btn" type="button" id="btnLoadSavedFilter">▢&nbsp; Load Saved Filter</button>
+            </div>
+
+            <div class="filter-grid">
+
+                <div class="field">
+                    <label for="reportType">Report Type</label>
+                    <div class="select-wrap">
+                        <select class="control" id="reportType">
+                            <option value="PROJECT_MANHOUR">Project Man-Hour Report</option>
+                            <option value="HISTORICAL">Historical Project Report</option>
+                            <option value="BUDGET">Budget vs Actual Report</option>
+                            <option value="TEAM">Team Man-Hour Report</option>
+                            <option value="CLIENT">Client Report</option>
+                            <option value="CUSTOM">Custom Report</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="reportPeriod">Period</label>
+                    <div class="select-wrap">
+                        <select class="control" id="reportPeriod">
+                            <option value="MONTHLY_WEEK">Monthly (By Week)</option>
+                            <option value="MONTHLY">Monthly</option>
+                            <option value="WEEKLY">Weekly</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="reportMonth">Month / Year</label>
+                    <div class="date-wrap">
+                        <input class="control" type="month" id="reportMonth">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="groupBy">Group By</label>
+                    <div class="select-wrap">
+                        <select class="control" id="groupBy">
+                            <option value="WEEK">Week</option>
+                            <option value="PROJECT">Project</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="filterProject">Project</label>
+                    <div class="select-wrap">
+                        <select class="control" id="filterProject">
+                            <option value="ALL">All Projects</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="filterClient">Client</label>
+                    <div class="select-wrap">
+                        <select class="control" id="filterClient">
+                            <option value="ALL">All Clients</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="filterUser">Team Member</label>
+                    <div class="select-wrap">
+                        <select class="control" id="filterUser">
+                            <option value="ALL">All Members</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="filterStatus">Project Status</label>
+                    <div class="select-wrap">
+                        <select class="control" id="filterStatus">
+                            <option value="ALL">All Status</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-actions">
+                    <button class="primary-btn" id="btnGenerate" type="button">▽&nbsp; Generate Report</button>
+                    <button class="secondary-btn" id="btnReset" type="button">↻&nbsp; Reset Filter</button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- REPORT PREVIEW -->
+        <section class="panel preview-panel">
+
+            <div class="preview-head">
+                <div class="preview-title">
+                    <div class="panel-icon">◉</div>
+                    <div>
+                        <h2 class="panel-title">Report Preview</h2>
+                        <p class="panel-subtitle" id="previewSubtitle">Project Man-Hour Report - Monthly Summary</p>
+                    </div>
+                </div>
+
+                <div class="preview-actions">
+                    <button class="action-btn" id="btnPrint" type="button">▣&nbsp; Print</button>
+                    <button class="action-btn pdf" id="btnPdf" type="button">▧&nbsp; Export PDF</button>
+                    <button class="action-btn excel" id="btnExcel" type="button">▤&nbsp; Export Excel</button>
+                    <button class="action-btn template" id="btnSaveTemplate" type="button">▣&nbsp; Save Template</button>
+                </div>
+            </div>
+
+            <div class="report-sheet" id="reportPaper">
+
+                <div class="report-sheet-head">
+                    <div class="sheet-brand">
+                        <div class="sheet-logo"></div>
+                        <div>
+                            <strong>CRANE<span>TRACK</span></strong>
+                            <small>TIME | PROJECT | TEAM</small>
+                        </div>
+                    </div>
+
+                    <div class="sheet-title">
+                        <h2>PROJECT MAN-HOUR REPORT</h2>
+                        <p>MONTHLY SUMMARY | ACCURATE TIME • EFFICIENT PROJECTS • STRONGER RESULTS</p>
+                    </div>
+
+                    <div class="month-badge" id="badgeMonthYear">
+                        AUGUST<br>2026
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="report-table" id="exportTable">
+                        <thead>
+                            <tr>
+                                <th style="width:42px;">#</th>
+                                <th style="min-width:245px; text-align:left;">Project</th>
+                                <th style="min-width:120px;">Client</th>
+                                <th id="thW1">Week 1<span class="date-range" id="dtW1">01 - 07 Aug</span></th>
+                                <th id="thW2">Week 2<span class="date-range" id="dtW2">08 - 14 Aug</span></th>
+                                <th id="thW3">Week 3<span class="date-range" id="dtW3">15 - 21 Aug</span></th>
+                                <th id="thW4">Week 4<span class="date-range" id="dtW4">22 - 28 Aug</span></th>
+                                <th id="thW5">Week 5<span class="date-range" id="dtW5">29 - 31 Aug</span></th>
+                                <th class="total-head" style="min-width:120px;">Total Manhour</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="tableBodyProjects"></tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td colspan="3">TOTAL</td>
+                                <td id="totW1">0.0</td>
+                                <td id="totW2">0.0</td>
+                                <td id="totW3">0.0</td>
+                                <td id="totW4">0.0</td>
+                                <td id="totW5">0.0</td>
+                                <td id="totGrand">0.0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="../js/reports.js"></script>
+</body>
+</html>
