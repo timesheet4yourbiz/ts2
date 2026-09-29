@@ -212,5 +212,55 @@
         // Initialize all Lucide icons on the page
         lucide.createIcons();
     </script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // --- CARTA BAR (Tracked Time by Day) ---
+    var barElem = document.getElementById('barChart');
+    if (barElem) {
+        new Chart(barElem.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['21 Sep', '22 Sep', '23 Sep', '24 Sep', '25 Sep', '26 Sep', '27 Sep'],
+                datasets: [
+                    { label: 'Documentation', data: [12, 14, 12, 10, 15, 0, 0], backgroundColor: '#a855f7' },
+                    { label: 'Item Code (ERP)', data: [10, 8, 10, 12, 8, 0, 0], backgroundColor: '#3b82f6' },
+                    { label: 'SN 2654_250RL', data: [8, 10, 8, 8, 6, 0, 0], backgroundColor: '#f97316' },
+                    { label: 'Meeting', data: [6, 5, 5, 4, 4, 0, 0], backgroundColor: '#10b981' },
+                    { label: 'Others', data: [4, 4, 5, 6, 4, 2, 2], backgroundColor: '#ec4899' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { x: { stacked: true }, y: { stacked: true } }
+            }
+        });
+    }
+
+    // --- CARTA DONUT (Project Distribution) ---
+    var donutElem = document.getElementById('donutChart');
+    if (donutElem) {
+        new Chart(donutElem.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Documentation', 'Item Code (ERP)', 'SN 2654_250RL', 'Meeting', 'Others'],
+                datasets: [{
+                    data: [53, 21.3, 19.3, 13.3, 46.37],
+                    backgroundColor: ['#f97316', '#3b82f6', '#a855f7', '#eab308', '#10b981'],
+                    borderWidth: 0,
+                    cutout: '75%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+});
+    
 </body>
 </html>
