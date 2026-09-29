@@ -201,24 +201,6 @@ function renderTeamActivities() {
     });
 }
 
-function renderTeamActivities() {
-    const tbody = document.getElementById('teamActivitiesBody'); if (!tbody) return; tbody.innerHTML = '';
-    const totalRecs = teamDataList.length; if (totalRecs === 0) { tbody.innerHTML = `\x3Ctr\x3E\x3Ctd colspan="7" class="py-6 text-center text-gray-400"\x3ENo data found.\x3C/td\x3E\x3C/tr\x3E`; return; }
-    let pagedData = teamDataList;
-    if (recordsPerPage !== 'all') { const maxPage = Math.ceil(totalRecs / recordsPerPage); if (currentPage > maxPage) currentPage = maxPage; const startIndex = (currentPage - 1) * recordsPerPage; pagedData = teamDataList.slice(startIndex, startIndex + recordsPerPage); }
-    pagedData.forEach((member, index) => {
-        const init = getInitials(member.name), actualIndex = (recordsPerPage !== 'all' ? (currentPage - 1) * recordsPerPage : 0) + index + 1;
-        let taskName = 'No recent activity', projName = '-', projColor = 'transparent';
-        if (member.latest) { taskName = member.latest.description || 'Untitled Task'; projName = member.latest.project ? member.latest.project.project_name : 'No Project'; projColor = getProjectColor(projName); }
-        const badgeHtml = getStatusAndBadge(member); let currentTimerHtml = '-';
-        if (member.isTracking) { currentTimerHtml = `${formatHMS(member.todaySec)} \x3Cspan class="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block ml-1 animate-pulse"\x3E\x3C/span\x3E`; } else if (member.latest && member.todaySec > 0) { currentTimerHtml = formatHMS(member.todaySec); } else if (member.latest && badgeHtml.includes('hours ago')) { currentTimerHtml = formatHMS(member.latest.duration_seconds || 0); }
-        let barSegments = '';
-        for (const [pName, pSec] of Object.entries(member.projects)) { if (pSec > 0 && member.totalSec > 0) { const perc = (pSec / member.totalSec) * 100; barSegments += `\x3Cdiv class="h-full" style="width: \({perc}%; background-color:\){getProjectColor(pName)};"\x3E\x3C/div\x3E`; } }
-        let breakdownHtml = `\x3Cdiv class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex"\x3E${barSegments}\x3C/div\x3E`;
-        tbody.innerHTML += `\x3Ctr class="hover:bg-slate-50/80 transition-colors"\x3E\x3Ctd class="py-3 px-3 text-center text-slate-800 font-semibold"\x3E\({actualIndex}\x3C/td\x3E\x3Ctd class="py-3 px-3"\x3E\x3Cdiv class="flex items-center gap-3"\x3E\x3Cdiv class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-[10px] shadow-sm shrink-0" style="background:\){getProjectColor(member.name)};"\x3E\({init}\x3C/div\x3E\x3Cdiv class="min-w-0"\x3E\x3Cdiv class="font-semibold text-slate-800 text-[11px] truncate capitalize"\x3E\){formatCapitalize(member.name)}\x3C/div\x3E\x3Cdiv class="text-gray-400 text-[10px] truncate"\x3E\({member.email || '-'}\x3C/div\x3E\x3C/div\x3E\x3C/div\x3E\x3C/td\x3E\x3Ctd class="py-3 px-3"\x3E\x3Cdiv class="font-semibold text-slate-800 text-[11px] mb-1 truncate max-w-[150px]"\x3E\){taskName}\x3C/div\x3E\x3Cdiv class="text-gray-500 text-[10px] flex items-center gap-1.5 truncate max-w-[150px]"\x3E\({member.latest ? `\x3Cspan class="w-2 h-2 rounded-full shrink-0" style="background:\){projColor};"\x3E\x3C/span\x3E \({formatCapitalize(projName)}` : '-'}\x3C/div\x3E\x3C/td\x3E\x3Ctd class="py-3 px-3"\x3E\){badgeHtml}\x3C/td\x3E\x3Ctd class="py-3 px-3 text-center font-semibold text-slate-700"\x3E\({currentTimerHtml}\x3C/td\x3E\x3Ctd class="py-3 px-3 font-semibold text-slate-800"\x3E\){formatHMS(member.totalSec)}\x3C/td\x3E\x3Ctd class="py-3 px-3 min-w-[100px]"\x3E\({breakdownHtml}\x3C/td\x3E\x3Ctd class="py-3 px-3 text-center relative"\x3E\x3Cdiv class="action-dropdown inline-block"\x3E\x3Cbutton class="action-dots-btn p-1.5 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100"\x3E\x3Csvg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"\x3E\x3Ccircle cx="12" cy="12" r="1"\x3E\x3C/circle\x3E\x3Ccircle cx="12" cy="5" r="1"\x3E\x3C/circle\x3E\x3Ccircle cx="12" cy="19" r="1"\x3E\x3C/circle\x3E\x3C/svg\x3E\x3C/button\x3E\x3Cdiv class="action-menu-popup hidden absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg w-40 z-50 text-left overflow-hidden"\x3E\x3Cdiv class="action-menu-item chase-btn px-4 py-2 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer flex items-center gap-2" data-empid="\){member.id}" data-empname="${formatCapitalize(member.name)}"\x3E🔔 Send Reminder\x3C/div\x3E\x3C/div\x3E\x3C/div\x3E\x3C/td\x3E\x3C/tr\x3E`;
-    });
-}
-
 document.addEventListener('click', async (e) => {
     const dotsBtn = e.target.closest('.action-dots-btn');
     if (dotsBtn) { e.stopPropagation(); const popup = dotsBtn.nextElementSibling; document.querySelectorAll('.action-menu-popup').forEach(p => { if (p !== popup) p.classList.add('hidden'); }); popup.classList.toggle('hidden'); return; }
