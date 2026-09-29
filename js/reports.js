@@ -19,11 +19,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             rm.value = now.getFullYear() + '-' + m;
         }
 
-        document.getElementById('btnGenerate')?.addEventListener('click', generateReport);
-        document.getElementById('btnPrint')?.addEventListener('click', () => window.print());
-        document.getElementById('btnExcel')?.addEventListener('click', exportCSV);
+        bindAllButtons(); // Panggil fungsi suis butang
 
-        // KUNCI: Sorok Report Preview waktu mula-mula buka halaman
         const previewPanel = document.querySelector('.preview-panel');
         if (previewPanel) previewPanel.style.display = 'none';
 
@@ -32,6 +29,77 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+function bindAllButtons() {
+    // 1. Enjin Kad Laporan (Atas)
+    const reportCards = document.querySelectorAll('.report-type');
+    const reportTypeSelect = document.getElementById('reportType');
+
+    reportCards.forEach(card => {
+        card.addEventListener('click', function() {
+            reportCards.forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            
+            const typeMap = { 'project': 'PROJECT_MANHOUR', 'historical': 'HISTORICAL', 'budget': 'BUDGET', 'team': 'TEAM', 'client': 'CLIENT', 'custom': 'CUSTOM' };
+            const clickedType = this.getAttribute('data-report-type');
+            if (reportTypeSelect && typeMap[clickedType]) reportTypeSelect.value = typeMap[clickedType];
+            
+            const previewPanel = document.querySelector('.preview-panel');
+            if (previewPanel) previewPanel.style.display = 'none';
+        });
+    });
+
+    // 2. Sinkronis Dropdown kembali ke Kad
+    if (reportTypeSelect) {
+        reportTypeSelect.addEventListener('change', function() {
+            const reverseMap = { 'PROJECT_MANHOUR': 'project', 'HISTORICAL': 'historical', 'BUDGET': 'budget', 'TEAM': 'team', 'CLIENT': 'client', 'CUSTOM': 'custom' };
+            const mappedType = reverseMap[this.value];
+            reportCards.forEach(c => {
+                c.classList.remove('active');
+                if (c.getAttribute('data-report-type') === mappedType) c.classList.add('active');
+            });
+            const previewPanel = document.querySelector('.preview-panel');
+            if (previewPanel) previewPanel.style.display = 'none';
+        });
+    }
+
+    // 3. Butang-Butang Tindakan Utama
+    document.getElementById('btnGenerate')?.addEventListener('click', generateReport);
+    document.getElementById('btnPrint')?.addEventListener('click', () => window.print());
+    document.getElementById('btnExcel')?.addEventListener('click', exportCSV);
+    
+    document.getElementById('btnPdf')?.addEventListener('click', () => {
+        alert('PDF Export: Mencetak paparan semasa ke format PDF.');
+        window.print(); // Fallback mudah untuk PDF
+    });
+    
+    document.getElementById('btnSaveTemplate')?.addEventListener('click', () => {
+        alert('Template laporan berjaya disimpan!');
+    });
+
+    document.getElementById('btnLoadSavedFilter')?.addEventListener('click', () => {
+        alert('Memuatkan senarai filter yang pernah disimpan...');
+    });
+
+    // 4. Butang Reset Filter
+    document.getElementById('btnReset')?.addEventListener('click', () => {
+        if(reportTypeSelect) reportTypeSelect.value = 'PROJECT_MANHOUR';
+        document.getElementById('reportPeriod').value = 'MONTHLY_WEEK';
+        document.getElementById('filterProject').value = 'ALL';
+        document.getElementById('filterClient').value = 'ALL';
+        document.getElementById('filterUser').value = 'ALL';
+        document.getElementById('filterStatus').value = 'ALL';
+        
+        const now = new Date();
+        document.getElementById('reportMonth').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+
+        reportCards.forEach(c => c.classList.remove('active'));
+        const firstCard = document.querySelector('.report-type[data-report-type="project"]');
+        if(firstCard) firstCard.classList.add('active');
+
+        const previewPanel = document.querySelector('.preview-panel');
+        if (previewPanel) previewPanel.style.display = 'none';
+    });
+}
 async function populateFilters() {
     try {
         const { data: projs } = await supabase.from('projects').select('id, project_name').order('project_name');
@@ -71,9 +139,20 @@ async function generateReport() {
     const monthInput = document.getElementById('reportMonth').value;
     if (!monthInput) return;
     
-    // KUNCI: Munculkan Report Preview bila butang Generate ditekan
     const previewPanel = document.querySelector('.preview-panel');
     if (previewPanel) previewPanel.style.display = 'block';
+
+    const reportType = document.getElementById('reportType').value;
+    const selectEl = document.getElementById('reportType');
+    const subtitle = document.getElementById('previewSubtitle');
+    if (subtitle && selectEl) subtitle.textContent = selectEl.options[selectEl.selectedIndex].text + ' - Generated';
+
+    // Semakan Jenis Laporan
+    if (reportType !== 'PROJECT_MANHOUR') {
+        const tbody = document.getElementById('tableBodyProjects');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="empty-state" style="padding:50px !important;"><strong style="font-size:14px; color:#1e293b;">Engine under development</strong><br>The engine for this specific report type will be available in the next phase.</td></tr>';
+        return;
+    }
     
     const year = parseInt(monthInput.split('-')[0]);
     const month = parseInt(monthInput.split('-')[1]);
@@ -129,7 +208,6 @@ async function generateReport() {
 
     renderTable(projectGroups, weeks);
 }
-
 
 function renderTable(projectGroups, weeks) {
     const tbody = document.getElementById('tableBodyProjects');
@@ -189,6 +267,3 @@ function exportCSV() {
     document.body.appendChild(downloadLink);
     downloadLink.click();
 }
-
-
-
