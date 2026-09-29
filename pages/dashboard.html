@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cranetrack - Dashboard</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+<!-- 1. TOP NAVIGATION MENU -->
+<nav class="bg-white border-b border-gray-200 px-6 py-2.5 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+    <div class="flex items-center space-x-6">
+        <div class="flex items-center space-x-2.5 cursor-pointer">
+            <div class="bg-indigo-600 text-white p-2 rounded-lg flex items-center justify-center font-black shadow-md shadow-indigo-100">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <span class="font-extrabold text-lg text-slate-900 tracking-tight leading-none block">CRANETRACK</span>
+                <span class="text-[9px] block text-gray-400 font-bold tracking-widest uppercase mt-0.5">Time | Project | Team</span>
+            </div>
+        </div>
+
+        <div class="hidden lg:flex items-center space-x-1 text-xs font-semibold text-gray-600">
+            <a href="#" class="px-3.5 py-2 rounded-md bg-blue-600 text-white flex items-center gap-2 shadow-sm transition-all"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard</a>
+            <a href="#" class="px-3.5 py-2 rounded-md hover:bg-gray-100 hover:text-gray-900 flex items-center gap-2 transition-colors"><i data-lucide="timer" class="w-4 h-4"></i> Time Tracking</a>
+            <a href="#" class="px-3.5 py-2 rounded-md hover:bg-gray-100 hover:text-gray-900 flex items-center gap-2 transition-colors"><i data-lucide="calendar-days" class="w-4 h-4"></i> Timesheet</a>
+            <a href="#" class="px-3.5 py-2 rounded-md hover:bg-gray-100 hover:text-gray-900 flex items-center gap-2 transition-colors"><i data-lucide="folder-kanban" class="w-4 h-4"></i> Projects</a>
+        </div>
+    </div>
+
+    <div class="flex items-center space-x-4 text-xs">
+        <!-- FILTERS (Dihubungkan dengan JS) -->
+        <select id="filterProject" class="border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 bg-gray-50">
+            <option value="all">All Projects</option>
+        </select>
+        <select id="filterTeam" class="border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 bg-gray-50">
+            <option value="all">All Teams</option>
+        </select>
+
+        <!-- DATE RANGE -->
+        <div class="border border-gray-200 rounded-lg px-2 py-1 flex items-center gap-2 bg-gray-50 shadow-sm">
+            <button id="prevDashBtn" class="hover:bg-gray-200 p-1 rounded"><i data-lucide="chevron-left" class="w-3.5 h-3.5"></i></button>
+            <span id="dashDateRangeText" class="font-medium text-gray-600">Loading...</span>
+            <button id="nextDashBtn" class="hover:bg-gray-200 p-1 rounded"><i data-lucide="chevron-right" class="w-3.5 h-3.5"></i></button>
+        </div>
+
+        <div class="flex items-center gap-2.5 pl-3 border-l border-gray-200">
+            <div class="bg-blue-600 text-white rounded-full h-8 w-8 flex items-center justify-center font-bold text-xs shadow-sm ring-2 ring-blue-100">M</div>
+            <div class="hidden sm:block">
+                <p id="userEmail" class="font-bold text-slate-800 text-xs leading-none">User</p>
+                <p class="text-[10px] text-gray-400 font-medium leading-tight mt-0.5">Administrator</p>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- 2. MAIN DASHBOARD CONTENT -->
+<main class="max-w-[1600px] mx-auto p-6 space-y-6">
+
+    <!-- WELCOME BANNER -->
+    <div class="bg-gradient-to-r from-blue-900 via-indigo-800 to-slate-900 text-white p-8 rounded-2xl shadow-lg flex justify-between items-center relative overflow-hidden">
+        <div class="absolute right-0 top-0 w-1/2 h-full bg-white opacity-5 transform skew-x-12 translate-x-20 pointer-events-none"></div>
+        <div class="space-y-2 relative z-10">
+            <p class="text-xs font-bold tracking-[0.2em] text-blue-300 uppercase">Welcome Back</p>
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight">Good Afternoon, Team</h1>
+            <p class="text-sm md:text-base text-blue-100/80 font-medium mt-1">Track time. Deliver projects. Build a better tomorrow.</p>
+        </div>
+    </div>
+
+    <!-- METRIC CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Card 1: Total Hours -->
+        <div class="bg-white p-4.5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
+            <div class="p-3 bg-indigo-600 text-white rounded-xl shadow-indigo-200 shadow-lg shrink-0">
+                <i data-lucide="clock" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-[10px] uppercase tracking-wider font-bold text-gray-400">TOTAL HOURS</p>
+                <h2 id="kpiTotalTime" class="text-2xl font-black text-slate-800 tracking-tight">--:--</h2>
+            </div>
+        </div>
+
+        <!-- Card 2: Active Projects -->
+        <div class="bg-white p-4.5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
+            <div class="p-3 bg-emerald-500 text-white rounded-xl shadow-emerald-200 shadow-lg shrink-0">
+                <i data-lucide="folder" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-[10px] uppercase tracking-wider font-bold text-gray-400">ACTIVE PROJECTS</p>
+                <h2 id="kpiActiveProjects" class="text-2xl font-black text-slate-800 tracking-tight">12</h2>
+            </div>
+        </div>
+
+        <!-- Card 3: Team Members -->
+        <div class="bg-white p-4.5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
+            <div class="p-3 bg-orange-500 text-white rounded-xl shadow-orange-200 shadow-lg shrink-0">
+                <i data-lucide="users" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <p class="text-[10px] uppercase tracking-wider font-bold text-gray-400">TEAM MEMBERS</p>
+                <h2 id="kpiTeamMembers" class="text-2xl font-black text-slate-800 tracking-tight">18</h2>
+            </div>
+        </div>
+
+        <!-- Card 4: Top Project -->
+        <div class="bg-white p-4.5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
+            <div class="p-3 bg-rose-500 text-white rounded-xl shadow-rose-200 shadow-lg shrink-0">
+                <i data-lucide="star" class="w-6 h-6"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+                <p class="text-[10px] uppercase tracking-wider font-bold text-gray-400">TOP PROJECT</p>
+                <h2 id="kpiTopProject" class="text-sm font-black text-slate-800 truncate">--</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CHARTS SECTION -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Stacked Bar Chart -->
+        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm lg:col-span-2 flex flex-col justify-between">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                        <i data-lucide="bar-chart-2" class="w-4 h-4 text-indigo-600"></i> Tracked Time by Day
+                    </h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Total hours tracked across all projects</p>
+                </div>
+            </div>
+            <div class="h-72 w-full relative">
+                <canvas id="stackedBarChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="pie-chart" class="w-4 h-4 text-emerald-600"></i> Project Distribution
+                </h3>
+            </div>
+            <div class="h-64 w-full relative flex items-center justify-center">
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-1">
+                    <span id="donutTotal" class="text-2xl font-black text-slate-800 tracking-tight">--:--</span>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total Hours</span>
+                </div>
+                <canvas id="donutChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM SECTION: TABLE & PROJECTS -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+
+        <!-- Team Activities Table -->
+        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm lg:col-span-2">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="activity" class="w-4 h-4 text-indigo-600"></i> Recent Team Activities
+                </h3>
+                <select id="recordsPerPage" class="text-xs border rounded px-2 py-1">
+                    <option value="10">10</option>
+                    <option value="20" selected>20</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-gray-100 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                            <th class="py-3 px-2 sortable-header cursor-pointer" data-sort="member"># / Team Member</th>
+                            <th class="py-3 px-2 sortable-header cursor-pointer" data-sort="activity">Activity / Project</th>
+                            <th class="py-3 px-2">Status</th>
+                            <th class="py-3 px-2 text-center">Current Timer</th>
+                            <th class="py-3 px-2 sortable-header cursor-pointer" data-sort="tracked">Total Tracked</th>
+                            <th class="py-3 px-2">Breakdown</th>
+                            <th class="py-3 px-2 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teamActivitiesBody" class="divide-y divide-gray-50">
+                        <!-- Live data dari Supabase masuk sini -->
+                        <tr><td colspan="7" class="py-4 text-center text-gray-400">Loading team activities...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination Controls -->
+            <div class="flex justify-end gap-2 mt-4 text-xs">
+                <button id="btnPrev" class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200">Prev</button>
+                <button id="btnNext" class="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200">Next</button>
+            </div>
+        </div>
+
+        <!-- Top Projects Progress -->
+        <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+            <h3 class="font-bold text-slate-800 flex items-center gap-2 mb-4">
+                <i data-lucide="folder-kanban" class="w-4 h-4 text-orange-500"></i> Top Projects Progress
+            </h3>
+
+            <div id="projectRankingList" class="space-y-4 text-xs">
+                <!-- Live data dari Supabase masuk sini -->
+                <div class="text-center text-gray-400 py-4">Loading projects...</div>
+            </div>
+        </div>
+
+    </div>
+    
+</main> 
+
+<!-- SCRIPTS -->
+<script>
+    lucide.createIcons();
+</script>
+
+<!-- PAUTAN JAVASCRIPT SUPABASE (Sila pastikan path fail js bos betul) -->
+<script type="module" src="../js/dashboard.js"></script>
+</body>
+</html>
