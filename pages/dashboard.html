@@ -183,9 +183,85 @@
                     <canvas id="donutChart"></canvas>
                 </div>
             </div>
-
         </div>
 
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+
+    <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm lg:col-span-2">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="activity" class="w-4 h-4 text-indigo-600"></i> Recent Team Activities
+            </h3>
+            <button class="text-xs font-semibold text-blue-600 hover:text-blue-800">Lihat Semua</button>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                    <tr class="border-b border-gray-100 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                        <th class="py-3 px-2">Ahli Pasukan</th>
+                        <th class="py-3 px-2">Projek</th>
+                        <th class="py-3 px-2">Aktiviti / Tugasan</th>
+                        <th class="py-3 px-2">Masa</th>
+                        <th class="py-3 px-2 text-right">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="py-3 px-2 font-bold text-slate-800">Mohamad Zohari</td>
+                        <td class="py-3 px-2 text-gray-600">Documentation</td>
+                        <td class="py-3 px-2 text-gray-500">Kemaskini Manual Sistem TS2</td>
+                        <td class="py-3 px-2 font-bold text-slate-700">03:30 hrs</td>
+                        <td class="py-3 px-2 text-right">
+                            <span class="bg-emerald-50 text-emerald-600 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-emerald-100">Selesai</span>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="py-3 px-2 font-bold text-slate-800">Ahmad Hasif</td>
+                        <td class="py-3 px-2 text-gray-600">Item Code (ERP)</td>
+                        <td class="py-3 px-2 text-gray-500">Integrasi API Database ERP</td>
+                        <td class="py-3 px-2 font-bold text-slate-700">02:15 hrs</td>
+                        <td class="py-3 px-2 text-right">
+                            <span class="bg-blue-50 text-blue-600 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-blue-100">Sedang Jalan</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+        <h3 class="font-bold text-slate-800 flex items-center gap-2 mb-4">
+            <i data-lucide="folder-kanban" class="w-4 h-4 text-orange-500"></i> Top Projects Progress
+        </h3>
+
+        <div class="space-y-4 text-xs">
+            <div>
+                <div class="flex justify-between font-semibold mb-1">
+                    <span class="text-slate-800">Documentation</span>
+                    <span class="text-gray-500">53 hrs (75%)</span>
+                </div>
+                <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                    <div class="bg-indigo-600 h-full rounded-full" style="width: 75%"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between font-semibold mb-1">
+                    <span class="text-slate-800">Item Code (ERP)</span>
+                    <span class="text-gray-500">21.3 hrs (45%)</span>
+                </div>
+                <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                    <div class="bg-blue-500 h-full rounded-full" style="width: 45%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+        
     </main>
 
     <!-- SCRIPTS -->
