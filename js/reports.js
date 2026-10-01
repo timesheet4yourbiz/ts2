@@ -106,7 +106,7 @@ async function populateFilters() {
         const projSelect = document.getElementById('filterProject');
         if (projs && projSelect) {
             projs.forEach(p => {
-                projSelect.innerHTML += '(BUKA)option value="' + p.id + '"(TUTUP)' + p.project_name + '(BUKA)/option(TUTUP)';
+                projSelect.innerHTML += '<option value="' + p.id + '">' + p.project_name + '</option>';
             });
         }
     } catch (e) {}
@@ -117,7 +117,7 @@ async function populateFilters() {
         if (emps && userSelect) {
             emps.forEach(e => {
                 const displayName = e.name || e.email.split('@')[0];
-                userSelect.innerHTML += '(BUKA)option value="' + e.id + '"(TUTUP)' + displayName + '(BUKA)/option(TUTUP)';
+                userSelect.innerHTML += '<option value="' + e.id + '">' + displayName + '</option>';
             });
         }
     } catch (e) {}
@@ -150,7 +150,7 @@ async function generateReport() {
     // Semakan Jenis Laporan
     if (reportType !== 'PROJECT_MANHOUR') {
         const tbody = document.getElementById('tableBodyProjects');
-        if (tbody) tbody.innerHTML = '(BUKA)tr(TUTUP)(BUKA)td colspan="9" class="empty-state" style="padding:50px !important;"(TUTUP)(BUKA)strong style="font-size:14px; color:#1e293b;"(TUTUP)Engine under development(BUKA)/strong(TUTUP)(BUKA)br(TUTUP)The engine for this specific report type will be available in the next phase.(BUKA)/td(TUTUP)(BUKA)/tr(TUTUP)';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="empty-state" style="padding:50px !important;"><strong style="font-size:14px; color:#1e293b;">Engine under development</strong><br>The engine for this specific report type will be available in the next phase.</td></tr>';
         return;
     }
     
@@ -161,7 +161,7 @@ async function generateReport() {
     
     const monthName = new Date(year, month - 1).toLocaleString('en-US', { month: 'long' }).toUpperCase();
     const badge = document.getElementById('badgeMonthYear');
-    if (badge) badge.innerHTML = monthName + '(BUKA)br(TUTUP)' + year;
+    if (badge) badge.innerHTML = monthName + '<br>' + year;
 
     const weeks = getWeekDates(year, month);
     weeks.forEach((w, i) => {
@@ -219,24 +219,24 @@ function renderTable(projectGroups, weeks) {
     let idx = 1;
 
     if (Object.keys(projectGroups).length === 0) {
-        tbody.innerHTML = '(BUKA)tr(TUTUP)(BUKA)td colspan="9" class="empty-state"(TUTUP)No man-hour records found for this period.(BUKA)/td(TUTUP)(BUKA)/tr(TUTUP)';
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No man-hour records found for this period.</td></tr>';
     } else {
         Object.keys(projectGroups).sort().forEach(pName => {
             const row = projectGroups[pName];
             sumWeekly[0] += row.w1; sumWeekly[1] += row.w2; sumWeekly[2] += row.w3;
             sumWeekly[3] += row.w4; sumWeekly[4] += row.w5; grandTotal += row.total;
             
-            tbody.innerHTML += '(BUKA)tr(TUTUP)' +
-                '(BUKA)td class="index"(TUTUP)' + idx++ + '(BUKA)/td(TUTUP)' +
-                '(BUKA)td class="project-name"(TUTUP)' + pName + '(BUKA)/td(TUTUP)' +
-                '(BUKA)td class="client-name"(TUTUP)-(BUKA)/td(TUTUP)' +
-                '(BUKA)td(TUTUP)' + row.w1.toFixed(1) + '(BUKA)/td(TUTUP)' +
-                '(BUKA)td(TUTUP)' + row.w2.toFixed(1) + '(BUKA)/td(TUTUP)' +
-                '(BUKA)td(TUTUP)' + row.w3.toFixed(1) + '(BUKA)/td(TUTUP)' +
-                '(BUKA)td(TUTUP)' + row.w4.toFixed(1) + '(BUKA)/td(TUTUP)' +
-                '(BUKA)td(TUTUP)' + (weeks[4].text !== 'N/A' ? row.w5.toFixed(1) : '-') + '(BUKA)/td(TUTUP)' +
-                '(BUKA)td class="total-col"(TUTUP)' + row.total.toFixed(1) + '(BUKA)/td(TUTUP)' +
-                '(BUKA)/tr(TUTUP)';
+            tbody.innerHTML += '<tr>' +
+                '<td class="index">' + idx++ + '</td>' +
+                '<td class="project-name">' + pName + '</td>' +
+                '<td class="client-name">-</td>' +
+                '<td>' + row.w1.toFixed(1) + '</td>' +
+                '<td>' + row.w2.toFixed(1) + '</td>' +
+                '<td>' + row.w3.toFixed(1) + '</td>' +
+                '<td>' + row.w4.toFixed(1) + '</td>' +
+                '<td>' + (weeks[4].text !== 'N/A' ? row.w5.toFixed(1) : '-') + '</td>' +
+                '<td class="total-col">' + row.total.toFixed(1) + '</td>' +
+                '</tr>';
         });
     }
 
