@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             rm.value = now.getFullYear() + '-' + m;
         }
 
-        bindAllButtons(); // Panggil fungsi suis butang
+        bindAllButtons(); 
 
         const previewPanel = document.querySelector('.preview-panel');
         if (previewPanel) previewPanel.style.display = 'none';
@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function bindAllButtons() {
-    // 1. Enjin Kad Laporan (Atas)
     const reportCards = document.querySelectorAll('.report-type');
     const reportTypeSelect = document.getElementById('reportType');
 
@@ -48,7 +47,6 @@ function bindAllButtons() {
         });
     });
 
-    // 2. Sinkronis Dropdown kembali ke Kad
     if (reportTypeSelect) {
         reportTypeSelect.addEventListener('change', function() {
             const reverseMap = { 'PROJECT_MANHOUR': 'project', 'HISTORICAL': 'historical', 'BUDGET': 'budget', 'TEAM': 'team', 'CLIENT': 'client', 'CUSTOM': 'custom' };
@@ -62,14 +60,13 @@ function bindAllButtons() {
         });
     }
 
-    // 3. Butang-Butang Tindakan Utama
     document.getElementById('btnGenerate')?.addEventListener('click', generateReport);
     document.getElementById('btnPrint')?.addEventListener('click', () => window.print());
     document.getElementById('btnExcel')?.addEventListener('click', exportCSV);
     
     document.getElementById('btnPdf')?.addEventListener('click', () => {
         alert('PDF Export: Mencetak paparan semasa ke format PDF.');
-        window.print(); // Fallback mudah untuk PDF
+        window.print(); 
     });
     
     document.getElementById('btnSaveTemplate')?.addEventListener('click', () => {
@@ -80,7 +77,6 @@ function bindAllButtons() {
         alert('Memuatkan senarai filter yang pernah disimpan...');
     });
 
-    // 4. Butang Reset Filter
     document.getElementById('btnReset')?.addEventListener('click', () => {
         if(reportTypeSelect) reportTypeSelect.value = 'PROJECT_MANHOUR';
         document.getElementById('reportPeriod').value = 'MONTHLY_WEEK';
@@ -100,6 +96,7 @@ function bindAllButtons() {
         if (previewPanel) previewPanel.style.display = 'none';
     });
 }
+
 async function populateFilters() {
     try {
         const { data: projs } = await supabase.from('projects').select('id, project_name').order('project_name');
@@ -123,17 +120,45 @@ async function populateFilters() {
     } catch (e) {}
 }
 
+// LOGIK BARU: Kiraan tepat kalendar Isnin ke Ahad (Format Hari/Bulan/Tahun)
 function getWeekDates(year, month) {
-    const lastDay = new Date(year, month, 0).getDate();
-    const mName = new Date(year, month - 1).toLocaleString('en-US', { month: 'short' });
-    return [
-        { start: 1, end: 7, text: '01 - 07 ' + mName },
-        { start: 8, end: 14, text: '08 - 14 ' + mName },
-        { start: 15, end: 21, text: '15 - 21 ' + mName },
-        { start: 22, end: 28, text: '22 - 28 ' + mName },
-        { start: 29, end: lastDay, text: lastDay >= 29 ? '29 - ' + lastDay + ' ' + mName : 'N/A' }
-    ];
+    let firstDay = new Date(year, month - 1, 1);
+    let dayOfWeek = firstDay.getDay(); 
+    let diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    let startDate = new Date(year, month - 1, 1 + diffToMonday);
+
+    let lastDayOfMonth = new Date(year, month, 0);
+    let lastDayOfWeek = lastDayOfMonth.getDay();
+    let daysToNextSunday = lastDayOfWeek === 0 ? 0 : 7 - lastDayOfWeek;
+    let finalSunday = new Date(year, month - 1, lastDayOfMonth.getDate() + daysToNextSunday);
+
+    const formatFull = (d) => {
+        return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
+    };
+
+    let weeks = [];
+    let currentStart = new Date(startDate);
+
+    for (let i = 0; i < 4; i++) {
+        let currentEnd = new Date(currentStart);
+        currentEnd.setDate(currentStart.getDate() + 6);
+        weeks.push({
+            start: new Date(currentStart),
+            end: new Date(currentEnd),
+            text: formatFull(currentStart) + ' - ' + formatFull(currentEnd)
+        });
+        currentStart.setDate(currentStart.getDate() + 7);
+    }
+
+    weeks.push({
+        start: new Date(currentStart),
+        end: new Date(finalSunday),
+        text: formatFull(currentStart) + ' - ' + formatFull(finalSunday)
+    });
+
+    return weeks;
 }
+
 
 async function generateReport() {
     const monthInput = document.getElementById('reportMonth').value;
@@ -147,7 +172,6 @@ async function generateReport() {
     const subtitle = document.getElementById('previewSubtitle');
     if (subtitle && selectEl) subtitle.textContent = selectEl.options[selectEl.selectedIndex].text + ' - Generated';
 
-    // Semakan Jenis Laporan
     if (reportType !== 'PROJECT_MANHOUR') {
         const tbody = document.getElementById('tableBodyProjects');
         if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="empty-state" style="padding:50px !important;"><strong style="font-size:14px; color:#1e293b;">Engine under development</strong><br>The engine for this specific report type will be available in the next phase.</td></tr>';
@@ -169,9 +193,9 @@ async function generateReport() {
         if (el) el.textContent = w.text || '-';
     });
 
-    const lastDay = new Date(year, month, 0).getDate();
-    const startDateIso = new Date(Date.UTC(year, month - 1, 1, 0, 0, 0)).toISOString();
-    const endDateIso = new Date(Date.UTC(year, month - 1, lastDay, 23, 59, 59)).toISOString();
+    // Ambil data dari Isnin pertama (W1) hingga Ahad terakhir (W5)
+    const startDateIso = new Date(Date.UTC(weeks[0].start.getFullYear(), weeks[0].start.getMonth(), weeks[0].start.getDate(), 0, 0, 0)).toISOString();
+    const endDateIso = new Date(Date.UTC(weeks[4].end.getFullYear(), weeks[4].end.getMonth(), weeks[4].end.getDate(), 23, 59, 59)).toISOString();
 
     let query = supabase
         .from('time_entries')
@@ -187,20 +211,29 @@ async function generateReport() {
     if (error) { console.error('Error:', error); return; }
 
     let projectGroups = {};
+    
+    // Masa dalam milisaat untuk perbandingan tepat (kebal merentasi bulan)
+    const w1S = weeks[0].start.getTime(); const w1E = weeks[0].end.getTime();
+    const w2S = weeks[1].start.getTime(); const w2E = weeks[1].end.getTime();
+    const w3S = weeks[2].start.getTime(); const w3E = weeks[2].end.getTime();
+    const w4S = weeks[3].start.getTime(); const w4E = weeks[3].end.getTime();
+    const w5S = weeks[4].start.getTime(); const w5E = weeks[4].end.getTime();
+
     if (entries && entries.length > 0) {
         entries.forEach(item => {
             const pName = (item.project ? item.project.project_name : 'General Project').toUpperCase();
             if (!projectGroups[pName]) projectGroups[pName] = { w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, total: 0 };
             
-            const dateObj = new Date(item.work_date || item.start_time);
-            const day = dateObj.getDate();
+            const dObj = new Date(item.work_date || item.start_time);
+            dObj.setHours(0,0,0,0);
+            const itemTime = dObj.getTime();
             const hrs = (item.duration_seconds || 0) / 3600;
             
-            if (day <= 7) projectGroups[pName].w1 += hrs;
-            else if (day <= 14) projectGroups[pName].w2 += hrs;
-            else if (day <= 21) projectGroups[pName].w3 += hrs;
-            else if (day <= 28) projectGroups[pName].w4 += hrs;
-            else projectGroups[pName].w5 += hrs;
+            if (itemTime >= w1S && itemTime <= w1E) projectGroups[pName].w1 += hrs;
+            else if (itemTime >= w2S && itemTime <= w2E) projectGroups[pName].w2 += hrs;
+            else if (itemTime >= w3S && itemTime <= w3E) projectGroups[pName].w3 += hrs;
+            else if (itemTime >= w4S && itemTime <= w4E) projectGroups[pName].w4 += hrs;
+            else if (itemTime >= w5S && itemTime <= w5E) projectGroups[pName].w5 += hrs;
             
             projectGroups[pName].total += hrs;
         });
@@ -234,7 +267,7 @@ function renderTable(projectGroups, weeks) {
                 '<td>' + row.w2.toFixed(1) + '</td>' +
                 '<td>' + row.w3.toFixed(1) + '</td>' +
                 '<td>' + row.w4.toFixed(1) + '</td>' +
-                '<td>' + (weeks[4].text !== 'N/A' ? row.w5.toFixed(1) : '-') + '</td>' +
+                '<td>' + row.w5.toFixed(1) + '</td>' +
                 '<td class="total-col">' + row.total.toFixed(1) + '</td>' +
                 '</tr>';
         });
@@ -267,4 +300,3 @@ function exportCSV() {
     document.body.appendChild(downloadLink);
     downloadLink.click();
 }
-
