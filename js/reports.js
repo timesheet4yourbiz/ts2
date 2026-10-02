@@ -5,106 +5,54 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return window.location.href = '../pages/login.html';
 
-        const profileName = document.getElementById('profileName');
         const avatarInitial = document.getElementById('avatarInitial');
-        if (profileName) profileName.textContent = session.user.email.split('@')[0].toUpperCase();
         if (avatarInitial) avatarInitial.textContent = session.user.email.charAt(0).toUpperCase();
 
         await populateFilters();
 
-        const rm = document.getElementById('reportMonth');
-        if (rm) {
-            const now = new Date();
-            const m = String(now.getMonth() + 1).padStart(2, '0');
-            rm.value = now.getFullYear() + '-' + m;
-        }
+        document.getElementById('btnGenerate')?.addEventListener('click', generateReport);
+        document.getElementById('btnPrint')?.addEventListener('click', () => window.print());
+        document.getElementById('btnExcel')?.addEventListener('click', exportCSV);
 
-        bindAllButtons(); 
-
-        const previewPanel = document.querySelector('.preview-panel');
-        if (previewPanel) previewPanel.style.display = 'none';
+        // Auto-generate laporan sebaik sahaja halaman dibuka
+        await generateReport();
 
     } catch (err) {
         console.error("Reports Init Error:", err);
     }
 });
 
-function bindAllButtons() {
-    const reportCards = document.querySelectorAll('.report-type');
-    const reportTypeSelect = document.getElementById('reportType');
-
-    reportCards.forEach(card => {
-        card.addEventListener('click', function() {
-            reportCards.forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-            
-            const typeMap = { 'project': 'PROJECT_MANHOUR', 'historical': 'HISTORICAL', 'budget': 'BUDGET', 'team': 'TEAM', 'client': 'CLIENT', 'custom': 'CUSTOM' };
-            const clickedType = this.getAttribute('data-report-type');
-            if (reportTypeSelect && typeMap[clickedType]) reportTypeSelect.value = typeMap[clickedType];
-            
-            const previewPanel = document.querySelector('.preview-panel');
-            if (previewPanel) previewPanel.style.display = 'none';
-        });
-    });
-
-    if (reportTypeSelect) {
-        reportTypeSelect.addEventListener('change', function() {
-            const reverseMap = { 'PROJECT_MANHOUR': 'project', 'HISTORICAL': 'historical', 'BUDGET': 'budget', 'TEAM': 'team', 'CLIENT': 'client', 'CUSTOM': 'custom' };
-            const mappedType = reverseMap[this.value];
-            reportCards.forEach(c => {
-                c.classList.remove('active');
-                if (c.getAttribute('data-report-type') === mappedType) c.classList.add('active');
-            });
-            const previewPanel = document.querySelector('.preview-panel');
-            if (previewPanel) previewPanel.style.display = 'none';
+async function populateFilters() {
+    const monthSelect = document.getElementById('reportMonth');
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const currentMonth = new Date().getMonth();
+    
+    if (monthSelect) {
+        months.forEach((m, i) => {
+            const option = document.createElement('option');
+            option.value = i + 1;
+            option.textContent = m;
+            if (i === currentMonth) option.selected = true;
+            monthSelect.appendChild(option);
         });
     }
-
-    document.getElementById('btnGenerate')?.addEventListener('click', generateReport);
-    document.getElementById('btnPrint')?.addEventListener('click', () => window.print());
-    document.getElementById('btnExcel')?.addEventListener('click', exportCSV);
     
-    document.getElementById('btnPdf')?.addEventListener('click', () => {
-        alert('PDF Export: Mencetak paparan semasa ke format PDF.');
-        window.print(); 
-    });
-    
-    document.getElementById('btnSaveTemplate')?.addEventListener('click', () => {
-        alert('Template laporan berjaya disimpan!');
-    });
+    const reportYear = document.getElementById('reportYear');
+    if (reportYear) reportYear.value = new Date().getFullYear();
 
-    document.getElementById('btnLoadSavedFilter')?.addEventListener('click', () => {
-        alert('Memuatkan senarai filter yang pernah disimpan...');
-    });
-
-    document.getElementById('btnReset')?.addEventListener('click', () => {
-        if(reportTypeSelect) reportTypeSelect.value = 'PROJECT_MANHOUR';
-        document.getElementById('reportPeriod').value = 'MONTHLY_WEEK';
-        document.getElementById('filterProject').value = 'ALL';
-        document.getElementById('filterClient').value = 'ALL';
-        document.getElementById('filterUser').value = 'ALL';
-        document.getElementById('filterStatus').value = 'ALL';
-        
-        const now = new Date();
-        document.getElementById('reportMonth').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
-
-        reportCards.forEach(c => c.classList.remove('active'));
-        const firstCard = document.querySelector('.report-type[data-report-type="project"]');
-        if(firstCard) firstCard.classList.add('active');
-
-        const previewPanel = document.querySelector('.preview-panel');
-        if (previewPanel) previewPanel.style.display = 'none';
-    });
-}
-
-async function populateFilters() {
     try {
         const { data: projs } = await supabase.from('projects').select('id, project_name').order('project_name');
         const projSelect = document.getElementById('filterProject');
         if (projs && projSelect) {
-            projs.forEach(p => {
-                projSelect.innerHTML += '<option value="' + p.id + '">' + p.project_name + '</option>';
-            });
+            projs.forEach(p => { projSelect.innerHTML += '<option value="' + p.id + '">' + p.project_name + '</option>'; });
+        }
+    } catch (e) {}
+
+    try {
+        let { data: groups } = await supabase.from('groups').select('*');
+        const groupSelect = document.getElementById('filterGroup');
+        if (groups && groupSelect) {
+            groups.forEach(g => { groupSelect.innerHTML += '<option value="' + g.id + '">' + g.group_name + '</option>'; });
         }
     } catch (e) {}
 
@@ -120,7 +68,6 @@ async function populateFilters() {
     } catch (e) {}
 }
 
-// LOGIK BARU: Kiraan tepat kalendar Isnin ke Ahad (Format Hari/Bulan/Tahun)
 function getWeekDates(year, month) {
     let firstDay = new Date(year, month - 1, 1);
     let dayOfWeek = firstDay.getDay(); 
@@ -132,9 +79,7 @@ function getWeekDates(year, month) {
     let daysToNextSunday = lastDayOfWeek === 0 ? 0 : 7 - lastDayOfWeek;
     let finalSunday = new Date(year, month - 1, lastDayOfMonth.getDate() + daysToNextSunday);
 
-    const formatFull = (d) => {
-        return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
-    };
+    const formatFull = (d) => d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear();
 
     let weeks = [];
     let currentStart = new Date(startDate);
@@ -159,28 +104,14 @@ function getWeekDates(year, month) {
     return weeks;
 }
 
-
 async function generateReport() {
-    const monthInput = document.getElementById('reportMonth').value;
-    if (!monthInput) return;
-    
-    const previewPanel = document.querySelector('.preview-panel');
-    if (previewPanel) previewPanel.style.display = 'block';
+    const btnGen = document.getElementById('btnGenerate');
+    if (btnGen) { btnGen.disabled = true; btnGen.innerHTML = '⏳ Loading...'; }
 
-    const reportType = document.getElementById('reportType').value;
-    const selectEl = document.getElementById('reportType');
-    const subtitle = document.getElementById('previewSubtitle');
-    if (subtitle && selectEl) subtitle.textContent = selectEl.options[selectEl.selectedIndex].text + ' - Generated';
-
-    if (reportType !== 'PROJECT_MANHOUR') {
-        const tbody = document.getElementById('tableBodyProjects');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="empty-state" style="padding:50px !important;"><strong style="font-size:14px; color:#1e293b;">Engine under development</strong><br>The engine for this specific report type will be available in the next phase.</td></tr>';
-        return;
-    }
-    
-    const year = parseInt(monthInput.split('-')[0]);
-    const month = parseInt(monthInput.split('-')[1]);
+    const month = parseInt(document.getElementById('reportMonth').value);
+    const year = parseInt(document.getElementById('reportYear').value);
     const selectedProject = document.getElementById('filterProject').value;
+    const selectedGroup = document.getElementById('filterGroup').value;
     const selectedUser = document.getElementById('filterUser').value;
     
     const monthName = new Date(year, month - 1).toLocaleString('en-US', { month: 'long' }).toUpperCase();
@@ -190,41 +121,71 @@ async function generateReport() {
     const weeks = getWeekDates(year, month);
     weeks.forEach((w, i) => {
         const el = document.getElementById('dtW' + (i+1));
-        if (el) el.textContent = w.text || '-';
+        if(el) el.textContent = w.text || '-';
     });
 
-    // Ambil data dari Isnin pertama (W1) hingga Ahad terakhir (W5)
-    const startDateIso = new Date(Date.UTC(weeks[0].start.getFullYear(), weeks[0].start.getMonth(), weeks[0].start.getDate(), 0, 0, 0)).toISOString();
-    const endDateIso = new Date(Date.UTC(weeks[4].end.getFullYear(), weeks[4].end.getMonth(), weeks[4].end.getDate(), 23, 59, 59)).toISOString();
+    // Format Tarikh Kebal Zon Masa (YYYY-MM-DD)
+    const sDt = weeks[0].start; const eDt = weeks[4].end;
+    const startStr = sDt.getFullYear() + '-' + String(sDt.getMonth()+1).padStart(2,'0') + '-' + String(sDt.getDate()).padStart(2,'0');
+    const endStr = eDt.getFullYear() + '-' + String(eDt.getMonth()+1).padStart(2,'0') + '-' + String(eDt.getDate()).padStart(2,'0');
 
-    let query = supabase
-        .from('time_entries')
-        .select('duration_seconds, work_date, start_time, employee_id, project_id, project:projects!fk_time_entries_project(project_name)')
-        .eq('status', 'STOPPED')
-        .gte('start_time', startDateIso)
-        .lte('start_time', endDateIso);
+    // MENGATASI HAD 1000 BARIS (PAGINATION LOOP)
+    let allEntries = [];
+    let from = 0;
+    const step = 999;
+    let hasMore = true;
 
-    if (selectedProject !== 'ALL') query = query.eq('project_id', selectedProject);
-    if (selectedUser !== 'ALL') query = query.eq('employee_id', selectedUser);
+    let empIds = null;
+    if (selectedGroup !== 'ALL') {
+        const { data: groupEmps } = await supabase.from('employees').select('id').eq('group_id', selectedGroup);
+        if (groupEmps && groupEmps.length > 0) empIds = groupEmps.map(e => e.id);
+        else empIds = ['00000000-0000-0000-0000-000000000000']; 
+    }
 
-    const { data: entries, error } = await query;
-    if (error) { console.error('Error:', error); return; }
+    while (hasMore) {
+        let query = supabase
+            .from('time_entries')
+            .select('duration_seconds, work_date, start_time, employee_id, project_id, project:projects!fk_time_entries_project(project_name)')
+            .eq('status', 'STOPPED')
+            .gte('work_date', startStr)
+            .lte('work_date', endStr)
+            .range(from, from + step);
+
+        if (selectedProject !== 'ALL') query = query.eq('project_id', selectedProject);
+        if (selectedUser !== 'ALL') query = query.eq('employee_id', selectedUser);
+        if (empIds) query = query.in('employee_id', empIds);
+
+        const { data, error } = await query;
+        if (error) break;
+
+        if (data && data.length > 0) {
+            allEntries = allEntries.concat(data);
+            if (data.length <= step) hasMore = false;
+            else from += step + 1;
+        } else {
+            hasMore = false;
+        }
+    }
 
     let projectGroups = {};
-    
-    // Masa dalam milisaat untuk perbandingan tepat (kebal merentasi bulan)
     const w1S = weeks[0].start.getTime(); const w1E = weeks[0].end.getTime();
     const w2S = weeks[1].start.getTime(); const w2E = weeks[1].end.getTime();
     const w3S = weeks[2].start.getTime(); const w3E = weeks[2].end.getTime();
     const w4S = weeks[3].start.getTime(); const w4E = weeks[3].end.getTime();
     const w5S = weeks[4].start.getTime(); const w5E = weeks[4].end.getTime();
-
-    if (entries && entries.length > 0) {
-        entries.forEach(item => {
+    
+    if (allEntries.length > 0) {
+        allEntries.forEach(item => {
             const pName = (item.project ? item.project.project_name : 'General Project').toUpperCase();
             if (!projectGroups[pName]) projectGroups[pName] = { w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, total: 0 };
             
-            const dObj = new Date(item.work_date || item.start_time);
+            let dObj;
+            if (item.work_date) {
+                const pts = item.work_date.split('-');
+                dObj = new Date(parseInt(pts[0]), parseInt(pts[1])-1, parseInt(pts[2]));
+            } else {
+                dObj = new Date(item.start_time);
+            }
             dObj.setHours(0,0,0,0);
             const itemTime = dObj.getTime();
             const hrs = (item.duration_seconds || 0) / 3600;
@@ -240,6 +201,8 @@ async function generateReport() {
     }
 
     renderTable(projectGroups, weeks);
+
+    if (btnGen) { btnGen.disabled = false; btnGen.innerHTML = '🚀 Generate Report'; }
 }
 
 function renderTable(projectGroups, weeks) {
@@ -249,10 +212,9 @@ function renderTable(projectGroups, weeks) {
     
     let sumWeekly = [0, 0, 0, 0, 0];
     let grandTotal = 0;
-    let idx = 1;
 
     if (Object.keys(projectGroups).length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No man-hour records found for this period.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="color:#64748b; padding: 30px;">No man-hour records found for this period/filter.</td></tr>';
     } else {
         Object.keys(projectGroups).sort().forEach(pName => {
             const row = projectGroups[pName];
@@ -260,25 +222,23 @@ function renderTable(projectGroups, weeks) {
             sumWeekly[3] += row.w4; sumWeekly[4] += row.w5; grandTotal += row.total;
             
             tbody.innerHTML += '<tr>' +
-                '<td class="index">' + idx++ + '</td>' +
-                '<td class="project-name">' + pName + '</td>' +
-                '<td class="client-name">-</td>' +
+                '<td>' + pName + '</td>' +
                 '<td>' + row.w1.toFixed(1) + '</td>' +
                 '<td>' + row.w2.toFixed(1) + '</td>' +
                 '<td>' + row.w3.toFixed(1) + '</td>' +
                 '<td>' + row.w4.toFixed(1) + '</td>' +
-                '<td>' + row.w5.toFixed(1) + '</td>' +
-                '<td class="total-col">' + row.total.toFixed(1) + '</td>' +
+                '<td>' + (weeks[4].text !== 'N/A' ? row.w5.toFixed(1) : '-') + '</td>' +
+                '<td class="text-blue-700 font-bold">' + row.total.toFixed(1) + '</td>' +
                 '</tr>';
         });
     }
 
-    for (let i = 0; i < 5; i++) {
+    for(let i = 0; i < 5; i++) {
         const el = document.getElementById('totW' + (i+1));
-        if (el) el.textContent = sumWeekly[i].toFixed(1);
+        if(el) el.textContent = sumWeekly[i].toFixed(1);
     }
     const tg = document.getElementById('totGrand');
-    if (tg) tg.textContent = grandTotal.toFixed(1);
+    if(tg) tg.textContent = grandTotal.toFixed(1);
 }
 
 function exportCSV() {
