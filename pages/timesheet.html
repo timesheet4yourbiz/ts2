@@ -52,9 +52,6 @@
         .ts-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
         .ts-input.zero { color: #94a3b8; background: #f8fafc; }
 
-        /* Hero Banner Khas Timesheet */
-        .hero { background: linear-gradient(90deg, rgba(236,247,255,.98) 0%, rgba(236,247,255,.94) 38%, rgba(7,48,103,.94) 100%), url("https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1800&q=85") center/cover; border-radius: 12px; border: 1px solid #d8e7f7; }
-
         /* CSS Top Menu Standard (Dikemaskini) */
         .topbar { height: 60px; background: rgba(255,255,255,.97); border-bottom: 1px solid #e4edf7; display: flex; align-items: center; padding: 0 24px; gap: 22px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 12px rgba(7,26,59,.04) !important; }
         .brand { min-width: 195px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #071a3b; }
@@ -72,7 +69,6 @@
         .nav-icon { width: 16px; height: 16px; display: inline-grid; place-items: center; font-size: 15px; }
         .top-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
         .icon-btn { width: 40px; height: 40px; border: 1px solid #d9e5f3; background: #fff; border-radius: 9px; color: #071a3b; display: grid; place-items: center; position: relative; cursor: pointer; }
-        .date-range-top { height: 40px; min-width: 190px; border: 1px solid #d9e5f3; border-radius: 9px; background: #fff; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #19325c; font-size: 11px; font-weight: 600; }
         .profile { height: 40px; display: flex; align-items: center; gap: 9px; padding-left: 3px; cursor: pointer; }
         .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: white; background: #1677ff; font-weight: 700; font-size: 15px; }
         .profile-text { line-height: 1.15; }
@@ -106,12 +102,7 @@
         </nav>
 
         <div class="top-actions">
-            <!-- Hilang butang Search seperti diminta -->
-            <div class="date-range-top">
-                <button id="prevDashBtn" class="hover:bg-gray-100 px-2 rounded text-gray-400 font-bold"><</button>
-                <span id="dashDateRangeText">Loading period...</span>
-                <button id="nextDashBtn" class="hover:bg-gray-100 px-2 rounded text-gray-400 font-bold">></button>
-            </div>
+            <!-- Tarikh mingguan top menu telah dibuang -->
 
             <button class="icon-btn relative" type="button" title="Notifications">
                 🔔
@@ -141,23 +132,9 @@
 
     <!-- MAIN CONTENT TIMESHEET -->
     <main class="p-6 max-w-[1480px] mx-auto space-y-6">
-        <!-- Hero Banner -->
-        <section class="hero flex items-center justify-between p-6">
-            <div class="flex items-center gap-4 relative z-10">
-                <div class="w-14 h-14 bg-white/90 border border-blue-500 rounded-xl flex items-center justify-center shadow-sm text-blue-600 text-2xl">📅</div>
-                <div>
-                    <h1 class="text-2xl font-bold text-[#0b1d44] m-0">Timesheet</h1>
-                    <p class="text-[#4d6b94] text-sm mt-1 mb-0">Track and manage your working hours by project and task.</p>
-                </div>
-            </div>
-            <div class="text-white/90 text-sm font-medium leading-tight tracking-wide text-left relative z-10 hidden md:block">
-                PLAN<br>EXECUTE<br>MONITOR<br>ACHIEVE
-                <div class="w-6 h-1 bg-amber-400 mt-2"></div>
-            </div>
-        </section>
-
-        <!-- KPI Cards -->
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- KPI Cards (Terus papar tanpa Hero Banner) -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
             <div class="glass-card p-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl">⏱️</div>
