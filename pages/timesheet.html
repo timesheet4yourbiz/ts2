@@ -48,8 +48,8 @@
         .profile-text strong { display: block; font-size: 11px; }
         .profile-text small { display: block; margin-top: 2px; color: #60779b; font-size: 9px; }
         
-        .btn-primary { background-color: #3b82f6; color: white; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: background-color 0.2s; }
-        .btn-primary:hover { background-color: #2563eb; }
+        .btn-primary { background-color: #2563eb; color: white; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: background-color 0.2s; border-radius: 6px; padding: 8px 16px;}
+        .btn-primary:hover { background-color: #1d4ed8; }
         .toggle-switch { width: 36px; height: 20px; background: #cbd5e1; border-radius: 20px; position: relative; transition: 0.3s; }
         .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: 0.3s; }
         .toggle-switch.active { background: #3b82f6; }
@@ -57,6 +57,11 @@
         .copy-dropdown-item { padding: 10px 16px; font-size: 0.85rem; color: #475569; cursor: pointer; font-weight: 500; transition: 0.2s; }
         .copy-dropdown-item:hover { background: #f1f5f9; color: #0f172a; }
         .copy-dropdown-item + .copy-dropdown-item { border-top: 1px solid #f1f5f9; }
+
+        /* Row Menu Style */
+        .row-action-menu { display: none; position: absolute; right: 20px; top: 10px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); width: 150px; z-index: 50; }
+        .row-action-item { padding: 8px 12px; font-size: 0.8rem; color: #475569; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .row-action-item:hover { background-color: #f8fafc; color: #0f172a; }
     </style>
 </head>
 
@@ -112,33 +117,6 @@
 
     <main class="p-6 max-w-[1480px] mx-auto space-y-6">
         
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl">⏱️</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Total Hours</div><div class="text-2xl font-black text-gray-800" id="kpiTotalHrs">0:00</div></div>
-                </div>
-            </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xl">📁</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Projects Worked</div><div class="text-2xl font-black text-gray-800" id="kpiProjects">0</div></div>
-                </div>
-            </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xl">🏷️</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Tasks Worked</div><div class="text-2xl font-black text-gray-800" id="kpiTasks">0</div></div>
-                </div>
-            </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-lg flex items-center justify-center text-xl">📅</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Working Days</div><div class="text-2xl font-black text-gray-800" id="kpiDays">0 / 7</div></div>
-                </div>
-            </div>
-        </section>
-
         <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
             <div style="display: flex; gap: 12px; align-items: center;">
                 <select style="padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 6px; color: #475569; outline: none; background: white; font-size: 0.85rem; font-weight: 500; cursor: pointer;">
@@ -167,9 +145,9 @@
                     </div>
                 </div>
                 <div style="display: flex; gap: 12px; align-items: center;">
-                    <button id="addNewRowBtn" class="btn-primary" style="display: flex; align-items: center; gap: 6px; border-radius: 6px !important; padding: 8px 16px !important;">
+                    <button id="addNewRowBtn" class="btn-primary" style="display: flex; align-items: center; gap: 6px;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                        Add Project
+                        Add Row
                     </button>
                 </div>
             </div>
@@ -177,7 +155,7 @@
             <div style="overflow-x: auto;">
                 <table style="min-width: 1200px; border-bottom: none;">
                     <thead>
-                        <tr style="font-size: 0.7rem; letter-spacing: 0.5px; color: #64748b;">
+                        <tr style="font-size: 0.7rem; letter-spacing: 0.5px; color: #64748b; background-color: #f8fafc;">
                             <th style="width: 40px; text-align: center; border-right: none;">#</th>
                             <th style="width: 250px;">PROJECTS</th>
                             <th style="width: 150px;">TAG</th>
