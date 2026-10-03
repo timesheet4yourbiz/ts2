@@ -4,58 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1280">
     <title>Timesheet | WORKTIME</title>
+    
+    <!-- Script CDN -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- CSS Make-Up Premium & Top Menu Standard -->
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; min-width: 1280px; }
-        .topbar { height: 60px; background: rgba(255,255,255,.97); border-bottom: 1px solid #e4edf7; display: flex; align-items: center; padding: 0 24px; gap: 22px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 12px rgba(7,26,59,.04); }
-        .brand-mark { width: 34px; height: 38px; position: relative; display: grid; place-items: center; }
+        body {
+            background-color: #f8fafc;
+            -webkit-font-smoothing: antialiased;
+            min-width: 1280px !important; 
+            overflow-x: auto !important;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+        }
+
+        .bg-white, .glass-card {
+            background: white;
+            box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.03), 0 2px 8px -2px rgba(0, 0, 0, 0.02) !important;
+            border: 1px solid rgba(226, 232, 240, 0.6) !important;
+            border-radius: 16px !important;
+            transition: all 0.3s ease;
+        }
+
+        .bg-white:hover, .glass-card:hover {
+            box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.04) !important;
+            transform: translateY(-2px);
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        h3, .text-slate-800 { letter-spacing: -0.01em; }
+        
+        table { border-collapse: separate; border-spacing: 0; width: 100%; }
+        th { border-bottom: 2px solid #f1f5f9 !important; background: #f8fafc; color: #475569; font-weight: 700; font-size: 11px; text-transform: uppercase; padding: 10px; letter-spacing: 0.05em; text-align: left; }
+        td { border-bottom: 1px solid #f8fafc !important; padding: 10px; text-align: left; }
+
+        /* Input Khas Timesheet */
+        .ts-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px; text-align: center; font-size: 13px; outline: none; transition: .2s; }
+        .ts-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
+        .ts-input.zero { color: #94a3b8; background: #f8fafc; }
+
+        /* Hero Banner Khas Timesheet */
+        .hero { background: linear-gradient(90deg, rgba(236,247,255,.98) 0%, rgba(236,247,255,.94) 38%, rgba(7,48,103,.94) 100%), url("https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1800&q=85") center/cover; border-radius: 12px; border: 1px solid #d8e7f7; }
+
+        /* CSS Top Menu Standard (Dikemaskini) */
+        .topbar { height: 60px; background: rgba(255,255,255,.97); border-bottom: 1px solid #e4edf7; display: flex; align-items: center; padding: 0 24px; gap: 22px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 12px rgba(7,26,59,.04) !important; }
+        .brand { min-width: 195px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #071a3b; }
+        .brand-mark { width: 34px; height: 38px; position: relative; flex: 0 0 auto; display: grid; place-items: center; }
         .brand-mark::before, .brand-mark::after { content: ""; position: absolute; width: 19px; height: 19px; transform: rotate(30deg) skew(-4deg); border-radius: 4px; }
         .brand-mark::before { background: linear-gradient(135deg, #0d6efd 0 52%, #f59e0b 52% 100%); top: 3px; left: 3px; }
         .brand-mark::after { background: linear-gradient(135deg, #0b2d60 0 52%, #ef4444 52% 100%); bottom: 3px; right: 1px; }
-        .nav-link { padding: 8px 12px; border-radius: 8px; color: #122b54; text-decoration: none; font-size: 13px; font-weight: 600; transition: .2s; }
+        .brand-copy strong { display: block; font-size: 20px; line-height: 18px; letter-spacing: -.8px; font-weight: 800; }
+        .brand-copy strong span { color: #0d6efd; }
+        .brand-copy small { display: block; margin-top: 3px; font-size: 9px; font-weight: 800; letter-spacing: .35px; color: #34527d; }
+        .nav { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0; }
+        .nav-link { height: 40px; padding: 0 11px; border-radius: 8px; display: inline-flex; align-items: center; gap: 7px; color: #122b54; text-decoration: none; font-size: 12px; font-weight: 600; white-space: nowrap; transition: .2s ease; }
+        .nav-link:hover { background: #f0f6ff; }
         .nav-link.active { color: white; background: linear-gradient(135deg, #0d6efd, #187bff); box-shadow: 0 6px 14px rgba(13,110,253,.22); }
-        .hero { background: linear-gradient(90deg, rgba(236,247,255,.98) 0%, rgba(236,247,255,.94) 38%, rgba(7,48,103,.94) 100%), url("https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1800&q=85") center/cover; border-radius: 12px; border: 1px solid #d8e7f7; }
-        .glass-card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -4px rgba(0,0,0,0.03); }
-        .ts-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px; text-align: center; font-size: 13px; outline: none; }
-        .ts-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
-        .ts-input.zero { color: #94a3b8; background: #f8fafc; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; }
-        th { background: #f8fafc; color: #475569; font-weight: 700; font-size: 11px; text-transform: uppercase; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .nav-icon { width: 16px; height: 16px; display: inline-grid; place-items: center; font-size: 15px; }
+        .top-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+        .icon-btn { width: 40px; height: 40px; border: 1px solid #d9e5f3; background: #fff; border-radius: 9px; color: #071a3b; display: grid; place-items: center; position: relative; cursor: pointer; }
+        .date-range-top { height: 40px; min-width: 190px; border: 1px solid #d9e5f3; border-radius: 9px; background: #fff; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #19325c; font-size: 11px; font-weight: 600; }
+        .profile { height: 40px; display: flex; align-items: center; gap: 9px; padding-left: 3px; cursor: pointer; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: white; background: #1677ff; font-weight: 700; font-size: 15px; }
+        .profile-text { line-height: 1.15; }
+        .profile-text strong { display: block; font-size: 11px; }
+        .profile-text small { display: block; margin-top: 2px; color: #60779b; font-size: 9px; }
     </style>
 </head>
-<body>
+
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <!-- TOP NAVIGATION STANDARD -->
     <header class="topbar">
-        <a class="flex items-center gap-2 no-underline" href="dashboard.html">
+        <a class="brand" href="dashboard.html" aria-label="WORKTIME">
             <div class="brand-mark"></div>
-            <div class="leading-tight">
-                <strong class="text-lg font-extrabold text-[#071a3b] tracking-tight">CRANE<span class="text-blue-600">TRACK</span></strong>
-                <small class="block text-[9px] font-bold text-[#34527d] tracking-wider">TIME | PROJECT | TEAM</small>
+            <div class="brand-copy">
+                <strong>CRANE<span>TRACK</span></strong>
+                <small>TIME | PROJECT | TEAM</small>
             </div>
         </a>
-        <nav class="flex-1 flex items-center gap-1 ml-4">
-            <a href="dashboard.html" class="nav-link">Dashboard</a>
-            <a href="timesheet.html" class="nav-link active">Timesheet</a>
-            <a href="projects.html" class="nav-link">Projects</a>
-            <a href="reports.html" class="nav-link">Reports</a>
+
+        <nav class="nav" id="mainNav" aria-label="Main navigation">
+            <a class="nav-link" href="dashboard.html"><span class="nav-icon">⌂</span>Dashboard</a>
+            <a class="nav-link" href="time-tracking.html"><span class="nav-icon">◷</span>Time Tracking</a>
+            <a class="nav-link active" href="timesheet.html"><span class="nav-icon">▣</span>Timesheet</a>
+            <a class="nav-link" href="calendar.html"><span class="nav-icon">▦</span>Calendar</a>
+            <a class="nav-link" href="projects.html"><span class="nav-icon">📁</span>Projects</a>
+            <a class="nav-link" href="tasks.html"><span class="nav-icon">☷</span>Tasks</a>
+            <a class="nav-link" href="clients.html"><span class="nav-icon">♙</span>Clients</a>
+            <a class="nav-link" href="team.html"><span class="nav-icon">♧</span>Team</a>
+            <a class="nav-link" href="reports.html"><span class="nav-icon">▥</span>Reports</a>
         </nav>
-        <div class="flex items-center gap-3">
-            <div class="border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-2 text-xs font-semibold text-[#19325c] bg-white">
-                <span id="topDateText">Loading...</span>
+
+        <div class="top-actions">
+            <!-- Hilang butang Search seperti diminta -->
+            <div class="date-range-top">
+                <button id="prevDashBtn" class="hover:bg-gray-100 px-2 rounded text-gray-400 font-bold"><</button>
+                <span id="dashDateRangeText">Loading period...</span>
+                <button id="nextDashBtn" class="hover:bg-gray-100 px-2 rounded text-gray-400 font-bold">></button>
             </div>
-            <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold" id="avatarInitial">M</div>
+
+            <button class="icon-btn relative" type="button" title="Notifications">
+                🔔
+                <span class="notification-dot absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border border-white">3</span>
+            </button>
+
+            <div class="profile relative group">
+                <div class="avatar" id="avatarInitial">M</div>
+                <div class="profile-text hidden sm:block">
+                    <strong id="profileName">USER</strong>
+                    <small id="profileRole">Loading...</small>
+                </div>
+                <span class="ml-1 text-gray-400">⌄</span>
+                
+                <div class="absolute right-0 top-full mt-2 w-56 bg-white !border-gray-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
+                    <div class="px-4 py-3 border-b border-gray-50 bg-slate-50/50">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Signed in as</p>
+                        <p class="text-sm font-bold text-slate-800 truncate" id="dropdownEmail">user@email.com</p>
+                    </div>
+                    <a href="profile.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">👤 My Profile</a>
+                    <a href="settings.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors border-b border-gray-50">⚙️ Settings</a>
+                    <button id="logoutBtn" class="w-full text-left px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors">⏻ Logout</button>
+                </div>
+            </div>
         </div>
     </header>
 
-    <main class="p-6 max-w-[1480px] mx-auto">
-        <!-- Hero -->
-        <section class="hero flex items-center justify-between p-6 mb-6">
+    <!-- MAIN CONTENT TIMESHEET -->
+    <main class="p-6 max-w-[1480px] mx-auto space-y-6">
+        <!-- Hero Banner -->
+        <section class="hero flex items-center justify-between p-6">
             <div class="flex items-center gap-4 relative z-10">
                 <div class="w-14 h-14 bg-white/90 border border-blue-500 rounded-xl flex items-center justify-center shadow-sm text-blue-600 text-2xl">📅</div>
                 <div>
@@ -63,14 +150,14 @@
                     <p class="text-[#4d6b94] text-sm mt-1 mb-0">Track and manage your working hours by project and task.</p>
                 </div>
             </div>
-            <div class="text-white/90 text-sm font-medium leading-tight tracking-wide text-left relative z-10">
+            <div class="text-white/90 text-sm font-medium leading-tight tracking-wide text-left relative z-10 hidden md:block">
                 PLAN<br>EXECUTE<br>MONITOR<br>ACHIEVE
                 <div class="w-6 h-1 bg-amber-400 mt-2"></div>
             </div>
         </section>
 
         <!-- KPI Cards -->
-        <section class="grid grid-cols-4 gap-4 mb-6">
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="glass-card p-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl">⏱️</div>
@@ -97,66 +184,66 @@
             </div>
         </section>
 
-        <!-- Filter Bar -->
-        <section class="flex justify-between items-center mb-4">
-            <div class="flex items-center gap-3">
-                <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none"><option>My Timesheet</option></select>
-                <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none"><option>All Projects</option></select>
+        <!-- Filter Bar Bawah -->
+        <section class="flex flex-wrap justify-between items-center gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+            <div class="flex items-center gap-3 flex-1">
+                <select class="border border-gray-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-gray-50 outline-none focus:ring-1 focus:ring-blue-500"><option>My Timesheet</option></select>
+                <select class="border border-gray-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-gray-50 outline-none focus:ring-1 focus:ring-blue-500"><option>All Projects</option></select>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="flex border border-gray-300 rounded-lg bg-white overflow-hidden">
-                    <button id="prevWeekBtn" class="px-3 py-2 hover:bg-gray-50 border-r border-gray-300 font-bold"><</button>
-                    <div class="px-4 py-2 text-sm font-semibold text-gray-700 flex items-center" id="filterDateRange">Loading...</div>
-                    <button id="nextWeekBtn" class="px-3 py-2 hover:bg-gray-50 border-l border-gray-300 font-bold">></button>
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="flex border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm">
+                    <button id="prevWeekBtn" class="px-3 py-1.5 hover:bg-gray-50 border-r border-gray-200 font-bold text-gray-500"><</button>
+                    <div class="px-4 py-1.5 text-sm font-semibold text-slate-700 flex items-center bg-gray-50" id="filterDateRange">Loading...</div>
+                    <button id="nextWeekBtn" class="px-3 py-1.5 hover:bg-gray-50 border-l border-gray-200 font-bold text-gray-500">></button>
                 </div>
-                <button class="bg-blue-600 text-white font-semibold text-sm px-4 py-2 rounded-lg shadow hover:bg-blue-700" id="addNewRowBtn">+ ADD ROW</button>
+                <button class="bg-blue-600 text-white font-semibold text-sm px-5 py-2 rounded-lg shadow-sm hover:bg-blue-700 transition-colors" id="addNewRowBtn">+ ADD ROW</button>
             </div>
         </section>
 
         <!-- Timesheet Table -->
-        <section class="glass-card mb-6 overflow-hidden">
-            <div class="flex justify-between items-center p-5 border-b border-gray-200">
+        <section class="glass-card overflow-hidden">
+            <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-white">
                 <div>
-                    <h2 class="m-0 text-base font-extrabold text-slate-800 uppercase">Weekly Timesheet</h2>
+                    <h2 class="m-0 text-base font-extrabold text-slate-800 uppercase tracking-tight">Weekly Timesheet</h2>
                     <div class="text-xs text-gray-500 font-medium mt-1" id="tableDateRange">Loading...</div>
                 </div>
                 <div class="flex gap-2">
-                    <div class="relative">
-    <button id="copyLastWeekBtn" class="px-3 py-1.5 border border-gray-300 rounded-md text-xs font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-1">Copy last week ⌄</button>
-    <div id="copyLastWeekMenu" class="hidden absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 overflow-hidden">
-        <div id="btnCopyActivitiesOnly" class="px-4 py-2.5 text-xs text-gray-700 hover:bg-blue-50 cursor-pointer font-medium">Copy activities only</div>
-        <div id="btnCopyActivitiesAndTime" class="px-4 py-2.5 text-xs text-gray-700 hover:bg-blue-50 cursor-pointer border-t border-gray-100 font-medium">Copy activities and time</div>
-    </div>
-</div>
-                    <button id="saveTemplateBtn" class="px-3 py-1.5 border border-gray-300 rounded-md text-xs font-semibold text-gray-700 hover:bg-gray-50">Save as template</button>
+                    <div class="relative group">
+                        <button id="copyLastWeekBtn" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-gray-50 flex items-center gap-1 shadow-sm">Copy last week ⌄</button>
+                        <div id="copyLastWeekMenu" class="hidden absolute right-0 mt-1 w-48 bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden">
+                            <div id="btnCopyActivitiesOnly" class="px-4 py-2.5 text-xs text-slate-700 hover:bg-blue-50 cursor-pointer font-medium">Copy activities only</div>
+                            <div id="btnCopyActivitiesAndTime" class="px-4 py-2.5 text-xs text-slate-700 hover:bg-blue-50 cursor-pointer border-t border-gray-50 font-medium">Copy activities and time</div>
+                        </div>
+                    </div>
+                    <button id="saveTemplateBtn" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-gray-50 shadow-sm">Save as template</button>
                 </div>
             </div>
-            <div class="overflow-x-auto">
-                <table>
+            <div class="overflow-x-auto bg-white">
+                <table class="text-xs">
                     <thead>
-                        <tr>
+                        <tr class="bg-slate-50/50">
                             <th class="w-10 text-center">#</th>
                             <th class="w-64">Projects</th>
                             <th class="w-48">Task</th>
                             <th class="w-32">Tag</th>
                             <th class="w-48">Remark</th>
-                            <th class="w-20 text-center">MON<br><span class="text-[9px] text-gray-400" id="thMon">-</span></th>
-                            <th class="w-20 text-center">TUE<br><span class="text-[9px] text-gray-400" id="thTue">-</span></th>
-                            <th class="w-20 text-center">WED<br><span class="text-[9px] text-gray-400" id="thWed">-</span></th>
-                            <th class="w-20 text-center">THU<br><span class="text-[9px] text-gray-400" id="thThu">-</span></th>
-                            <th class="w-20 text-center">FRI<br><span class="text-[9px] text-gray-400" id="thFri">-</span></th>
-                            <th class="w-20 text-center">SAT<br><span class="text-[9px] text-gray-400" id="thSat">-</span></th>
-                            <th class="w-20 text-center">SUN<br><span class="text-[9px] text-gray-400" id="thSun">-</span></th>
-                            <th class="w-24 text-center text-blue-800">TOTAL</th>
+                            <th class="w-20 text-center">MON<br><span class="text-[9px] text-gray-400 font-normal" id="thMon">-</span></th>
+                            <th class="w-20 text-center">TUE<br><span class="text-[9px] text-gray-400 font-normal" id="thTue">-</span></th>
+                            <th class="w-20 text-center">WED<br><span class="text-[9px] text-gray-400 font-normal" id="thWed">-</span></th>
+                            <th class="w-20 text-center">THU<br><span class="text-[9px] text-gray-400 font-normal" id="thThu">-</span></th>
+                            <th class="w-20 text-center">FRI<br><span class="text-[9px] text-gray-400 font-normal" id="thFri">-</span></th>
+                            <th class="w-20 text-center">SAT<br><span class="text-[9px] text-gray-400 font-normal" id="thSat">-</span></th>
+                            <th class="w-20 text-center">SUN<br><span class="text-[9px] text-gray-400 font-normal" id="thSun">-</span></th>
+                            <th class="w-24 text-center text-blue-700 font-extrabold">TOTAL</th>
                             <th class="w-10"></th>
                         </tr>
                     </thead>
-                    <tbody id="timesheetTableBody">
-                        <tr><td colspan="14" class="text-center py-8 text-gray-400">Memuatkan jadual...</td></tr>
+                    <tbody id="timesheetTableBody" class="divide-y divide-gray-50">
+                        <tr><td colspan="14" class="text-center py-8 text-gray-400">Loading table...</td></tr>
                     </tbody>
                     <tfoot>
-                        <tr class="bg-blue-50/50">
-                            <td colspan="5" class="text-right font-bold text-slate-800 pr-4">TOTAL (Hours)</td>
+                        <tr class="bg-blue-50/30">
+                            <td colspan="5" class="text-right font-extrabold text-slate-800 pr-4">TOTAL (Hours)</td>
                             <td class="text-center font-bold text-slate-800" id="tfMon">0:00</td>
                             <td class="text-center font-bold text-slate-800" id="tfTue">0:00</td>
                             <td class="text-center font-bold text-slate-800" id="tfWed">0:00</td>
@@ -173,26 +260,28 @@
         </section>
 
         <!-- Bottom Charts & Actions -->
-        <section class="grid grid-cols-3 gap-6 mb-12">
-            <div class="glass-card p-5 col-span-1">
-                <h3 class="text-xs font-extrabold text-slate-800 uppercase mb-4">Weekly Hours By Project</h3>
-                <div class="h-48"><canvas id="barChart"></canvas></div>
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="glass-card p-5">
+                <h3 class="text-xs font-extrabold text-slate-800 uppercase mb-4 tracking-wider">Weekly Hours By Project</h3>
+                <div class="h-48 relative"><canvas id="barChart"></canvas></div>
             </div>
-            <div class="glass-card p-5 col-span-1">
-                <h3 class="text-xs font-extrabold text-slate-800 uppercase mb-4">Project Distribution</h3>
-                <div class="h-48"><canvas id="donutChart"></canvas></div>
+            <div class="glass-card p-5">
+                <h3 class="text-xs font-extrabold text-slate-800 uppercase mb-4 tracking-wider">Project Distribution</h3>
+                <div class="h-48 relative"><canvas id="donutChart"></canvas></div>
             </div>
-            <div class="glass-card p-5 col-span-1 flex flex-col">
-                <h3 class="text-xs font-extrabold text-slate-800 uppercase mb-4">Quick Actions</h3>
+            <div class="glass-card p-5 flex flex-col">
+                <h3 class="text-xs font-extrabold text-slate-800 uppercase mb-4 tracking-wider">Quick Actions</h3>
                 <div class="flex flex-col gap-2 flex-1 justify-center">
-                    <button class="w-full text-left px-4 py-2.5 bg-blue-50 text-blue-700 rounded-lg font-semibold text-xs border border-blue-100 hover:bg-blue-100">📋 Copy Last Week</button>
-                    <button class="w-full text-left px-4 py-2.5 bg-emerald-50 text-emerald-700 rounded-lg font-semibold text-xs border border-emerald-100 hover:bg-emerald-100">💾 Save as Template</button>
-                    <button class="w-full text-left px-4 py-2.5 bg-rose-50 text-rose-700 rounded-lg font-semibold text-xs border border-rose-100 hover:bg-rose-100">🗑️ Clear All Current Entries</button>
+                    <button class="w-full text-left px-4 py-3 bg-blue-50/50 text-blue-700 rounded-xl font-semibold text-xs border border-blue-100 hover:bg-blue-50 transition-colors shadow-sm">📋 Copy Last Week</button>
+                    <button class="w-full text-left px-4 py-3 bg-emerald-50/50 text-emerald-700 rounded-xl font-semibold text-xs border border-emerald-100 hover:bg-emerald-50 transition-colors shadow-sm">💾 Save as Template</button>
+                    <button class="w-full text-left px-4 py-3 bg-rose-50/50 text-rose-700 rounded-xl font-semibold text-xs border border-rose-100 hover:bg-rose-50 transition-colors shadow-sm">🗑️ Clear All Current Entries</button>
                 </div>
             </div>
         </section>
     </main>
 
+    <!-- Panggil enjin navigasi dan enjin timesheet -->
+    <script type="module" src="../js/sidebar.js"></script>
     <script type="module" src="../js/timesheet.js"></script>
 </body>
 </html>
