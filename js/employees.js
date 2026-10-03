@@ -6,27 +6,26 @@ window.currentUserRole = 'Employee';
 let activeMemberId = null;
 let activeGroupId = null;
 let currentPage = 1;
-const rowsPerPage = 10; // Paparkan 10 supaya kemas
+const rowsPerPage = 10; 
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) return window.location.href = '../pages/login.html';
 
+        // Pengekstrakan Nama & Initial Profil
         const avatarInitial = document.getElementById('avatarInitial');
-        if (avatarInitial) avatarInitial.textContent = session.user.email.charAt(0).toUpperCase();
-
-        // Tetapkan Tarikh Semasa
-        const topDate = document.getElementById('topDateText');
-        if (topDate) {
-            const today = new Date();
-            const start = new Date(today.setDate(today.getDate() - today.getDay() + 1));
-            const end = new Date(today.setDate(today.getDate() + 6));
-            topDate.textContent = start.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ' - ' + end.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-        }
+        const profileName = document.getElementById('profileName');
+        const userEmail = session.user.email;
+        if (avatarInitial) avatarInitial.textContent = userEmail.charAt(0).toUpperCase();
+        if (profileName) profileName.textContent = userEmail.split('@')[0].toUpperCase();
 
         const { data: profile } = await supabase.from('employees').select('system_role').eq('id', session.user.id).single();
-        if (profile) window.currentUserRole = profile.system_role;
+        if (profile) {
+            window.currentUserRole = profile.system_role;
+            const profileRole = document.getElementById('profileRole');
+            if(profileRole) profileRole.textContent = profile.system_role === 'Admin' ? 'Administrator' : profile.system_role;
+        }
 
         if (window.currentUserRole !== 'Admin') {
             const btnAddMem = document.getElementById('btnAddMember');
@@ -96,7 +95,6 @@ function populateDepartmentFilter() {
     const deptSelect = document.getElementById('filterDept');
     if (!deptSelect) return;
     
-    // Reset dan ekstrak jabatan unik
     deptSelect.innerHTML = '<option value="all">All Departments</option>';
     const depts = [...new Set(membersData.map(m => m.department).filter(Boolean))].sort();
     
