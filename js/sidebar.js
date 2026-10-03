@@ -11,8 +11,9 @@ export async function loadSidebar() {
             }
         });
 
+        // 1. BAIKI ISU TARIKH LOADING (Sokong semua jenis ID)
         const topDateText = document.getElementById('dashDateRangeText') || document.getElementById('topDateText');
-        if (topDateText && !topDateText.id.includes('dash')) {
+        if (topDateText) {
             const today = new Date();
             const day = today.getDay();
             const diffToMonday = day === 0 ? -6 : 1 - day;
@@ -33,12 +34,16 @@ export async function loadSidebar() {
         if (dropEmail) dropEmail.textContent = userEmail;
         if (avatarInit) avatarInit.textContent = userEmail.charAt(0).toUpperCase();
 
-        const { data: emp } = await supabase.from('employees').select('name, system_role').eq('id', session.user.id).single();
-        if (emp) {
-            if (profName) profName.textContent = (emp.name || userEmail.split('@')[0]).toUpperCase();
-            if (profRole) profRole.textContent = emp.system_role || 'User';
-        } else {
+        // 2. BAIKI ISU PROFIL LOADING (Auto letak 'User' jika gagal)
+        try {
+            const { data: emp } = await supabase.from('employees').select('name, system_role').eq('id', session.user.id).single();
+            if (emp) {
+                if (profName) profName.textContent = (emp.name || userEmail.split('@')[0]).toUpperCase();
+                if (profRole) profRole.textContent = emp.system_role || 'User';
+            }
+        } catch(e) {
             if (profName) profName.textContent = userEmail.split('@')[0].toUpperCase();
+            if (profRole) profRole.textContent = 'User';
         }
 
         const logoutBtn = document.getElementById('logoutBtn');
