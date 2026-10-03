@@ -1,18 +1,18 @@
-(BUKA)!DOCTYPE html(TUTUP)
-(BUKA)html lang="en"(TUTUP)
-(BUKA)head(TUTUP)
-    (BUKA)meta charset="UTF-8"(TUTUP)
-    (BUKA)meta name="viewport" content="width=1280"(TUTUP)
-    (BUKA)title(TUTUP)Timesheet | WORKTIME(BUKA)/title(TUTUP)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1280">
+    <title>Timesheet | WORKTIME</title>
     
-    (BUKA)link rel="preconnect" href="https://fonts.googleapis.com"(TUTUP)
-    (BUKA)link rel="preconnect" href="https://fonts.gstatic.com" crossorigin(TUTUP)
-    (BUKA)link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"(TUTUP)
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    (BUKA)script src="https://cdn.tailwindcss.com"(TUTUP)(BUKA)/script(TUTUP)
-    (BUKA)script src="https://cdn.jsdelivr.net/npm/chart.js"(TUTUP)(BUKA)/script(TUTUP)
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    (BUKA)style(TUTUP)
+    <style>
         body { background-color: #f8fafc; -webkit-font-smoothing: antialiased; min-width: 1280px !important; overflow-x: auto !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; }
         
         /* CSS Top Menu Standard */
@@ -59,206 +59,206 @@
         .copy-dropdown-item { padding: 10px 16px; font-size: 0.85rem; color: #475569; cursor: pointer; font-weight: 500; transition: 0.2s; }
         .copy-dropdown-item:hover { background: #f1f5f9; color: #0f172a; }
         .copy-dropdown-item + .copy-dropdown-item { border-top: 1px solid #f1f5f9; }
-    (BUKA)/style(TUTUP)
-(BUKA)/head(TUTUP)
+    </style>
+</head>
 
-(BUKA)body class="bg-slate-50 text-slate-800 font-sans min-h-screen"(TUTUP)
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
 
-    (BUKA)!-- TOP NAVIGATION STANDARD --(TUTUP)
-    (BUKA)header class="topbar"(TUTUP)
-        (BUKA)a class="brand" href="dashboard.html" aria-label="WORKTIME"(TUTUP)
-            (BUKA)div class="brand-mark"(TUTUP)(BUKA)/div(TUTUP)
-            (BUKA)div class="brand-copy"(TUTUP)
-                (BUKA)strong(TUTUP)CRANE(BUKA)span(TUTUP)TRACK(BUKA)/span(TUTUP)(BUKA)/strong(TUTUP)
-                (BUKA)small(TUTUP)TIME | PROJECT | TEAM(BUKA)/small(TUTUP)
-            (BUKA)/div(TUTUP)
-        (BUKA)/a(TUTUP)
+    <!-- TOP NAVIGATION STANDARD -->
+    <header class="topbar">
+        <a class="brand" href="dashboard.html" aria-label="WORKTIME">
+            <div class="brand-mark"></div>
+            <div class="brand-copy">
+                <strong>CRANE<span>TRACK</span></strong>
+                <small>TIME | PROJECT | TEAM</small>
+            </div>
+        </a>
 
-        (BUKA)nav class="nav" id="mainNav" aria-label="Main navigation"(TUTUP)
-            (BUKA)a class="nav-link" href="dashboard.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)⌂(BUKA)/span(TUTUP)Dashboard(BUKA)/a(TUTUP)
-            (BUKA)a class="nav-link" href="time-tracking.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)◷(BUKA)/span(TUTUP)Time Tracking(BUKA)/a(TUTUP)
-            (BUKA)a class="nav-link active" href="timesheet.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)▣(BUKA)/span(TUTUP)Timesheet(BUKA)/a(TUTUP)
-            (BUKA)a class="nav-link" href="calendar.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)▦(BUKA)/span(TUTUP)Calendar(BUKA)/a(TUTUP)
-            (BUKA)a class="nav-link" href="projects.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)📁(BUKA)/span(TUTUP)Projects(BUKA)/a(TUTUP)
-            (BUKA)a class="nav-link" href="tasks.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)☷(BUKA)/span(TUTUP)Tasks(BUKA)/a(TUTUP)
-            (BUKA)a class="nav-link" href="clients.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)♙(BUKA)/span(TUTUP)Clients(BUKA)/a(TUTUP)
-            (BUKA)a class="nav-link" href="team.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)♧(BUKA)/span(TUTUP)Team(BUKA)/a(TUTUP)
-            (BUKA)a class="nav-link" href="reports.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)▥(BUKA)/span(TUTUP)Reports(BUKA)/a(TUTUP)
-        (BUKA)/nav(TUTUP)
+        <nav class="nav" id="mainNav" aria-label="Main navigation">
+            <a class="nav-link" href="dashboard.html"><span class="nav-icon">⌂</span>Dashboard</a>
+            <a class="nav-link" href="time-tracking.html"><span class="nav-icon">◷</span>Time Tracking</a>
+            <a class="nav-link active" href="timesheet.html"><span class="nav-icon">▣</span>Timesheet</a>
+            <a class="nav-link" href="calendar.html"><span class="nav-icon">▦</span>Calendar</a>
+            <a class="nav-link" href="projects.html"><span class="nav-icon">📁</span>Projects</a>
+            <a class="nav-link" href="tasks.html"><span class="nav-icon">☷</span>Tasks</a>
+            <a class="nav-link" href="clients.html"><span class="nav-icon">♙</span>Clients</a>
+            <a class="nav-link" href="team.html"><span class="nav-icon">♧</span>Team</a>
+            <a class="nav-link" href="reports.html"><span class="nav-icon">▥</span>Reports</a>
+        </nav>
 
-        (BUKA)div class="top-actions"(TUTUP)
-            (BUKA)button class="icon-btn relative" type="button" title="Notifications"(TUTUP)
+        <div class="top-actions">
+            <button class="icon-btn relative" type="button" title="Notifications">
                 🔔
-                (BUKA)span class="notification-dot absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border border-white"(TUTUP)3(BUKA)/span(TUTUP)
-            (BUKA)/button(TUTUP)
+                <span class="notification-dot absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border border-white">3</span>
+            </button>
 
-            (BUKA)div class="profile relative group"(TUTUP)
-                (BUKA)div class="avatar" id="avatarInitial"(TUTUP)M(BUKA)/div(TUTUP)
-                (BUKA)div class="profile-text hidden sm:block"(TUTUP)
-                    (BUKA)strong id="profileName"(TUTUP)USER(BUKA)/strong(TUTUP)
-                    (BUKA)small id="profileRole"(TUTUP)Loading...(BUKA)/small(TUTUP)
-                (BUKA)/div(TUTUP)
-                (BUKA)span class="ml-1 text-gray-400"(TUTUP)⌄(BUKA)/span(TUTUP)
+            <div class="profile relative group">
+                <div class="avatar" id="avatarInitial">M</div>
+                <div class="profile-text hidden sm:block">
+                    <strong id="profileName">USER</strong>
+                    <small id="profileRole">Loading...</small>
+                </div>
+                <span class="ml-1 text-gray-400">⌄</span>
                 
-                (BUKA)div class="absolute right-0 top-full mt-2 w-56 bg-white !border-gray-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden"(TUTUP)
-                    (BUKA)div class="px-4 py-3 border-b border-gray-50 bg-slate-50/50"(TUTUP)
-                        (BUKA)p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider"(TUTUP)Signed in as(BUKA)/p(TUTUP)
-                        (BUKA)p class="text-sm font-bold text-slate-800 truncate" id="dropdownEmail"(TUTUP)user@email.com(BUKA)/p(TUTUP)
-                    (BUKA)/div(TUTUP)
-                    (BUKA)a href="profile.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors"(TUTUP)👤 My Profile(BUKA)/a(TUTUP)
-                    (BUKA)a href="settings.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors border-b border-gray-50"(TUTUP)⚙️ Settings(BUKA)/a(TUTUP)
-                    (BUKA)button id="logoutBtn" class="w-full text-left px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors"(TUTUP)⏻ Logout(BUKA)/button(TUTUP)
-                (BUKA)/div(TUTUP)
-            (BUKA)/div(TUTUP)
-        (BUKA)/div(TUTUP)
-    (BUKA)/header(TUTUP)
+                <div class="absolute right-0 top-full mt-2 w-56 bg-white !border-gray-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
+                    <div class="px-4 py-3 border-b border-gray-50 bg-slate-50/50">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Signed in as</p>
+                        <p class="text-sm font-bold text-slate-800 truncate" id="dropdownEmail">user@email.com</p>
+                    </div>
+                    <a href="profile.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">👤 My Profile</a>
+                    <a href="settings.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors border-b border-gray-50">⚙️ Settings</a>
+                    <button id="logoutBtn" class="w-full text-left px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors">⏻ Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
 
-    (BUKA)main class="main-content"(TUTUP)
+    <main class="main-content">
         
-        (BUKA)!-- Kawalan Atas: Filter Minggu & Teammates --(TUTUP)
-        (BUKA)div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;"(TUTUP)
-            (BUKA)div style="display: flex; gap: 12px; align-items: center;"(TUTUP)
+        <!-- Kawalan Atas: Filter Minggu & Teammates -->
+        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;">
+            <div style="display: flex; gap: 12px; align-items: center;">
                 
-                (BUKA)select style="padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 6px; color: #475569; outline: none; background: white; font-size: 0.85rem; font-weight: 500; cursor: pointer;"(TUTUP)
-                    (BUKA)option(TUTUP)Teammates(BUKA)/option(TUTUP)
-                (BUKA)/select(TUTUP)
+                <select style="padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 6px; color: #475569; outline: none; background: white; font-size: 0.85rem; font-weight: 500; cursor: pointer;">
+                    <option>Teammates</option>
+                </select>
                 
-                (BUKA)button style="padding: 8px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 6px; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center;"(TUTUP)
-                    (BUKA)svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"(TUTUP)(BUKA)line x1="3" y1="12" x2="21" y2="12"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="6" x2="21" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="18" x2="21" y2="18"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
-                (BUKA)/button(TUTUP)
+                <button style="padding: 8px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 6px; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
                 
-                (BUKA)div style="display: flex; border: 1px solid #cbd5e1; border-radius: 6px; background: white; overflow: hidden; font-size: 0.85rem;"(TUTUP)
-                    (BUKA)button id="prevWeekBtn" style="padding: 8px 12px; background: white; border: none; border-right: 1px solid #cbd5e1; cursor: pointer; color: #64748b; font-weight: 600; font-size: 1rem; line-height: 1;"(TUTUP)<(BUKA)/button(TUTUP)
-                    (BUKA)div id="filterDateRange" style="padding: 8px 16px; border-right: 1px solid #cbd5e1; color: #475569; display: flex; align-items: center; font-weight: 500; min-width: 140px; justify-content: center;"(TUTUP)
+                <div style="display: flex; border: 1px solid #cbd5e1; border-radius: 6px; background: white; overflow: hidden; font-size: 0.85rem;">
+                    <button id="prevWeekBtn" style="padding: 8px 12px; background: white; border: none; border-right: 1px solid #cbd5e1; cursor: pointer; color: #64748b; font-weight: 600; font-size: 1rem; line-height: 1;"><</button>
+                    <div id="filterDateRange" style="padding: 8px 16px; border-right: 1px solid #cbd5e1; color: #475569; display: flex; align-items: center; font-weight: 500; min-width: 140px; justify-content: center;">
                         Loading...
-                    (BUKA)/div(TUTUP)
-                    (BUKA)button id="nextWeekBtn" style="padding: 8px 12px; background: white; border: none; cursor: pointer; color: #64748b; font-weight: 600; font-size: 1rem; line-height: 1;"(TUTUP)>(BUKA)/button(TUTUP)
-                (BUKA)/div(TUTUP)
-            (BUKA)/div(TUTUP)
-        (BUKA)/div(TUTUP)
+                    </div>
+                    <button id="nextWeekBtn" style="padding: 8px 12px; background: white; border: none; cursor: pointer; color: #64748b; font-weight: 600; font-size: 1rem; line-height: 1;">></button>
+                </div>
+            </div>
+        </div>
 
-        (BUKA)!-- WEEKLY TIMESHEET (KLON VERSI LAMA) --(TUTUP)
-        (BUKA)div class="glacier-card" style="padding: 0; margin-top: 0; overflow: hidden; display: flex; flex-direction: column;"(TUTUP)
+        <!-- WEEKLY TIMESHEET (KLON VERSI LAMA) -->
+        <div class="glacier-card" style="padding: 0; margin-top: 0; overflow: hidden; display: flex; flex-direction: column;">
             
-            (BUKA)!-- Header Jadual --(TUTUP)
-            (BUKA)div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 16px;"(TUTUP)
-                (BUKA)div style="display: flex; gap: 12px; align-items: center;"(TUTUP)
-                    (BUKA)svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"(TUTUP)(BUKA)rect x="3" y="4" width="18" height="18" rx="2" ry="2"(TUTUP)(BUKA)/rect(TUTUP)(BUKA)line x1="16" y1="2" x2="16" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="8" y1="2" x2="8" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="10" x2="21" y2="10"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
-                    (BUKA)div(TUTUP)
-                        (BUKA)h2 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #0f172a; text-transform: uppercase;"(TUTUP)Weekly Timesheet(BUKA)/h2(TUTUP)
-                        (BUKA)div id="tableDateRange" style="font-size: 0.85rem; color: #64748b; margin-top: 2px;"(TUTUP)Loading...(BUKA)/div(TUTUP)
-                    (BUKA)/div(TUTUP)
-                (BUKA)/div(TUTUP)
+            <!-- Header Jadual -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 16px;">
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #0f172a; text-transform: uppercase;">Weekly Timesheet</h2>
+                        <div id="tableDateRange" style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">Loading...</div>
+                    </div>
+                </div>
                 
-                (BUKA)div style="display: flex; gap: 12px; align-items: center;"(TUTUP)
-                    (BUKA)button id="addNewRowBtn" class="btn-primary" style="display: flex; align-items: center; gap: 6px; border-radius: 6px !important; padding: 8px 16px !important;"(TUTUP)
-                        (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)line x1="12" y1="5" x2="12" y2="19"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="5" y1="12" x2="19" y2="12"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button id="addNewRowBtn" class="btn-primary" style="display: flex; align-items: center; gap: 6px; border-radius: 6px !important; padding: 8px 16px !important;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         Add Row
-                    (BUKA)/button(TUTUP)
-                (BUKA)/div(TUTUP)
-            (BUKA)/div(TUTUP)
+                    </button>
+                </div>
+            </div>
 
-            (BUKA)!-- Jadual Utama (Tiada Kolum Task) --(TUTUP)
-            (BUKA)div style="overflow-x: auto;"(TUTUP)
-                (BUKA)table class="team-table timesheet-table" style="min-width: 1200px; border-bottom: none;"(TUTUP)
-                    (BUKA)thead(TUTUP)
-                        (BUKA)tr style="font-size: 0.7rem; letter-spacing: 0.5px; color: #64748b;"(TUTUP)
-                            (BUKA)th style="width: 40px; text-align: center; border-right: none;"(TUTUP)#(BUKA)/th(TUTUP)
-                            (BUKA)th style="width: 250px;"(TUTUP)PROJECTS(BUKA)/th(TUTUP)
-                            (BUKA)th style="width: 150px;"(TUTUP)TAG(BUKA)/th(TUTUP)
-                            (BUKA)th style="width: 200px;"(TUTUP)REMARK(BUKA)/th(TUTUP)
-                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)MON(BUKA)br(TUTUP)(BUKA)span id="thMon"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
-                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)TUE(BUKA)br(TUTUP)(BUKA)span id="thTue"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
-                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)WED(BUKA)br(TUTUP)(BUKA)span id="thWed"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
-                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)THU(BUKA)br(TUTUP)(BUKA)span id="thThu"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
-                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)FRI(BUKA)br(TUTUP)(BUKA)span id="thFri"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
-                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)SAT(BUKA)br(TUTUP)(BUKA)span id="thSat"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
-                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)SUN(BUKA)br(TUTUP)(BUKA)span id="thSun"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
-                            (BUKA)th style="text-align: center; width: 80px;"(TUTUP)TOTAL(BUKA)/th(TUTUP)
-                            (BUKA)th style="width: 40px; text-align: center;"(TUTUP)(BUKA)/th(TUTUP)
-                        (BUKA)/tr(TUTUP)
-                    (BUKA)/thead(TUTUP)
-                    (BUKA)tbody id="timesheetTableBody"(TUTUP)
-                        (BUKA)tr(TUTUP)(BUKA)td colspan="13" style="text-align:center; padding:30px; color:#94a3b8;"(TUTUP)Loading table data...(BUKA)/td(TUTUP)(BUKA)/tr(TUTUP)
-                    (BUKA)/tbody(TUTUP)
-                    (BUKA)tfoot id="timesheetFootRow"(TUTUP)
-                        (BUKA)tr style="background-color: #f0f7ff;"(TUTUP)
-                            (BUKA)td colspan="4" style="font-weight: 700; color: #1e293b; text-align: right; padding-right: 20px;"(TUTUP)
-                                (BUKA)div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;"(TUTUP)
-                                    (BUKA)svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"(TUTUP)(BUKA)circle cx="12" cy="12" r="10"(TUTUP)(BUKA)/circle(TUTUP)(BUKA)polyline points="12 6 12 12 16 14"(TUTUP)(BUKA)/polyline(TUTUP)(BUKA)/svg(TUTUP)
+            <!-- Jadual Utama (Tiada Kolum Task) -->
+            <div style="overflow-x: auto;">
+                <table class="team-table timesheet-table" style="min-width: 1200px; border-bottom: none;">
+                    <thead>
+                        <tr style="font-size: 0.7rem; letter-spacing: 0.5px; color: #64748b;">
+                            <th style="width: 40px; text-align: center; border-right: none;">#</th>
+                            <th style="width: 250px;">PROJECTS</th>
+                            <th style="width: 150px;">TAG</th>
+                            <th style="width: 200px;">REMARK</th>
+                            <th style="text-align: center; width: 75px;">MON<br><span id="thMon">-</span></th>
+                            <th style="text-align: center; width: 75px;">TUE<br><span id="thTue">-</span></th>
+                            <th style="text-align: center; width: 75px;">WED<br><span id="thWed">-</span></th>
+                            <th style="text-align: center; width: 75px;">THU<br><span id="thThu">-</span></th>
+                            <th style="text-align: center; width: 75px;">FRI<br><span id="thFri">-</span></th>
+                            <th style="text-align: center; width: 75px;">SAT<br><span id="thSat">-</span></th>
+                            <th style="text-align: center; width: 75px;">SUN<br><span id="thSun">-</span></th>
+                            <th style="text-align: center; width: 80px;">TOTAL</th>
+                            <th style="width: 40px; text-align: center;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="timesheetTableBody">
+                        <tr><td colspan="13" style="text-align:center; padding:30px; color:#94a3b8;">Loading table data...</td></tr>
+                    </tbody>
+                    <tfoot id="timesheetFootRow">
+                        <tr style="background-color: #f0f7ff;">
+                            <td colspan="4" style="font-weight: 700; color: #1e293b; text-align: right; padding-right: 20px;">
+                                <div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                     TOTAL (Hours)
-                                (BUKA)/div(TUTUP)
-                            (BUKA)/td(TUTUP)
-                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfMon"(TUTUP)0:00(BUKA)/td(TUTUP)
-                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfTue"(TUTUP)0:00(BUKA)/td(TUTUP)
-                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfWed"(TUTUP)0:00(BUKA)/td(TUTUP)
-                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfThu"(TUTUP)0:00(BUKA)/td(TUTUP)
-                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfFri"(TUTUP)0:00(BUKA)/td(TUTUP)
-                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfSat"(TUTUP)0:00(BUKA)/td(TUTUP)
-                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfSun"(TUTUP)0:00(BUKA)/td(TUTUP)
-                            (BUKA)td style="text-align: center; font-weight: 800; color: #1e293b;" id="tfTotal"(TUTUP)0:00(BUKA)/td(TUTUP)
-                            (BUKA)td(TUTUP)(BUKA)/td(TUTUP)
-                        (BUKA)/tr(TUTUP)
-                    (BUKA)/tfoot(TUTUP)
-                (BUKA)/table(TUTUP)
-            (BUKA)/div(TUTUP)
+                                </div>
+                            </td>
+                            <td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfMon">0:00</td>
+                            <td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfTue">0:00</td>
+                            <td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfWed">0:00</td>
+                            <td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfThu">0:00</td>
+                            <td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfFri">0:00</td>
+                            <td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfSat">0:00</td>
+                            <td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfSun">0:00</td>
+                            <td style="text-align: center; font-weight: 800; color: #1e293b;" id="tfTotal">0:00</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
 
-            (BUKA)!-- Footer Actions --(TUTUP)
-            (BUKA)div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-top: 1px solid #e2e8f0; flex-wrap: wrap; gap: 16px; background: white;"(TUTUP)
-                (BUKA)div style="display: flex; align-items: center; gap: 12px;"(TUTUP)
-                    (BUKA)span style="font-size: 0.85rem; font-weight: 700; color: #475569;"(TUTUP)Quick Actions:(BUKA)/span(TUTUP)
+            <!-- Footer Actions -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-top: 1px solid #e2e8f0; flex-wrap: wrap; gap: 16px; background: white;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 0.85rem; font-weight: 700; color: #475569;">Quick Actions:</span>
                     
-                    (BUKA)div style="position: relative; display: inline-block;" id="copyLastWeekContainer"(TUTUP)
-                        (BUKA)button id="copyLastWeekBtn" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 4px; color: #475569; font-size: 0.85rem; font-weight: 500; cursor: pointer;"(TUTUP)
-                            (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)rect x="9" y="9" width="13" height="13" rx="2" ry="2"(TUTUP)(BUKA)/rect(TUTUP)(BUKA)path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"(TUTUP)(BUKA)/path(TUTUP)(BUKA)/svg(TUTUP)
+                    <div style="position: relative; display: inline-block;" id="copyLastWeekContainer">
+                        <button id="copyLastWeekBtn" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 4px; color: #475569; font-size: 0.85rem; font-weight: 500; cursor: pointer;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                             Copy last week
-                            (BUKA)svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 4px;"(TUTUP)(BUKA)polyline points="6 9 12 15 18 9"(TUTUP)(BUKA)/polyline(TUTUP)(BUKA)/svg(TUTUP)
-                        (BUKA)/button(TUTUP)
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 4px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </button>
                         
-                        (BUKA)div id="copyLastWeekMenu" style="display: none; position: absolute; bottom: 110%; left: 0; margin-bottom: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); width: 220px; z-index: 50; overflow: hidden;"(TUTUP)
-                            (BUKA)div class="copy-dropdown-item" id="btnCopyActivitiesOnly"(TUTUP)Copy activities only(BUKA)/div(TUTUP)
-                            (BUKA)div class="copy-dropdown-item" id="btnCopyActivitiesAndTime"(TUTUP)Copy activities and time(BUKA)/div(TUTUP)
-                        (BUKA)/div(TUTUP)
-                    (BUKA)/div(TUTUP)
+                        <div id="copyLastWeekMenu" style="display: none; position: absolute; bottom: 110%; left: 0; margin-bottom: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); width: 220px; z-index: 50; overflow: hidden;">
+                            <div class="copy-dropdown-item" id="btnCopyActivitiesOnly">Copy activities only</div>
+                            <div class="copy-dropdown-item" id="btnCopyActivitiesAndTime">Copy activities and time</div>
+                        </div>
+                    </div>
 
-                    (BUKA)button style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 4px; color: #475569; font-size: 0.85rem; font-weight: 500; cursor: pointer;"(TUTUP)
-                        (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"(TUTUP)(BUKA)/path(TUTUP)(BUKA)polyline points="17 21 17 13 7 13 7 21"(TUTUP)(BUKA)/polyline(TUTUP)(BUKA)polyline points="7 3 7 8 15 8"(TUTUP)(BUKA)/polyline(TUTUP)(BUKA)/svg(TUTUP)
+                    <button style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 4px; color: #475569; font-size: 0.85rem; font-weight: 500; cursor: pointer;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
                         Save as template
-                    (BUKA)/button(TUTUP)
+                    </button>
                     
-                    (BUKA)button style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #fff5f5; border: 1px solid #fecaca; border-radius: 4px; color: #ef4444; font-size: 0.85rem; font-weight: 500; cursor: pointer;"(TUTUP)
-                        (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)polyline points="3 6 5 6 21 6"(TUTUP)(BUKA)/polyline(TUTUP)(BUKA)path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"(TUTUP)(BUKA)/path(TUTUP)(BUKA)/svg(TUTUP)
+                    <button style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #fff5f5; border: 1px solid #fecaca; border-radius: 4px; color: #ef4444; font-size: 0.85rem; font-weight: 500; cursor: pointer;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         Clear all
-                    (BUKA)/button(TUTUP)
-                (BUKA)/div(TUTUP)
+                    </button>
+                </div>
                 
-                (BUKA)div style="display: flex; align-items: center; gap: 16px;"(TUTUP)
-                    (BUKA)label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #475569; font-weight: 600; cursor: pointer;"(TUTUP)
-                        (BUKA)div class="toggle-switch active"(TUTUP)(BUKA)/div(TUTUP)
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #475569; font-weight: 600; cursor: pointer;">
+                        <div class="toggle-switch active"></div>
                         Show weekends
-                    (BUKA)/label(TUTUP)
+                    </label>
                     
-                    (BUKA)div style="display: flex; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden;"(TUTUP)
-                        (BUKA)button style="display: flex; align-items: center; gap: 6px; border: none; background: #3b82f6; color: white; padding: 6px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer;"(TUTUP)
-                            (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)rect x="3" y="4" width="18" height="18" rx="2" ry="2"(TUTUP)(BUKA)/rect(TUTUP)(BUKA)line x1="16" y1="2" x2="16" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="8" y1="2" x2="8" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="10" x2="21" y2="10"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
+                    <div style="display: flex; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden;">
+                        <button style="display: flex; align-items: center; gap: 6px; border: none; background: #3b82f6; color: white; padding: 6px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                             Weekly
-                        (BUKA)/button(TUTUP)
-                        (BUKA)button style="display: flex; align-items: center; gap: 6px; border: none; border-left: 1px solid #cbd5e1; background: white; color: #64748b; padding: 6px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer;"(TUTUP)
-                            (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)rect x="3" y="4" width="18" height="18" rx="2" ry="2"(TUTUP)(BUKA)/rect(TUTUP)(BUKA)line x1="16" y1="2" x2="16" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="8" y1="2" x2="8" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="10" x2="21" y2="10"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
+                        </button>
+                        <button style="display: flex; align-items: center; gap: 6px; border: none; border-left: 1px solid #cbd5e1; background: white; color: #64748b; padding: 6px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                             Daily
-                        (BUKA)/button(TUTUP)
-                        (BUKA)button style="display: flex; align-items: center; gap: 6px; border: none; border-left: 1px solid #cbd5e1; background: white; color: #64748b; padding: 6px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer;"(TUTUP)
-                            (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)rect x="3" y="4" width="18" height="18" rx="2" ry="2"(TUTUP)(BUKA)/rect(TUTUP)(BUKA)line x1="16" y1="2" x2="16" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="8" y1="2" x2="8" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="10" x2="21" y2="10"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
+                        </button>
+                        <button style="display: flex; align-items: center; gap: 6px; border: none; border-left: 1px solid #cbd5e1; background: white; color: #64748b; padding: 6px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                             Monthly
-                        (BUKA)/button(TUTUP)
-                    (BUKA)/div(TUTUP)
-                (BUKA)/div(TUTUP)
-            (BUKA)/div(TUTUP)
-        (BUKA)/div(TUTUP)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    (BUKA)/main(TUTUP)
+    </main>
 
-    (BUKA)script type="module" src="../js/sidebar.js"(TUTUP)(BUKA)/script(TUTUP)
-    (BUKA)script type="module" src="../js/timesheet.js"(TUTUP)(BUKA)/script(TUTUP)
-(BUKA)/body(TUTUP)
-(BUKA)/html(TUTUP)
+    <script type="module" src="../js/sidebar.js"></script>
+    <script type="module" src="../js/timesheet.js"></script>
+</body>
+</html>
