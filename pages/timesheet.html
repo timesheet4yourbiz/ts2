@@ -1,31 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1280">
-    <title>Timesheet | WORKTIME</title>
+(BUKA)!DOCTYPE html(TUTUP)
+(BUKA)html lang="en"(TUTUP)
+(BUKA)head(TUTUP)
+    (BUKA)meta charset="UTF-8"(TUTUP)
+    (BUKA)meta name="viewport" content="width=1280"(TUTUP)
+    (BUKA)title(TUTUP)Timesheet | WORKTIME(BUKA)/title(TUTUP)
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    (BUKA)link rel="preconnect" href="https://fonts.googleapis.com"(TUTUP)
+    (BUKA)link rel="preconnect" href="https://fonts.gstatic.com" crossorigin(TUTUP)
+    (BUKA)link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"(TUTUP)
+    
+    (BUKA)script src="https://cdn.tailwindcss.com"(TUTUP)(BUKA)/script(TUTUP)
+    (BUKA)script src="https://cdn.jsdelivr.net/npm/chart.js"(TUTUP)(BUKA)/script(TUTUP)
 
-    <style>
+    (BUKA)style(TUTUP)
         body { background-color: #f8fafc; -webkit-font-smoothing: antialiased; min-width: 1280px !important; overflow-x: auto !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; }
-        .bg-white, .glass-card { background: white; box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.03), 0 2px 8px -2px rgba(0, 0, 0, 0.02) !important; border: 1px solid rgba(226, 232, 240, 0.6) !important; border-radius: 16px !important; transition: all 0.3s ease; }
-        .bg-white:hover, .glass-card:hover { box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.04) !important; transform: translateY(-2px); }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        h3, .text-slate-800 { letter-spacing: -0.01em; }
-        table { border-collapse: separate; border-spacing: 0; width: 100%; }
-        th { border-bottom: 2px solid #f1f5f9 !important; background: #f8fafc; color: #475569; font-weight: 700; font-size: 11px; text-transform: uppercase; padding: 10px; letter-spacing: 0.05em; text-align: left; }
-        td { border-bottom: 1px solid #f8fafc !important; padding: 10px; text-align: left; }
-        .ts-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px; text-align: center; font-size: 13px; outline: none; transition: .2s; }
-        .ts-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
-        .ts-input.zero { color: #94a3b8; background: #f8fafc; }
+        
+        /* CSS Top Menu Standard */
         .topbar { height: 60px; background: rgba(255,255,255,.97); border-bottom: 1px solid #e4edf7; display: flex; align-items: center; padding: 0 24px; gap: 22px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 12px rgba(7,26,59,.04) !important; }
         .brand { min-width: 195px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #071a3b; }
         .brand-mark { width: 34px; height: 38px; position: relative; flex: 0 0 auto; display: grid; place-items: center; }
@@ -47,181 +37,228 @@
         .profile-text { line-height: 1.15; }
         .profile-text strong { display: block; font-size: 11px; }
         .profile-text small { display: block; margin-top: 2px; color: #60779b; font-size: 9px; }
-    </style>
-</head>
 
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
-
-    <header class="topbar">
-        <a class="brand" href="dashboard.html" aria-label="WORKTIME">
-            <div class="brand-mark"></div>
-            <div class="brand-copy">
-                <strong>CRANE<span>TRACK</span></strong>
-                <small>TIME | PROJECT | TEAM</small>
-            </div>
-        </a>
-
-        <nav class="nav" id="mainNav" aria-label="Main navigation">
-            <a class="nav-link" href="dashboard.html"><span class="nav-icon">⌂</span>Dashboard</a>
-            <a class="nav-link" href="time-tracking.html"><span class="nav-icon">◷</span>Time Tracking</a>
-            <a class="nav-link active" href="timesheet.html"><span class="nav-icon">▣</span>Timesheet</a>
-            <a class="nav-link" href="calendar.html"><span class="nav-icon">▦</span>Calendar</a>
-            <a class="nav-link" href="projects.html"><span class="nav-icon">📁</span>Projects</a>
-            <a class="nav-link" href="tasks.html"><span class="nav-icon">☷</span>Tasks</a>
-            <a class="nav-link" href="clients.html"><span class="nav-icon">♙</span>Clients</a>
-            <a class="nav-link" href="team.html"><span class="nav-icon">♧</span>Team</a>
-            <a class="nav-link" href="reports.html"><span class="nav-icon">▥</span>Reports</a>
-        </nav>
-
-        <div class="top-actions">
-            <button class="icon-btn relative" type="button" title="Notifications">
-                🔔
-                <span class="notification-dot absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border border-white">3</span>
-            </button>
-
-            <div class="profile relative group">
-                <div class="avatar" id="avatarInitial">M</div>
-                <div class="profile-text hidden sm:block">
-                    <strong id="profileName">USER</strong>
-                    <small id="profileRole">Loading...</small>
-                </div>
-                <span class="ml-1 text-gray-400">⌄</span>
-                
-                <div class="absolute right-0 top-full mt-2 w-56 bg-white !border-gray-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
-                    <div class="px-4 py-3 border-b border-gray-50 bg-slate-50/50">
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Signed in as</p>
-                        <p class="text-sm font-bold text-slate-800 truncate" id="dropdownEmail">user@email.com</p>
-                    </div>
-                    <a href="profile.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">👤 My Profile</a>
-                    <a href="settings.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors border-b border-gray-50">⚙️ Settings</a>
-                    <button id="logoutBtn" class="w-full text-left px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors">⏻ Logout</button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="p-6 max-w-[1480px] mx-auto space-y-6">
+        /* Gaya Jadual (100% Klon Versi Lama) */
+        .main-content { max-width: 1480px; margin: 0 auto; padding: 24px; }
+        .glacier-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .btn-primary { background-color: #3b82f6; color: white; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: background-color 0.2s; }
+        .btn-primary:hover { background-color: #2563eb; }
         
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl">⏱️</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Total Hours</div><div class="text-2xl font-black text-gray-800" id="kpiTotalHrs">0:00</div></div>
-                </div>
-            </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xl">📁</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Projects Worked</div><div class="text-2xl font-black text-gray-800" id="kpiProjects">0</div></div>
-                </div>
-            </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xl">🏷️</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Tasks Worked</div><div class="text-2xl font-black text-gray-800" id="kpiTasks">0</div></div>
-                </div>
-            </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-lg flex items-center justify-center text-xl">📅</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Working Days</div><div class="text-2xl font-black text-gray-800" id="kpiDays">0 / 7</div></div>
-                </div>
-            </div>
-        </section>
+        .team-table { width: 100%; border-collapse: collapse; }
+        .team-table th { padding: 12px 16px; background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; font-weight: 700; text-align: left; }
+        .team-table td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        
+        .ts-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px; font-size: 0.85rem; color: #475569; outline: none; }
+        .ts-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
+        
+        .toggle-switch { width: 36px; height: 20px; background: #cbd5e1; border-radius: 20px; position: relative; transition: 0.3s; }
+        .toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: 0.3s; }
+        .toggle-switch.active { background: #3b82f6; }
+        .toggle-switch.active::after { left: 18px; }
 
-        <section class="flex flex-wrap justify-between items-center gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
-            <div class="flex items-center gap-3 flex-1">
-                <select class="border border-gray-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-gray-50 outline-none focus:ring-1 focus:ring-blue-500"><option>My Timesheet</option></select>
-                <select class="border border-gray-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-gray-50 outline-none focus:ring-1 focus:ring-blue-500"><option>All Projects</option></select>
-            </div>
-            <div class="flex items-center gap-3 flex-wrap">
-                <div class="flex border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm">
-                    <button id="prevWeekBtn" class="px-3 py-1.5 hover:bg-gray-50 border-r border-gray-200 font-bold text-gray-500"><</button>
-                    <div class="px-4 py-1.5 text-sm font-semibold text-slate-700 flex items-center bg-gray-50" id="filterDateRange">Loading...</div>
-                    <button id="nextWeekBtn" class="px-3 py-1.5 hover:bg-gray-50 border-l border-gray-200 font-bold text-gray-500">></button>
-                </div>
-                <button class="bg-blue-600 text-white font-semibold text-sm px-5 py-2 rounded-lg shadow-sm hover:bg-blue-700 transition-colors" id="addNewRowBtn">+ ADD ROW</button>
-            </div>
-        </section>
+        .copy-dropdown-item { padding: 10px 16px; font-size: 0.85rem; color: #475569; cursor: pointer; font-weight: 500; transition: 0.2s; }
+        .copy-dropdown-item:hover { background: #f1f5f9; color: #0f172a; }
+        .copy-dropdown-item + .copy-dropdown-item { border-top: 1px solid #f1f5f9; }
+    (BUKA)/style(TUTUP)
+(BUKA)/head(TUTUP)
 
-        <section class="glass-card overflow-hidden">
-            <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-white">
-                <div>
-                    <h2 class="m-0 text-base font-extrabold text-slate-800 uppercase tracking-tight">Weekly Timesheet</h2>
-                    <div class="text-xs text-gray-500 font-medium mt-1" id="tableDateRange">Loading...</div>
-                </div>
-                <div class="flex gap-2">
-                    <div class="relative group">
-                        <button id="copyLastWeekBtn" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-gray-50 flex items-center gap-1 shadow-sm">Copy last week ⌄</button>
-                        <div id="copyLastWeekMenu" class="hidden absolute right-0 mt-1 w-48 bg-white border border-gray-100 rounded-xl shadow-lg z-50 overflow-hidden">
-                            <div id="btnCopyActivitiesOnly" class="px-4 py-2.5 text-xs text-slate-700 hover:bg-blue-50 cursor-pointer font-medium">Copy activities only</div>
-                            <div id="btnCopyActivitiesAndTime" class="px-4 py-2.5 text-xs text-slate-700 hover:bg-blue-50 cursor-pointer border-t border-gray-50 font-medium">Copy activities and time</div>
-                        </div>
-                    </div>
-                    <button id="saveTemplateBtn" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-gray-50 shadow-sm">Save as template</button>
-                </div>
-            </div>
-            <div class="overflow-x-auto bg-white">
-                <table class="text-xs">
-                    <thead>
-                        <tr class="bg-slate-50/50">
-                            <th class="w-10 text-center">#</th>
-                            <th class="w-64">Projects</th>
-                            <th class="w-32">Tag</th>
-                            <th class="w-48">Remark</th>
-                            <th class="w-20 text-center">MON<br><span class="text-[9px] text-gray-400 font-normal" id="thMon">-</span></th>
-                            <th class="w-20 text-center">TUE<br><span class="text-[9px] text-gray-400 font-normal" id="thTue">-</span></th>
-                            <th class="w-20 text-center">WED<br><span class="text-[9px] text-gray-400 font-normal" id="thWed">-</span></th>
-                            <th class="w-20 text-center">THU<br><span class="text-[9px] text-gray-400 font-normal" id="thThu">-</span></th>
-                            <th class="w-20 text-center">FRI<br><span class="text-[9px] text-gray-400 font-normal" id="thFri">-</span></th>
-                            <th class="w-20 text-center">SAT<br><span class="text-[9px] text-gray-400 font-normal" id="thSat">-</span></th>
-                            <th class="w-20 text-center">SUN<br><span class="text-[9px] text-gray-400 font-normal" id="thSun">-</span></th>
-                            <th class="w-24 text-center text-blue-700 font-extrabold">TOTAL</th>
-                            <th class="w-10"></th>
-                        </tr>
-                    </thead>
-                    <tbody id="timesheetTableBody" class="divide-y divide-gray-50">
-                        <tr><td colspan="13" class="text-center py-8 text-gray-400">Loading table...</td></tr>
-                    </tbody>
-                    <tfoot>
-                        <tr class="bg-blue-50/30">
-                            <td colspan="4" class="text-right font-extrabold text-slate-800 pr-4">TOTAL (Hours)</td>
-                            <td class="text-center font-bold text-slate-800" id="tfMon">0:00</td>
-                            <td class="text-center font-bold text-slate-800" id="tfTue">0:00</td>
-                            <td class="text-center font-bold text-slate-800" id="tfWed">0:00</td>
-                            <td class="text-center font-bold text-slate-800" id="tfThu">0:00</td>
-                            <td class="text-center font-bold text-slate-800" id="tfFri">0:00</td>
-                            <td class="text-center font-bold text-slate-800" id="tfSat">0:00</td>
-                            <td class="text-center font-bold text-slate-800" id="tfSun">0:00</td>
-                            <td class="text-center font-black text-blue-700 text-lg" id="tfTotal">0:00</td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </section>
+(BUKA)body class="bg-slate-50 text-slate-800 font-sans min-h-screen"(TUTUP)
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div class="glass-card p-5">
-                <h3 class="text-xs font-extrabold text-slate-800 uppercase mb-4 tracking-wider">Weekly Hours By Project</h3>
-                <div class="h-48 relative"><canvas id="barChart"></canvas></div>
-            </div>
-            <div class="glass-card p-5">
-                <h3 class="text-xs font-extrabold text-slate-800 uppercase mb-4 tracking-wider">Project Distribution</h3>
-                <div class="h-48 relative"><canvas id="donutChart"></canvas></div>
-            </div>
-            <div class="glass-card p-5 flex flex-col">
-                <h3 class="text-xs font-extrabold text-slate-800 uppercase mb-4 tracking-wider">Quick Actions</h3>
-                <div class="flex flex-col gap-2 flex-1 justify-center">
-                    <button class="w-full text-left px-4 py-3 bg-blue-50/50 text-blue-700 rounded-xl font-semibold text-xs border border-blue-100 hover:bg-blue-50 transition-colors shadow-sm">📋 Copy Last Week</button>
-                    <button class="w-full text-left px-4 py-3 bg-emerald-50/50 text-emerald-700 rounded-xl font-semibold text-xs border border-emerald-100 hover:bg-emerald-50 transition-colors shadow-sm">💾 Save as Template</button>
-                    <button class="w-full text-left px-4 py-3 bg-rose-50/50 text-rose-700 rounded-xl font-semibold text-xs border border-rose-100 hover:bg-rose-50 transition-colors shadow-sm">🗑️ Clear All Current Entries</button>
-                </div>
-            </div>
-        </section>
-    </main>
+    (BUKA)!-- TOP NAVIGATION STANDARD --(TUTUP)
+    (BUKA)header class="topbar"(TUTUP)
+        (BUKA)a class="brand" href="dashboard.html" aria-label="WORKTIME"(TUTUP)
+            (BUKA)div class="brand-mark"(TUTUP)(BUKA)/div(TUTUP)
+            (BUKA)div class="brand-copy"(TUTUP)
+                (BUKA)strong(TUTUP)CRANE(BUKA)span(TUTUP)TRACK(BUKA)/span(TUTUP)(BUKA)/strong(TUTUP)
+                (BUKA)small(TUTUP)TIME | PROJECT | TEAM(BUKA)/small(TUTUP)
+            (BUKA)/div(TUTUP)
+        (BUKA)/a(TUTUP)
 
-    <script type="module" src="../js/sidebar.js"></script>
-    <script type="module" src="../js/timesheet.js"></script>
-</body>
-</html>
+        (BUKA)nav class="nav" id="mainNav" aria-label="Main navigation"(TUTUP)
+            (BUKA)a class="nav-link" href="dashboard.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)⌂(BUKA)/span(TUTUP)Dashboard(BUKA)/a(TUTUP)
+            (BUKA)a class="nav-link" href="time-tracking.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)◷(BUKA)/span(TUTUP)Time Tracking(BUKA)/a(TUTUP)
+            (BUKA)a class="nav-link active" href="timesheet.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)▣(BUKA)/span(TUTUP)Timesheet(BUKA)/a(TUTUP)
+            (BUKA)a class="nav-link" href="calendar.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)▦(BUKA)/span(TUTUP)Calendar(BUKA)/a(TUTUP)
+            (BUKA)a class="nav-link" href="projects.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)📁(BUKA)/span(TUTUP)Projects(BUKA)/a(TUTUP)
+            (BUKA)a class="nav-link" href="tasks.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)☷(BUKA)/span(TUTUP)Tasks(BUKA)/a(TUTUP)
+            (BUKA)a class="nav-link" href="clients.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)♙(BUKA)/span(TUTUP)Clients(BUKA)/a(TUTUP)
+            (BUKA)a class="nav-link" href="team.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)♧(BUKA)/span(TUTUP)Team(BUKA)/a(TUTUP)
+            (BUKA)a class="nav-link" href="reports.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)▥(BUKA)/span(TUTUP)Reports(BUKA)/a(TUTUP)
+        (BUKA)/nav(TUTUP)
+
+        (BUKA)div class="top-actions"(TUTUP)
+            (BUKA)button class="icon-btn relative" type="button" title="Notifications"(TUTUP)
+                🔔
+                (BUKA)span class="notification-dot absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border border-white"(TUTUP)3(BUKA)/span(TUTUP)
+            (BUKA)/button(TUTUP)
+
+            (BUKA)div class="profile relative group"(TUTUP)
+                (BUKA)div class="avatar" id="avatarInitial"(TUTUP)M(BUKA)/div(TUTUP)
+                (BUKA)div class="profile-text hidden sm:block"(TUTUP)
+                    (BUKA)strong id="profileName"(TUTUP)USER(BUKA)/strong(TUTUP)
+                    (BUKA)small id="profileRole"(TUTUP)Loading...(BUKA)/small(TUTUP)
+                (BUKA)/div(TUTUP)
+                (BUKA)span class="ml-1 text-gray-400"(TUTUP)⌄(BUKA)/span(TUTUP)
+                
+                (BUKA)div class="absolute right-0 top-full mt-2 w-56 bg-white !border-gray-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden"(TUTUP)
+                    (BUKA)div class="px-4 py-3 border-b border-gray-50 bg-slate-50/50"(TUTUP)
+                        (BUKA)p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider"(TUTUP)Signed in as(BUKA)/p(TUTUP)
+                        (BUKA)p class="text-sm font-bold text-slate-800 truncate" id="dropdownEmail"(TUTUP)user@email.com(BUKA)/p(TUTUP)
+                    (BUKA)/div(TUTUP)
+                    (BUKA)a href="profile.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors"(TUTUP)👤 My Profile(BUKA)/a(TUTUP)
+                    (BUKA)a href="settings.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors border-b border-gray-50"(TUTUP)⚙️ Settings(BUKA)/a(TUTUP)
+                    (BUKA)button id="logoutBtn" class="w-full text-left px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors"(TUTUP)⏻ Logout(BUKA)/button(TUTUP)
+                (BUKA)/div(TUTUP)
+            (BUKA)/div(TUTUP)
+        (BUKA)/div(TUTUP)
+    (BUKA)/header(TUTUP)
+
+    (BUKA)main class="main-content"(TUTUP)
+        
+        (BUKA)!-- Kawalan Atas: Filter Minggu & Teammates --(TUTUP)
+        (BUKA)div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px;"(TUTUP)
+            (BUKA)div style="display: flex; gap: 12px; align-items: center;"(TUTUP)
+                
+                (BUKA)select style="padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 6px; color: #475569; outline: none; background: white; font-size: 0.85rem; font-weight: 500; cursor: pointer;"(TUTUP)
+                    (BUKA)option(TUTUP)Teammates(BUKA)/option(TUTUP)
+                (BUKA)/select(TUTUP)
+                
+                (BUKA)button style="padding: 8px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 6px; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center;"(TUTUP)
+                    (BUKA)svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"(TUTUP)(BUKA)line x1="3" y1="12" x2="21" y2="12"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="6" x2="21" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="18" x2="21" y2="18"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
+                (BUKA)/button(TUTUP)
+                
+                (BUKA)div style="display: flex; border: 1px solid #cbd5e1; border-radius: 6px; background: white; overflow: hidden; font-size: 0.85rem;"(TUTUP)
+                    (BUKA)button id="prevWeekBtn" style="padding: 8px 12px; background: white; border: none; border-right: 1px solid #cbd5e1; cursor: pointer; color: #64748b; font-weight: 600; font-size: 1rem; line-height: 1;"(TUTUP)<(BUKA)/button(TUTUP)
+                    (BUKA)div id="filterDateRange" style="padding: 8px 16px; border-right: 1px solid #cbd5e1; color: #475569; display: flex; align-items: center; font-weight: 500; min-width: 140px; justify-content: center;"(TUTUP)
+                        Loading...
+                    (BUKA)/div(TUTUP)
+                    (BUKA)button id="nextWeekBtn" style="padding: 8px 12px; background: white; border: none; cursor: pointer; color: #64748b; font-weight: 600; font-size: 1rem; line-height: 1;"(TUTUP)>(BUKA)/button(TUTUP)
+                (BUKA)/div(TUTUP)
+            (BUKA)/div(TUTUP)
+        (BUKA)/div(TUTUP)
+
+        (BUKA)!-- WEEKLY TIMESHEET (KLON VERSI LAMA) --(TUTUP)
+        (BUKA)div class="glacier-card" style="padding: 0; margin-top: 0; overflow: hidden; display: flex; flex-direction: column;"(TUTUP)
+            
+            (BUKA)!-- Header Jadual --(TUTUP)
+            (BUKA)div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; gap: 16px;"(TUTUP)
+                (BUKA)div style="display: flex; gap: 12px; align-items: center;"(TUTUP)
+                    (BUKA)svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"(TUTUP)(BUKA)rect x="3" y="4" width="18" height="18" rx="2" ry="2"(TUTUP)(BUKA)/rect(TUTUP)(BUKA)line x1="16" y1="2" x2="16" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="8" y1="2" x2="8" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="10" x2="21" y2="10"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
+                    (BUKA)div(TUTUP)
+                        (BUKA)h2 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #0f172a; text-transform: uppercase;"(TUTUP)Weekly Timesheet(BUKA)/h2(TUTUP)
+                        (BUKA)div id="tableDateRange" style="font-size: 0.85rem; color: #64748b; margin-top: 2px;"(TUTUP)Loading...(BUKA)/div(TUTUP)
+                    (BUKA)/div(TUTUP)
+                (BUKA)/div(TUTUP)
+                
+                (BUKA)div style="display: flex; gap: 12px; align-items: center;"(TUTUP)
+                    (BUKA)button id="addNewRowBtn" class="btn-primary" style="display: flex; align-items: center; gap: 6px; border-radius: 6px !important; padding: 8px 16px !important;"(TUTUP)
+                        (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)line x1="12" y1="5" x2="12" y2="19"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="5" y1="12" x2="19" y2="12"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
+                        Add Row
+                    (BUKA)/button(TUTUP)
+                (BUKA)/div(TUTUP)
+            (BUKA)/div(TUTUP)
+
+            (BUKA)!-- Jadual Utama (Tiada Kolum Task) --(TUTUP)
+            (BUKA)div style="overflow-x: auto;"(TUTUP)
+                (BUKA)table class="team-table timesheet-table" style="min-width: 1200px; border-bottom: none;"(TUTUP)
+                    (BUKA)thead(TUTUP)
+                        (BUKA)tr style="font-size: 0.7rem; letter-spacing: 0.5px; color: #64748b;"(TUTUP)
+                            (BUKA)th style="width: 40px; text-align: center; border-right: none;"(TUTUP)#(BUKA)/th(TUTUP)
+                            (BUKA)th style="width: 250px;"(TUTUP)PROJECTS(BUKA)/th(TUTUP)
+                            (BUKA)th style="width: 150px;"(TUTUP)TAG(BUKA)/th(TUTUP)
+                            (BUKA)th style="width: 200px;"(TUTUP)REMARK(BUKA)/th(TUTUP)
+                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)MON(BUKA)br(TUTUP)(BUKA)span id="thMon"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
+                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)TUE(BUKA)br(TUTUP)(BUKA)span id="thTue"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
+                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)WED(BUKA)br(TUTUP)(BUKA)span id="thWed"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
+                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)THU(BUKA)br(TUTUP)(BUKA)span id="thThu"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
+                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)FRI(BUKA)br(TUTUP)(BUKA)span id="thFri"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
+                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)SAT(BUKA)br(TUTUP)(BUKA)span id="thSat"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
+                            (BUKA)th style="text-align: center; width: 75px;"(TUTUP)SUN(BUKA)br(TUTUP)(BUKA)span id="thSun"(TUTUP)-(BUKA)/span(TUTUP)(BUKA)/th(TUTUP)
+                            (BUKA)th style="text-align: center; width: 80px;"(TUTUP)TOTAL(BUKA)/th(TUTUP)
+                            (BUKA)th style="width: 40px; text-align: center;"(TUTUP)(BUKA)/th(TUTUP)
+                        (BUKA)/tr(TUTUP)
+                    (BUKA)/thead(TUTUP)
+                    (BUKA)tbody id="timesheetTableBody"(TUTUP)
+                        (BUKA)tr(TUTUP)(BUKA)td colspan="13" style="text-align:center; padding:30px; color:#94a3b8;"(TUTUP)Loading table data...(BUKA)/td(TUTUP)(BUKA)/tr(TUTUP)
+                    (BUKA)/tbody(TUTUP)
+                    (BUKA)tfoot id="timesheetFootRow"(TUTUP)
+                        (BUKA)tr style="background-color: #f0f7ff;"(TUTUP)
+                            (BUKA)td colspan="4" style="font-weight: 700; color: #1e293b; text-align: right; padding-right: 20px;"(TUTUP)
+                                (BUKA)div style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;"(TUTUP)
+                                    (BUKA)svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"(TUTUP)(BUKA)circle cx="12" cy="12" r="10"(TUTUP)(BUKA)/circle(TUTUP)(BUKA)polyline points="12 6 12 12 16 14"(TUTUP)(BUKA)/polyline(TUTUP)(BUKA)/svg(TUTUP)
+                                    TOTAL (Hours)
+                                (BUKA)/div(TUTUP)
+                            (BUKA)/td(TUTUP)
+                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfMon"(TUTUP)0:00(BUKA)/td(TUTUP)
+                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfTue"(TUTUP)0:00(BUKA)/td(TUTUP)
+                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfWed"(TUTUP)0:00(BUKA)/td(TUTUP)
+                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfThu"(TUTUP)0:00(BUKA)/td(TUTUP)
+                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfFri"(TUTUP)0:00(BUKA)/td(TUTUP)
+                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfSat"(TUTUP)0:00(BUKA)/td(TUTUP)
+                            (BUKA)td style="text-align: center; font-weight: 700; color: #1e293b;" id="tfSun"(TUTUP)0:00(BUKA)/td(TUTUP)
+                            (BUKA)td style="text-align: center; font-weight: 800; color: #1e293b;" id="tfTotal"(TUTUP)0:00(BUKA)/td(TUTUP)
+                            (BUKA)td(TUTUP)(BUKA)/td(TUTUP)
+                        (BUKA)/tr(TUTUP)
+                    (BUKA)/tfoot(TUTUP)
+                (BUKA)/table(TUTUP)
+            (BUKA)/div(TUTUP)
+
+            (BUKA)!-- Footer Actions --(TUTUP)
+            (BUKA)div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-top: 1px solid #e2e8f0; flex-wrap: wrap; gap: 16px; background: white;"(TUTUP)
+                (BUKA)div style="display: flex; align-items: center; gap: 12px;"(TUTUP)
+                    (BUKA)span style="font-size: 0.85rem; font-weight: 700; color: #475569;"(TUTUP)Quick Actions:(BUKA)/span(TUTUP)
+                    
+                    (BUKA)div style="position: relative; display: inline-block;" id="copyLastWeekContainer"(TUTUP)
+                        (BUKA)button id="copyLastWeekBtn" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 4px; color: #475569; font-size: 0.85rem; font-weight: 500; cursor: pointer;"(TUTUP)
+                            (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)rect x="9" y="9" width="13" height="13" rx="2" ry="2"(TUTUP)(BUKA)/rect(TUTUP)(BUKA)path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"(TUTUP)(BUKA)/path(TUTUP)(BUKA)/svg(TUTUP)
+                            Copy last week
+                            (BUKA)svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 4px;"(TUTUP)(BUKA)polyline points="6 9 12 15 18 9"(TUTUP)(BUKA)/polyline(TUTUP)(BUKA)/svg(TUTUP)
+                        (BUKA)/button(TUTUP)
+                        
+                        (BUKA)div id="copyLastWeekMenu" style="display: none; position: absolute; bottom: 110%; left: 0; margin-bottom: 8px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); width: 220px; z-index: 50; overflow: hidden;"(TUTUP)
+                            (BUKA)div class="copy-dropdown-item" id="btnCopyActivitiesOnly"(TUTUP)Copy activities only(BUKA)/div(TUTUP)
+                            (BUKA)div class="copy-dropdown-item" id="btnCopyActivitiesAndTime"(TUTUP)Copy activities and time(BUKA)/div(TUTUP)
+                        (BUKA)/div(TUTUP)
+                    (BUKA)/div(TUTUP)
+
+                    (BUKA)button style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 4px; color: #475569; font-size: 0.85rem; font-weight: 500; cursor: pointer;"(TUTUP)
+                        (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"(TUTUP)(BUKA)/path(TUTUP)(BUKA)polyline points="17 21 17 13 7 13 7 21"(TUTUP)(BUKA)/polyline(TUTUP)(BUKA)polyline points="7 3 7 8 15 8"(TUTUP)(BUKA)/polyline(TUTUP)(BUKA)/svg(TUTUP)
+                        Save as template
+                    (BUKA)/button(TUTUP)
+                    
+                    (BUKA)button style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #fff5f5; border: 1px solid #fecaca; border-radius: 4px; color: #ef4444; font-size: 0.85rem; font-weight: 500; cursor: pointer;"(TUTUP)
+                        (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)polyline points="3 6 5 6 21 6"(TUTUP)(BUKA)/polyline(TUTUP)(BUKA)path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"(TUTUP)(BUKA)/path(TUTUP)(BUKA)/svg(TUTUP)
+                        Clear all
+                    (BUKA)/button(TUTUP)
+                (BUKA)/div(TUTUP)
+                
+                (BUKA)div style="display: flex; align-items: center; gap: 16px;"(TUTUP)
+                    (BUKA)label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #475569; font-weight: 600; cursor: pointer;"(TUTUP)
+                        (BUKA)div class="toggle-switch active"(TUTUP)(BUKA)/div(TUTUP)
+                        Show weekends
+                    (BUKA)/label(TUTUP)
+                    
+                    (BUKA)div style="display: flex; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden;"(TUTUP)
+                        (BUKA)button style="display: flex; align-items: center; gap: 6px; border: none; background: #3b82f6; color: white; padding: 6px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer;"(TUTUP)
+                            (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)rect x="3" y="4" width="18" height="18" rx="2" ry="2"(TUTUP)(BUKA)/rect(TUTUP)(BUKA)line x1="16" y1="2" x2="16" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="8" y1="2" x2="8" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="10" x2="21" y2="10"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
+                            Weekly
+                        (BUKA)/button(TUTUP)
+                        (BUKA)button style="display: flex; align-items: center; gap: 6px; border: none; border-left: 1px solid #cbd5e1; background: white; color: #64748b; padding: 6px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer;"(TUTUP)
+                            (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)rect x="3" y="4" width="18" height="18" rx="2" ry="2"(TUTUP)(BUKA)/rect(TUTUP)(BUKA)line x1="16" y1="2" x2="16" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="8" y1="2" x2="8" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="10" x2="21" y2="10"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
+                            Daily
+                        (BUKA)/button(TUTUP)
+                        (BUKA)button style="display: flex; align-items: center; gap: 6px; border: none; border-left: 1px solid #cbd5e1; background: white; color: #64748b; padding: 6px 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer;"(TUTUP)
+                            (BUKA)svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"(TUTUP)(BUKA)rect x="3" y="4" width="18" height="18" rx="2" ry="2"(TUTUP)(BUKA)/rect(TUTUP)(BUKA)line x1="16" y1="2" x2="16" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="8" y1="2" x2="8" y2="6"(TUTUP)(BUKA)/line(TUTUP)(BUKA)line x1="3" y1="10" x2="21" y2="10"(TUTUP)(BUKA)/line(TUTUP)(BUKA)/svg(TUTUP)
+                            Monthly
+                        (BUKA)/button(TUTUP)
+                    (BUKA)/div(TUTUP)
+                (BUKA)/div(TUTUP)
+            (BUKA)/div(TUTUP)
+        (BUKA)/div(TUTUP)
+
+    (BUKA)/main(TUTUP)
+
+    (BUKA)script type="module" src="../js/sidebar.js"(TUTUP)(BUKA)/script(TUTUP)
+    (BUKA)script type="module" src="../js/timesheet.js"(TUTUP)(BUKA)/script(TUTUP)
+(BUKA)/body(TUTUP)
+(BUKA)/html(TUTUP)
