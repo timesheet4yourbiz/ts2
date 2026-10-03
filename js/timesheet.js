@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.getElementById('prevWeekBtn')?.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() - 7); renderHeader(); loadData(); });
         document.getElementById('nextWeekBtn')?.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() + 7); renderHeader(); loadData(); });
-        document.getElementById('addNewRowBtn')?.addEventListener('click', togglePopup);
 
         const copyBtn = document.getElementById('copyLastWeekBtn');
         const copyMenu = document.getElementById('copyLastWeekMenu');
@@ -116,7 +115,7 @@ const buildPopup = () => {
     document.body.appendChild(popup);
 
     document.addEventListener('click', (e) => { 
-        if (popup.style.display === 'block' && !popup.contains(e.target) && !e.target.closest('#openPickerBtn') && !e.target.closest('#addNewRowBtn')) {
+        if (popup.style.display === 'block' && !popup.contains(e.target) && !e.target.closest('#openPickerBtn')) {
             popup.style.display = 'none'; 
         }
     });
@@ -149,16 +148,16 @@ const togglePopup = async (e) => {
             const txtTsk = hasTasks ? tList.length + ' Tasks ⌄' : 'Select';
             
             pList += '<div class="proj-header" data-id="' + p.id + '" data-hastasks="' + hasTasks + '" style="display:flex; justify-content:space-between; align-items:center; padding:12px 15px; border-bottom: 1px solid #f1f5f9; cursor:pointer;">' +
-                    '<span class="proj-title-text" style="color:#475569; font-size:0.85rem; display:flex; align-items:center; gap:8px;">' +
+                    '<span class="proj-title-text" style="color:#475569; font-size:0.85rem; display:flex; align-items:center; gap:8px; font-weight:600;">' +
                         '<span style="display:inline-block; width:6px; height:6px; background:#ef4444; border-radius:50%;"></span>' +
-                        p.project_name +
+                        p.project_name.toUpperCase() +
                     '</span>' +
-                    '<span style="color:#0ea5e9; font-size:0.75rem; font-weight:500;">' + txtTsk + '</span>' +
+                    '<span style="color:#0ea5e9; font-size:0.75rem; font-weight:600;">' + txtTsk + '</span>' +
                 '</div>';
 
             if (hasTasks) {
                 pList += '<div class="tasks-container" id="tasks-' + p.id + '" style="display:none; background:#f8fafc; border-bottom: 1px solid #f1f5f9;">';
-                pList += '<div class="task-select-item" data-pid="' + p.id + '" data-tid="" style="padding: 10px 15px 10px 30px; cursor:pointer; color:#0ea5e9; font-weight:600; font-size:0.8rem; border-top:1px dashed #e2e8f0;">(No Task)</div>';
+                pList += '<div class="task-select-item" data-pid="' + p.id + '" data-tid="null" style="padding: 10px 15px 10px 30px; cursor:pointer; color:#0ea5e9; font-weight:600; font-size:0.8rem; border-top:1px dashed #e2e8f0;">(No Task)</div>';
                 tList.forEach(t => {
                     pList += '<div class="task-select-item" data-pid="' + p.id + '" data-tid="' + t.id + '" style="padding: 10px 15px 10px 30px; cursor:pointer; color:#64748b; font-size:0.8rem; border-top:1px dashed #e2e8f0;">- ' + t.task_name + '</div>';
                 });
@@ -212,7 +211,8 @@ const togglePopup = async (e) => {
     document.querySelectorAll('.task-select-item').forEach(item => {
         item.addEventListener('click', async (e) => {
             const selPid = e.currentTarget.getAttribute('data-pid');
-            const selTid = e.currentTarget.getAttribute('data-tid') || null; 
+            const tidAttr = e.currentTarget.getAttribute('data-tid');
+            const selTid = (tidAttr === 'null' || tidAttr === '') ? null : tidAttr;
             
             const { days } = getWeekRange(currentDate);
             const cDate = days[0];
@@ -225,9 +225,12 @@ const togglePopup = async (e) => {
 };
 
 const saveEntry = async (dateStr, pid, taskId, sec, isInit = false, tagId = null, remark = null) => {
+    const cleanTagId = (tagId === 'null' || tagId === '') ? null : tagId;
+    const cleanTaskId = (taskId === 'null' || taskId === '') ? null : taskId;
+
     let query = supabase.from('time_entries').select('id').eq('employee_id', currentEmployeeId).eq('work_date', dateStr);
     if (pid) query = query.eq('project_id', pid); else query = query.is('project_id', null);
-    if (taskId) query = query.eq('task_id', taskId); else query = query.is('task_id', null);
+    if (cleanTaskId) query = query.eq('task_id', cleanTaskId); else query = query.is('task_id', null);
     
     const { data: ext } = await query;
     const exists = ext && ext.length > 0;
@@ -235,13 +238,13 @@ const saveEntry = async (dateStr, pid, taskId, sec, isInit = false, tagId = null
     if (isInit && exists) return;
     if (!isInit && sec === 0) { if (exists) await supabase.from('time_entries').delete().in('id', ext.map(e=>e.id)); return; }
 
-    const payload = { duration_seconds: sec, tag_id: tagId, task_id: taskId, notes: remark };
+    const payload = { duration_seconds: sec, tag_id: cleanTagId, task_id: cleanTaskId, notes: remark };
     if (exists) {
         await supabase.from('time_entries').update(payload).eq('id', ext[0].id);
     } else {
         await supabase.from('time_entries').insert([{
             employee_id: currentEmployeeId, project_id: pid, work_date: dateStr, start_time: dateStr + 'T09:00:00',
-            duration_seconds: sec, tag_id: tagId, task_id: taskId, notes: remark, status: 'STOPPED'
+            duration_seconds: sec, tag_id: cleanTagId, task_id: cleanTaskId, notes: remark, status: 'STOPPED'
         }]);
     }
 };
@@ -366,12 +369,14 @@ const loadData = async () => {
             if(this.value === this.dataset.old) return;
             
             const tr = this.closest('tr');
-            const tag = tr.querySelector('.bind-tag').value;
-            const task = tr.getAttribute('data-task');
+            const tagVal = tr.querySelector('.bind-tag').value;
+            const finalTag = (tagVal === '' || tagVal === 'null') ? null : tagVal;
+            const taskAttr = tr.getAttribute('data-task');
+            const finalTask = (taskAttr === 'null' || taskAttr === '') ? null : taskAttr;
             const note = tr.querySelector('.bind-note').value;
             
             this.style.opacity = '0.5';
-            await saveEntry(this.dataset.d, this.dataset.pid==='null'?null:this.dataset.pid, task, sec, false, tag, note);
+            await saveEntry(this.dataset.d, this.dataset.pid==='null'?null:this.dataset.pid, finalTask, sec, false, finalTag, note);
             loadData();
         });
     });
@@ -380,8 +385,10 @@ const loadData = async () => {
         inp.addEventListener('change', async function() {
             const tr = this.closest('tr');
             const pid = this.dataset.pid;
-            const tag = tr.querySelector('.bind-tag').value;
-            const task = tr.getAttribute('data-task');
+            const tagVal = tr.querySelector('.bind-tag').value;
+            const finalTag = (tagVal === '' || tagVal === 'null') ? null : tagVal;
+            const taskAttr = tr.getAttribute('data-task');
+            const finalTask = (taskAttr === 'null' || taskAttr === '') ? null : taskAttr;
             const note = tr.querySelector('.bind-note').value;
             
             const { days } = getWeekRange(currentDate);
@@ -389,9 +396,9 @@ const loadData = async () => {
             const eStr = days[6].getFullYear() + '-' + String(days[6].getMonth()+1).padStart(2,'0') + '-' + String(days[6].getDate()).padStart(2,'0');
             
             this.style.opacity = '0.5';
-            let q = supabase.from('time_entries').update({tag_id:tag, task_id:task, notes:note}).eq('employee_id', currentEmployeeId).gte('work_date', sStr).lte('work_date', eStr);
+            let q = supabase.from('time_entries').update({tag_id:finalTag, task_id:finalTask, notes:note}).eq('employee_id', currentEmployeeId).gte('work_date', sStr).lte('work_date', eStr);
             if(pid==='null') q=q.is('project_id', null); else q=q.eq('project_id', pid);
-            if(task==='null') q=q.is('task_id', null); else q=q.eq('task_id', task);
+            if(finalTask===null) q=q.is('task_id', null); else q=q.eq('task_id', finalTask);
             await q;
             this.style.opacity = '1';
         });
@@ -402,7 +409,8 @@ const loadData = async () => {
             if(!confirm("Anda pasti mahu memadam keseluruhan baris rekod masa ini?")) return;
             const pid = this.dataset.pid;
             const tr = this.closest('tr');
-            const task = tr.getAttribute('data-task');
+            const taskAttr = tr.getAttribute('data-task');
+            const finalTask = (taskAttr === 'null' || taskAttr === '') ? null : taskAttr;
 
             const { days } = getWeekRange(currentDate);
             const sStr = days[0].getFullYear() + '-' + String(days[0].getMonth()+1).padStart(2,'0') + '-' + String(days[0].getDate()).padStart(2,'0');
@@ -410,7 +418,7 @@ const loadData = async () => {
             
             let q = supabase.from('time_entries').delete().eq('employee_id', currentEmployeeId).gte('work_date', sStr).lte('work_date', eStr);
             if(pid==='null') q=q.is('project_id', null); else q=q.eq('project_id', pid);
-            if(task==='null') q=q.is('task_id', null); else q=q.eq('task_id', task);
+            if(finalTask===null) q=q.is('task_id', null); else q=q.eq('task_id', finalTask);
             await q; loadData();
         });
     });
