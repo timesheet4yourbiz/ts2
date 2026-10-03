@@ -15,7 +15,7 @@ let entriesData = [];
 let activeEntryId = null;
 const START_HOUR = 8; 
 const END_HOUR = 19;  
-const ROW_HEIGHT = 60; // 60px per hour
+const ROW_HEIGHT = 60; // 60px per jam
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -36,10 +36,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             if(profileRole) profileRole.textContent = profile.system_role === 'Admin' ? 'Administrator' : profile.system_role;
         }
 
-        document.getElementById('logoutBtn')?.addEventListener('click', () => supabase.auth.signOut().then(() => window.location.href = '../pages/login.html'));
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => supabase.auth.signOut().then(() => window.location.href = '../pages/login.html'));
+        }
 
         if (!isAdmin) {
-            document.getElementById('formEmpContainer').style.display = 'none';
+            const formEmpContainer = document.getElementById('formEmpContainer');
+            if(formEmpContainer) formEmpContainer.style.display = 'none';
         }
 
         setupCalendarBase();
@@ -47,16 +51,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         calculateWeekRange();
         await fetchEntries();
 
-        document.getElementById('btnPrevWeek')?.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() - 7); calculateWeekRange(); fetchEntries(); });
-        document.getElementById('btnNextWeek')?.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() + 7); calculateWeekRange(); fetchEntries(); });
-        document.getElementById('btnToday')?.addEventListener('click', () => { currentDate = new Date(); calculateWeekRange(); fetchEntries(); });
-        
-        document.getElementById('filterEmp')?.addEventListener('change', fetchEntries);
-        document.getElementById('filterProj')?.addEventListener('change', fetchEntries);
+        const btnPrevWeek = document.getElementById('btnPrevWeek');
+        const btnNextWeek = document.getElementById('btnNextWeek');
+        const btnToday = document.getElementById('btnToday');
+        const filterEmp = document.getElementById('filterEmp');
+        const filterProj = document.getElementById('filterProj');
+
+        if (btnPrevWeek) btnPrevWeek.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() - 7); calculateWeekRange(); fetchEntries(); });
+        if (btnNextWeek) btnNextWeek.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() + 7); calculateWeekRange(); fetchEntries(); });
+        if (btnToday) btnToday.addEventListener('click', () => { currentDate = new Date(); calculateWeekRange(); fetchEntries(); });
+        if (filterEmp) filterEmp.addEventListener('change', fetchEntries);
+        if (filterProj) filterProj.addEventListener('change', fetchEntries);
 
         setupModal();
 
-        // Update current time line every minute
         setInterval(updateCurrentTimeLine, 60000);
 
     } catch (err) {
@@ -84,13 +92,15 @@ function calculateWeekRange() {
     }
 
     const dStr = viewStart.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ' - ' + viewEnd.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-    document.getElementById('currentPeriodText').textContent = dStr;
+    const currentPeriodText = document.getElementById('currentPeriodText');
+    if(currentPeriodText) currentPeriodText.textContent = dStr;
 
     renderCalendarHeaders();
 }
 
 function setupCalendarBase() {
     const timeCol = document.getElementById('calTimeCol');
+    if(!timeCol) return;
     let timeHtml = '';
     for(let i = START_HOUR; i <= END_HOUR; i++) {
         const h = i.toString().padStart(2, '0') + ':00';
@@ -101,6 +111,7 @@ function setupCalendarBase() {
 
 function renderCalendarHeaders() {
     const header = document.getElementById('calHeader');
+    if(!header) return;
     const daysArr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     
     let html = '<div class="cal-header-cell flex items-center justify-center text-[10px]">GMT+8</div>';
@@ -134,24 +145,25 @@ async function loadDropdowns() {
     const modEmp = document.getElementById('formEmp');
     const modProj = document.getElementById('formProj');
 
-    if(fEmp) employeesData.forEach(e => fEmp.innerHTML += '<option value="'+e.id+'">'+(e.name || e.email)+'</option>');
-    if(modEmp) employeesData.forEach(e => modEmp.innerHTML += '<option value="'+e.id+'">'+(e.name || e.email)+'</option>');
+    if(fEmp) employeesData.forEach(e => fEmp.innerHTML += '<option value="' + e.id + '">' + (e.name || e.email) + '</option>');
+    if(modEmp) employeesData.forEach(e => modEmp.innerHTML += '<option value="' + e.id + '">' + (e.name || e.email) + '</option>');
     if(modEmp && !isAdmin) modEmp.value = currentEmployeeId;
 
-    if(fProj) projectsData.forEach(p => fProj.innerHTML += '<option value="'+p.id+'">'+p.project_name+'</option>');
+    if(fProj) projectsData.forEach(p => fProj.innerHTML += '<option value="' + p.id + '">' + p.project_name + '</option>');
     if(modProj) {
         modProj.innerHTML = '<option value="">- Select Project -</option>';
-        projectsData.forEach(p => modProj.innerHTML += '<option value="'+p.id+'">'+p.project_name+'</option>');
+        projectsData.forEach(p => modProj.innerHTML += '<option value="' + p.id + '">' + p.project_name + '</option>');
     }
 
     if(modProj) {
         modProj.addEventListener('change', (e) => {
             const pid = e.target.value;
             const tSel = document.getElementById('formTask');
+            if(!tSel) return;
             tSel.innerHTML = '<option value="">No Task</option>';
             if(pid) {
                 const pTasks = tasksData.filter(t => t.project_id === pid);
-                pTasks.forEach(t => tSel.innerHTML += '<option value="'+t.id+'">'+t.task_name+'</option>');
+                pTasks.forEach(t => tSel.innerHTML += '<option value="' + t.id + '">' + t.task_name + '</option>');
             }
         });
     }
@@ -161,8 +173,10 @@ async function fetchEntries() {
     const startIso = new Date(Date.UTC(viewStart.getFullYear(), viewStart.getMonth(), viewStart.getDate(), 0,0,0)).toISOString();
     const endIso = new Date(Date.UTC(viewEnd.getFullYear(), viewEnd.getMonth(), viewEnd.getDate(), 23,59,59)).toISOString();
 
-    const empFilter = document.getElementById('filterEmp').value;
-    const projFilter = document.getElementById('filterProj').value;
+    const fEmp = document.getElementById('filterEmp');
+    const fProj = document.getElementById('filterProj');
+    const empFilter = fEmp ? fEmp.value : null;
+    const projFilter = fProj ? fProj.value : null;
 
     let query = supabase.from('time_entries')
         .select('*, project:projects(project_name), task:tasks(task_name), employee:employees(name)')
@@ -187,19 +201,19 @@ async function fetchEntries() {
 }
 
 const colors = [
-    { bg: '#eff6ff', border: '#3b82f6', text: '#1e3a8a' }, // Blue
-    { bg: '#f0fdf4', border: '#22c55e', text: '#14532d' }, // Green
-    { bg: '#fdf4ff', border: '#d946ef', text: '#701a75' }, // Fuchsia
-    { bg: '#fffbeb', border: '#f59e0b', text: '#78350f' }, // Amber
-    { bg: '#fef2f2', border: '#ef4444', text: '#7f1d1d' }, // Red
+    { bg: '#eff6ff', border: '#3b82f6', text: '#1e3a8a' }, 
+    { bg: '#f0fdf4', border: '#22c55e', text: '#14532d' }, 
+    { bg: '#fdf4ff', border: '#d946ef', text: '#701a75' }, 
+    { bg: '#fffbeb', border: '#f59e0b', text: '#78350f' }, 
+    { bg: '#fef2f2', border: '#ef4444', text: '#7f1d1d' }
 ];
 
 function renderGridAndEvents() {
     const gridArea = document.getElementById('calGridArea');
+    if(!gridArea) return;
     
-    // Create base columns
     let html = '';
-    for(let i=0; i<7; i++) {
+    for(let i = 0; i < 7; i++) {
         const dStr = weekDays[i].getFullYear() + '-' + String(weekDays[i].getMonth()+1).padStart(2,'0') + '-' + String(weekDays[i].getDate()).padStart(2,'0');
         html += '<div class="cal-day-col" data-date="' + dStr + '"></div>';
     }
@@ -207,7 +221,6 @@ function renderGridAndEvents() {
     html += '<div id="currentTimeLine" class="current-time-line" style="display: none;"></div>';
     gridArea.innerHTML = html;
 
-    // Plot events
     entriesData.forEach(entry => {
         let entryDate;
         if(entry.work_date) {
@@ -218,20 +231,18 @@ function renderGridAndEvents() {
         }
 
         const dStr = entryDate.getFullYear() + '-' + String(entryDate.getMonth()+1).padStart(2,'0') + '-' + String(entryDate.getDate()).padStart(2,'0');
-        const col = gridArea.querySelector(`.cal-day-col[data-date="${dStr}"]`);
+        const col = gridArea.querySelector('.cal-day-col[data-date="' + dStr + '"]');
         
         if (col) {
             let startDt = new Date(entry.start_time);
             let startH = startDt.getHours() + (startDt.getMinutes() / 60);
             
-            // Default kepada 09:00 jika masa start_time adalah default 00:00 UTC (Sebab Timesheet lama tiada Start Time)
             if(startDt.getUTCHours() === 0 && startDt.getUTCMinutes() === 0 && startDt.getUTCSeconds() === 0) {
                 startH = 9.0; 
             }
             
             const durHrs = (entry.duration_seconds || 3600) / 3600;
             
-            // Pastikan event berada dalam grid 08:00 - 19:00
             let topPx = (startH - START_HOUR) * ROW_HEIGHT;
             let heightPx = durHrs * ROW_HEIGHT;
             
@@ -246,7 +257,7 @@ function renderGridAndEvents() {
                 const tName = entry.task ? entry.task.task_name : '';
                 const eName = entry.employee ? entry.employee.name : '';
                 
-                const titleHtml = isAdmin ? `[\({eName}]\){pName}` : pName;
+                const titleHtml = isAdmin ? '[' + eName + '] ' + pName : pName;
                 const hMins = Math.floor(durHrs) + 'h ' + Math.round((durHrs % 1) * 60) + 'm';
 
                 const evDiv = document.createElement('div');
@@ -257,4 +268,228 @@ function renderGridAndEvents() {
                 evDiv.style.borderColor = colorObj.border;
                 evDiv.style.color = colorObj.text;
                 
-                evDiv.innerHTML = `
+                evDiv.innerHTML = '<div class="cal-event-title">' + titleHtml + '</div>' +
+                                  '<div class="cal-event-time">' + tName + '</div>' +
+                                  '<div class="cal-event-time" style="margin-top:2px;">⏱ ' + hMins + '</div>';
+
+                evDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openEntryModal(entry);
+                });
+
+                col.appendChild(evDiv);
+            }
+        }
+    });
+
+    gridArea.querySelectorAll('.cal-day-col').forEach(col => {
+        col.addEventListener('click', (e) => {
+            if(e.target === col) {
+                const rect = col.getBoundingClientRect();
+                const clickY = e.clientY - rect.top;
+                const clickHrs = START_HOUR + (clickY / ROW_HEIGHT);
+                const clickH = Math.floor(clickHrs);
+                const clickM = Math.floor((clickHrs % 1) * 60);
+                
+                const dateStr = col.getAttribute('data-date');
+                openEntryModal(null, dateStr, clickH, clickM);
+            }
+        });
+    });
+
+    updateCurrentTimeLine();
+}
+
+function updateCurrentTimeLine() {
+    const line = document.getElementById('currentTimeLine');
+    if (!line) return;
+
+    const now = new Date();
+    const todayStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+    
+    const col = document.querySelector('.cal-day-col[data-date="' + todayStr + '"]');
+    
+    if (col && now.getHours() >= START_HOUR && now.getHours() <= END_HOUR) {
+        line.style.display = 'block';
+        const topPx = ((now.getHours() + (now.getMinutes() / 60)) - START_HOUR) * ROW_HEIGHT;
+        line.style.top = topPx + 'px';
+        col.appendChild(line); 
+    } else {
+        line.style.display = 'none';
+    }
+}
+
+function updateKPIs() {
+    let totalSecs = 0;
+    let projSet = new Set();
+    
+    entriesData.forEach(e => {
+        totalSecs += (e.duration_seconds || 0);
+        if(e.project_id) projSet.add(e.project_id);
+    });
+
+    const h = Math.floor(totalSecs / 3600);
+    const m = Math.round((totalSecs % 3600) / 60);
+
+    const kpiHours = document.getElementById('kpiHours');
+    if(kpiHours) kpiHours.textContent = h + 'h ' + m + 'm';
+    
+    const kpiProjects = document.getElementById('kpiProjects');
+    if(kpiProjects) kpiProjects.textContent = projSet.size;
+    
+    const kpiEntries = document.getElementById('kpiEntries');
+    if(kpiEntries) kpiEntries.textContent = entriesData.length;
+    
+    const kpiStaff = document.getElementById('kpiStaff');
+    if(kpiStaff) {
+        if(isAdmin) {
+            let empSet = new Set();
+            entriesData.forEach(e => { if(e.employee_id) empSet.add(e.employee_id); });
+            kpiStaff.textContent = empSet.size;
+        } else {
+            kpiStaff.textContent = '1';
+        }
+    }
+}
+
+function setupModal() {
+    const modal = document.getElementById('entryModal');
+    const form = document.getElementById('entryForm');
+    
+    const closeBtn = document.getElementById('closeModalBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const openAddBtn = document.getElementById('openAddModalBtn');
+
+    if(closeBtn) closeBtn.addEventListener('click', () => { if(modal) modal.style.display = 'none'; });
+    if(cancelBtn) cancelBtn.addEventListener('click', () => { if(modal) modal.style.display = 'none'; });
+    if(openAddBtn) openAddBtn.addEventListener('click', () => openEntryModal(null));
+
+    if(form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSave = document.getElementById('btnSaveEntry');
+            if(btnSave) { btnSave.disabled = true; btnSave.textContent = 'Saving...'; }
+
+            const dStr = document.getElementById('formDate').value;
+            const sTime = document.getElementById('formStart').value;
+            const eTime = document.getElementById('formEnd').value;
+            
+            const empId = isAdmin ? document.getElementById('formEmp').value : currentEmployeeId;
+            const projId = document.getElementById('formProj').value;
+            const taskInput = document.getElementById('formTask');
+            const taskId = taskInput ? (taskInput.value || null) : null;
+            const notesInput = document.getElementById('formNotes');
+            const notes = notesInput ? notesInput.value : '';
+
+            const sDate = new Date(dStr + 'T' + sTime + ':00');
+            const eDate = new Date(dStr + 'T' + eTime + ':00');
+            let diffSecs = (eDate.getTime() - sDate.getTime()) / 1000;
+            if(diffSecs < 0) diffSecs = 0;
+
+            const payload = {
+                employee_id: empId,
+                project_id: projId,
+                task_id: taskId,
+                work_date: dStr,
+                start_time: sDate.toISOString(),
+                duration_seconds: diffSecs,
+                notes: notes,
+                status: 'STOPPED'
+            };
+
+            try {
+                if (activeEntryId) {
+                    await supabase.from('time_entries').update(payload).eq('id', activeEntryId);
+                } else {
+                    await supabase.from('time_entries').insert([payload]);
+                }
+                if(modal) modal.style.display = 'none';
+                fetchEntries();
+            } catch (err) { alert('Error: ' + err.message); }
+            
+            if(btnSave) { btnSave.disabled = false; btnSave.textContent = 'Save Entry'; }
+        });
+    }
+
+    const delBtn = document.getElementById('btnDeleteEntry');
+    if(delBtn) {
+        delBtn.addEventListener('click', async () => {
+            if(!confirm('Padam rekod masa ini?')) return;
+            try {
+                await supabase.from('time_entries').delete().eq('id', activeEntryId);
+                if(modal) modal.style.display = 'none';
+                fetchEntries();
+            } catch(err) { alert('Gagal: ' + err.message); }
+        });
+    }
+}
+
+function openEntryModal(entry = null, defDate = null, defH = 9, defM = 0) {
+    const modal = document.getElementById('entryModal');
+    const form = document.getElementById('entryForm');
+    const title = document.getElementById('modalTitle');
+    const delBtn = document.getElementById('btnDeleteEntry');
+    
+    if(form) form.reset();
+    
+    if (entry) {
+        activeEntryId = entry.id;
+        if(title) title.textContent = 'Edit Time Entry';
+        if(delBtn) delBtn.style.display = 'block';
+
+        let dObj = entry.work_date ? new Date(entry.work_date) : new Date(entry.start_time);
+        const formDate = document.getElementById('formDate');
+        if(formDate) formDate.value = dObj.getFullYear() + '-' + String(dObj.getMonth()+1).padStart(2,'0') + '-' + String(dObj.getDate()).padStart(2,'0');
+        
+        const sDt = new Date(entry.start_time);
+        const formStart = document.getElementById('formStart');
+        if(formStart) formStart.value = String(sDt.getHours()).padStart(2,'0') + ':' + String(sDt.getMinutes()).padStart(2,'0');
+        
+        const eDt = new Date(sDt.getTime() + (entry.duration_seconds * 1000));
+        const formEnd = document.getElementById('formEnd');
+        if(formEnd) formEnd.value = String(eDt.getHours()).padStart(2,'0') + ':' + String(eDt.getMinutes()).padStart(2,'0');
+
+        const formEmp = document.getElementById('formEmp');
+        if(isAdmin && formEmp) formEmp.value = entry.employee_id;
+        
+        const formProj = document.getElementById('formProj');
+        if(formProj) formProj.value = entry.project_id;
+        
+        const tSel = document.getElementById('formTask');
+        if(tSel) {
+            tSel.innerHTML = '<option value="">No Task</option>';
+            if(entry.project_id) {
+                const pTasks = tasksData.filter(t => t.project_id === entry.project_id);
+                pTasks.forEach(t => tSel.innerHTML += '<option value="' + t.id + '">' + t.task_name + '</option>');
+            }
+            tSel.value = entry.task_id || '';
+        }
+        
+        const formNotes = document.getElementById('formNotes');
+        if(formNotes) formNotes.value = entry.notes || '';
+
+    } else {
+        activeEntryId = null;
+        if(title) title.textContent = 'Add Time Entry';
+        if(delBtn) delBtn.style.display = 'none';
+        
+        const formDate = document.getElementById('formDate');
+        if (defDate && formDate) {
+            formDate.value = defDate;
+        } else if (formDate) {
+            const n = new Date();
+            formDate.value = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
+        }
+
+        const formStart = document.getElementById('formStart');
+        if(formStart) formStart.value = String(defH).padStart(2,'0') + ':' + String(defM).padStart(2,'0');
+        
+        const formEnd = document.getElementById('formEnd');
+        if(formEnd) formEnd.value = String(defH+1).padStart(2,'0') + ':' + String(defM).padStart(2,'0');
+        
+        const formEmp = document.getElementById('formEmp');
+        if(isAdmin && formEmp) formEmp.value = currentEmployeeId;
+    }
+
+    if(modal) modal.style.display = 'flex';
+}
