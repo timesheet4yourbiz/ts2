@@ -9,23 +9,39 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; min-width: 1280px; }
+        .bg-white, .glass-card { background: white; box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.03), 0 2px 8px -2px rgba(0, 0, 0, 0.02) !important; border: 1px solid rgba(226, 232, 240, 0.6) !important; border-radius: 16px !important; transition: all 0.3s ease; }
+        .bg-white:hover, .glass-card:hover { box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.04) !important; transform: translateY(-2px); }
+        
         .topbar { height: 60px; background: rgba(255,255,255,.97); border-bottom: 1px solid #e4edf7; display: flex; align-items: center; padding: 0 24px; gap: 22px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 12px rgba(7,26,59,.04); }
-        .brand-mark { width: 34px; height: 38px; position: relative; display: grid; place-items: center; }
+        .brand { min-width: 195px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #071a3b; }
+        .brand-mark { width: 34px; height: 38px; position: relative; flex: 0 0 auto; display: grid; place-items: center; }
         .brand-mark::before, .brand-mark::after { content: ""; position: absolute; width: 19px; height: 19px; transform: rotate(30deg) skew(-4deg); border-radius: 4px; }
         .brand-mark::before { background: linear-gradient(135deg, #0d6efd 0 52%, #f59e0b 52% 100%); top: 3px; left: 3px; }
         .brand-mark::after { background: linear-gradient(135deg, #0b2d60 0 52%, #ef4444 52% 100%); bottom: 3px; right: 1px; }
-        .nav-link { padding: 8px 12px; border-radius: 8px; color: #122b54; text-decoration: none; font-size: 13px; font-weight: 600; transition: .2s; }
+        .brand-copy strong { display: block; font-size: 20px; line-height: 18px; letter-spacing: -.8px; font-weight: 800; }
+        .brand-copy strong span { color: #0d6efd; }
+        .brand-copy small { display: block; margin-top: 3px; font-size: 9px; font-weight: 800; letter-spacing: .35px; color: #34527d; }
+        .nav { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0; }
+        .nav-link { height: 40px; padding: 0 11px; border-radius: 8px; display: inline-flex; align-items: center; gap: 7px; color: #122b54; text-decoration: none; font-size: 12px; font-weight: 600; white-space: nowrap; transition: .2s ease; }
+        .nav-link:hover { background: #f0f6ff; }
         .nav-link.active { color: white; background: linear-gradient(135deg, #0d6efd, #187bff); box-shadow: 0 6px 14px rgba(13,110,253,.22); }
-        .hero { background: linear-gradient(90deg, rgba(200,230,255,.9) 0%, rgba(236,247,255,.8) 40%, rgba(7,48,103,.95) 100%), url("https://images.unsplash.com/photo-1541888087819-3315a6b09335?auto=format&fit=crop&w=1800&q=80") center/cover; border-radius: 12px; border: 1px solid #d8e7f7; }
-        .glass-card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -4px rgba(0,0,0,0.03); }
+        .nav-icon { width: 16px; height: 16px; display: inline-grid; place-items: center; font-size: 15px; }
+        .top-actions { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+        .icon-btn { width: 40px; height: 40px; border: 1px solid #d9e5f3; background: #fff; border-radius: 9px; color: #071a3b; display: grid; place-items: center; position: relative; cursor: pointer; }
+        .profile { height: 40px; display: flex; align-items: center; gap: 9px; padding-left: 3px; cursor: pointer; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: white; background: #1677ff; font-weight: 700; font-size: 15px; }
+        .profile-text { line-height: 1.15; }
+        .profile-text strong { display: block; font-size: 11px; }
+        .profile-text small { display: block; margin-top: 2px; color: #60779b; font-size: 9px; }
+
         table { border-collapse: separate; border-spacing: 0; width: 100%; }
-        th { border-bottom: 2px solid #f1f5f9; padding: 16px; text-align: left; background: white; color: #64748b; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+        th { border-bottom: 2px solid #f1f5f9; padding: 16px; text-align: left; background: #f8fafc; color: #64748b; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
         td { border-bottom: 1px solid #f1f5f9; padding: 12px 16px; font-size: 13px; color: #1e293b; background: white; }
         tr:hover td { background-color: #f8fafc; }
         
-        /* Badges & Modals */
         .status-active { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; padding: 4px 10px; border-radius: 99px; font-size: 10px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
         .status-inactive { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; padding: 4px 10px; border-radius: 99px; font-size: 10px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; }
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,23,42,0.6); display: none; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(4px); }
@@ -36,56 +52,63 @@
         .tab-btn.active { color: #2563eb; border-bottom-color: #2563eb; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .btn-primary { background-color: #2563eb; color: white; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: background-color 0.2s; border-radius: 6px; padding: 8px 16px;}
+        .btn-primary:hover { background-color: #1d4ed8; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
     <header class="topbar">
-        <a class="flex items-center gap-2 no-underline" href="dashboard.html">
+        <a class="brand" href="dashboard.html" aria-label="WORKTIME">
             <div class="brand-mark"></div>
-            <div class="leading-tight">
-                <strong class="text-lg font-extrabold text-[#071a3b] tracking-tight">CRANE<span class="text-blue-600">TRACK</span></strong>
-                <small class="block text-[9px] font-bold text-[#34527d] tracking-wider">TIME | PROJECT | TEAM</small>
+            <div class="brand-copy">
+                <strong>CRANE<span>TRACK</span></strong>
+                <small>TIME | PROJECT | TEAM</small>
             </div>
         </a>
-        <nav class="flex-1 flex items-center gap-1 ml-4">
-            <a href="dashboard.html" class="nav-link">Dashboard</a>
-            <a href="time-tracking.html" class="nav-link">Time Tracking</a>
-            <a href="timesheet.html" class="nav-link">Timesheet</a>
-            <a href="calendar.html" class="nav-link">Calendar</a>
-            <a href="projects.html" class="nav-link">Projects</a>
-            <a href="tags.html" class="nav-link">Tags</a>
-            <a href="clients.html" class="nav-link">Clients</a>
-            <a href="team.html" class="nav-link active">Team</a>
-            <a href="reports.html" class="nav-link">Reports</a>
+
+        <nav class="nav" id="mainNav" aria-label="Main navigation">
+            <a class="nav-link" href="dashboard.html"><span class="nav-icon">⌂</span>Dashboard</a>
+            <a class="nav-link" href="time-tracking.html"><span class="nav-icon">◷</span>Time Tracking</a>
+            <a class="nav-link" href="timesheet.html"><span class="nav-icon">▣</span>Timesheet</a>
+            <a class="nav-link" href="calendar.html"><span class="nav-icon">▦</span>Calendar</a>
+            <a class="nav-link" href="projects.html"><span class="nav-icon">📁</span>Projects</a>
+            <a class="nav-link" href="tasks.html"><span class="nav-icon">☷</span>Tasks</a>
+            <a class="nav-link" href="clients.html"><span class="nav-icon">♙</span>Clients</a>
+            <a class="nav-link active" href="team.html"><span class="nav-icon">♧</span>Team</a>
+            <a class="nav-link" href="reports.html"><span class="nav-icon">▥</span>Reports</a>
         </nav>
-        <div class="flex items-center gap-4">
-            <button class="text-gray-400 hover:text-blue-600">🔍</button>
-            <div class="border border-gray-200 rounded-lg px-3 py-1.5 flex items-center gap-2 text-xs font-semibold text-[#19325c] bg-white">
-                📅 <span id="topDateText">Loading...</span>
+
+        <div class="top-actions">
+            <button class="icon-btn relative" type="button" title="Notifications">
+                🔔
+                <span class="notification-dot absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border border-white">3</span>
+            </button>
+
+            <div class="profile relative group">
+                <div class="avatar" id="avatarInitial">M</div>
+                <div class="profile-text hidden sm:block">
+                    <strong id="profileName">USER</strong>
+                    <small id="profileRole">Loading...</small>
+                </div>
+                <span class="ml-1 text-gray-400">⌄</span>
+                
+                <div class="absolute right-0 top-full mt-2 w-56 bg-white !border-gray-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
+                    <div class="px-4 py-3 border-b border-gray-50 bg-slate-50/50">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Signed in as</p>
+                        <p class="text-sm font-bold text-slate-800 truncate" id="dropdownEmail">user@email.com</p>
+                    </div>
+                    <a href="profile.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors">👤 My Profile</a>
+                    <a href="settings.html" class="block px-4 py-3 text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors border-b border-gray-50">⚙️ Settings</a>
+                    <button id="logoutBtn" class="w-full text-left px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors">⏻ Logout</button>
+                </div>
             </div>
-            <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold" id="avatarInitial">M</div>
         </div>
     </header>
 
-    <main class="p-6 max-w-[1480px] mx-auto">
-        <!-- Hero -->
-        <section class="hero flex items-center justify-between p-8 mb-6">
-            <div class="flex items-center gap-4 relative z-10">
-                <div>
-                    <div class="flex items-center gap-2 text-blue-700 font-bold text-xs uppercase tracking-wider mb-2">
-                        👥 TEAM MANAGEMENT
-                    </div>
-                    <h1 class="text-4xl font-extrabold text-[#0b1d44] m-0 tracking-tight">Employees</h1>
-                    <p class="text-[#0b1d44] font-medium text-sm mt-2 mb-0 opacity-80">Manage your team members, roles and access to the WORKTIME system.</p>
-                </div>
-            </div>
-            <div class="text-white/90 text-sm font-medium leading-tight tracking-wide text-left relative z-10">
-                PLAN<br>EXECUTE<br>MONITOR<br><span class="text-amber-400 font-bold">A</span>CHIEVE
-            </div>
-        </section>
+    <main class="p-6 max-w-[1480px] mx-auto space-y-6">
 
-        <!-- KPI Cards -->
-        <section class="grid grid-cols-3 gap-6 mb-6">
+        <section class="grid grid-cols-3 gap-6">
             <div class="glass-card p-5 flex items-center gap-4">
                 <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-2xl">👥</div>
                 <div class="flex-1">
@@ -109,32 +132,30 @@
             </div>
         </section>
 
-        <!-- Tab Navigation -->
-        <div class="flex border-b border-gray-200 mb-6">
+        <div class="flex border-b border-gray-200 mt-6">
             <button class="tab-btn active" data-tab="membersView">Members List</button>
             <button class="tab-btn" data-tab="groupsView">Team Groups</button>
         </div>
 
-        <!-- ================= VIEW: MEMBERS ================= -->
+        <!-- VIEW: MEMBERS -->
         <div id="membersView">
-            <!-- Filter Bar -->
             <section class="flex justify-between items-center mb-6">
                 <div class="flex items-center gap-3 w-3/4">
                     <div class="relative w-full max-w-sm">
                         <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
-                        <input type="text" id="searchMember" placeholder="Search by name or email..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none">
+                        <input type="text" id="searchMember" placeholder="Search by name or email..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none">
                     </div>
-                    <select id="filterRole" class="border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-700 outline-none focus:border-blue-500">
+                    <select id="filterRole" class="border border-gray-300 rounded-lg px-4 py-2 text-sm text-gray-700 outline-none focus:border-blue-500">
                         <option value="all">All Roles</option>
                         <option value="Admin">Admin</option>
                         <option value="Manager">Manager</option>
                         <option value="Supervisor">Supervisor</option>
                         <option value="Employee">Employee</option>
                     </select>
-                    <select id="filterDept" class="border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-700 outline-none focus:border-blue-500">
+                    <select id="filterDept" class="border border-gray-300 rounded-lg px-4 py-2 text-sm text-gray-700 outline-none focus:border-blue-500">
                         <option value="all">All Departments</option>
                     </select>
-                    <select id="filterStatus" class="border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-700 outline-none focus:border-blue-500">
+                    <select id="filterStatus" class="border border-gray-300 rounded-lg px-4 py-2 text-sm text-gray-700 outline-none focus:border-blue-500">
                         <option value="all">All Status</option>
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
@@ -143,16 +164,15 @@
                 
                 <div class="flex items-center gap-3">
                     <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" style="display: none;">
-                    <button id="btnImportExcel" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg p-2.5 shadow-sm">
+                    <button id="btnImportExcel" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg p-2 shadow-sm">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
                     </button>
-                    <button id="btnAddMember" class="bg-blue-600 text-white font-semibold text-sm px-5 py-2.5 rounded-lg shadow-sm hover:bg-blue-700">
+                    <button id="btnAddMember" class="btn-primary">
                         + Add Member
                     </button>
                 </div>
             </section>
 
-            <!-- Table -->
             <section class="glass-card overflow-hidden">
                 <div class="overflow-x-auto">
                     <table>
@@ -184,14 +204,14 @@
             </section>
         </div>
 
-        <!-- ================= VIEW: GROUPS ================= -->
+        <!-- VIEW: GROUPS -->
         <div id="groupsView" style="display:none;">
             <section class="flex justify-between items-center mb-6">
                 <div class="relative w-full max-w-sm">
                     <span class="absolute left-3 top-2.5 text-gray-400">🔍</span>
-                    <input type="text" id="searchGroup" placeholder="Search group..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none">
+                    <input type="text" id="searchGroup" placeholder="Search group..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none">
                 </div>
-                <button id="btnAddGroup" class="bg-blue-600 text-white font-semibold text-sm px-5 py-2.5 rounded-lg shadow-sm hover:bg-blue-700">+ Add New Group</button>
+                <button id="btnAddGroup" class="btn-primary">+ Add New Group</button>
             </section>
             <section class="glass-card overflow-hidden">
                 <table>
@@ -279,7 +299,7 @@
                     </div>
                 </div>
                 <div class="flex justify-end gap-3">
-                    <button type="submit" id="btnSaveMember" class="bg-blue-600 text-white font-bold text-sm px-6 py-2.5 rounded-lg hover:bg-blue-700">Save Member</button>
+                    <button type="submit" id="btnSaveMember" class="btn-primary">Save Member</button>
                 </div>
             </form>
         </div>
@@ -315,12 +335,13 @@
                     </select>
                 </div>
                 <div class="flex justify-end gap-3">
-                    <button type="submit" id="btnSaveGroup" class="bg-blue-600 text-white font-bold text-sm px-6 py-2.5 rounded-lg hover:bg-blue-700">Save Group</button>
+                    <button type="submit" id="btnSaveGroup" class="btn-primary">Save Group</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <script type="module" src="../js/sidebar.js"></script>
     <script type="module" src="../js/employees.js"></script>
 </body>
 </html>
