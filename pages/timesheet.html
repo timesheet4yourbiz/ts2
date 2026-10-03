@@ -5,54 +5,27 @@
     <meta name="viewport" content="width=1280">
     <title>Timesheet | WORKTIME</title>
     
-    <!-- Script CDN -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- CSS Make-Up Premium & Top Menu Standard -->
     <style>
-        body {
-            background-color: #f8fafc;
-            -webkit-font-smoothing: antialiased;
-            min-width: 1280px !important; 
-            overflow-x: auto !important;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            margin: 0;
-        }
-
-        .bg-white, .glass-card {
-            background: white;
-            box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.03), 0 2px 8px -2px rgba(0, 0, 0, 0.02) !important;
-            border: 1px solid rgba(226, 232, 240, 0.6) !important;
-            border-radius: 16px !important;
-            transition: all 0.3s ease;
-        }
-
-        .bg-white:hover, .glass-card:hover {
-            box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.04) !important;
-            transform: translateY(-2px);
-        }
-
+        body { background-color: #f8fafc; -webkit-font-smoothing: antialiased; min-width: 1280px !important; overflow-x: auto !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; }
+        .bg-white, .glass-card { background: white; box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.03), 0 2px 8px -2px rgba(0, 0, 0, 0.02) !important; border: 1px solid rgba(226, 232, 240, 0.6) !important; border-radius: 16px !important; transition: all 0.3s ease; }
+        .bg-white:hover, .glass-card:hover { box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.04) !important; transform: translateY(-2px); }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
         h3, .text-slate-800 { letter-spacing: -0.01em; }
-        
         table { border-collapse: separate; border-spacing: 0; width: 100%; }
         th { border-bottom: 2px solid #f1f5f9 !important; background: #f8fafc; color: #475569; font-weight: 700; font-size: 11px; text-transform: uppercase; padding: 10px; letter-spacing: 0.05em; text-align: left; }
         td { border-bottom: 1px solid #f8fafc !important; padding: 10px; text-align: left; }
-
-        /* Input Khas Timesheet */
         .ts-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px; text-align: center; font-size: 13px; outline: none; transition: .2s; }
         .ts-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
         .ts-input.zero { color: #94a3b8; background: #f8fafc; }
-
-        /* CSS Top Menu Standard (Dikemaskini) */
         .topbar { height: 60px; background: rgba(255,255,255,.97); border-bottom: 1px solid #e4edf7; display: flex; align-items: center; padding: 0 24px; gap: 22px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 12px rgba(7,26,59,.04) !important; }
         .brand { min-width: 195px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #071a3b; }
         .brand-mark { width: 34px; height: 38px; position: relative; flex: 0 0 auto; display: grid; place-items: center; }
@@ -79,7 +52,6 @@
 
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
 
-    <!-- TOP NAVIGATION STANDARD -->
     <header class="topbar">
         <a class="brand" href="dashboard.html" aria-label="WORKTIME">
             <div class="brand-mark"></div>
@@ -102,8 +74,6 @@
         </nav>
 
         <div class="top-actions">
-            <!-- Tarikh mingguan top menu telah dibuang -->
-
             <button class="icon-btn relative" type="button" title="Notifications">
                 🔔
                 <span class="notification-dot absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border border-white">3</span>
@@ -130,10 +100,8 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT TIMESHEET -->
     <main class="p-6 max-w-[1480px] mx-auto space-y-6">
         
-        <!-- KPI Cards (Terus papar tanpa Hero Banner) -->
         <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
             <div class="glass-card p-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -161,7 +129,6 @@
             </div>
         </section>
 
-        <!-- Filter Bar Bawah -->
         <section class="flex flex-wrap justify-between items-center gap-4 bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
             <div class="flex items-center gap-3 flex-1">
                 <select class="border border-gray-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-gray-50 outline-none focus:ring-1 focus:ring-blue-500"><option>My Timesheet</option></select>
@@ -177,7 +144,6 @@
             </div>
         </section>
 
-        <!-- Timesheet Table -->
         <section class="glass-card overflow-hidden">
             <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-white">
                 <div>
@@ -201,7 +167,6 @@
                         <tr class="bg-slate-50/50">
                             <th class="w-10 text-center">#</th>
                             <th class="w-64">Projects</th>
-                            <th class="w-48">Task</th>
                             <th class="w-32">Tag</th>
                             <th class="w-48">Remark</th>
                             <th class="w-20 text-center">MON<br><span class="text-[9px] text-gray-400 font-normal" id="thMon">-</span></th>
@@ -216,11 +181,11 @@
                         </tr>
                     </thead>
                     <tbody id="timesheetTableBody" class="divide-y divide-gray-50">
-                        <tr><td colspan="14" class="text-center py-8 text-gray-400">Loading table...</td></tr>
+                        <tr><td colspan="13" class="text-center py-8 text-gray-400">Loading table...</td></tr>
                     </tbody>
                     <tfoot>
                         <tr class="bg-blue-50/30">
-                            <td colspan="5" class="text-right font-extrabold text-slate-800 pr-4">TOTAL (Hours)</td>
+                            <td colspan="4" class="text-right font-extrabold text-slate-800 pr-4">TOTAL (Hours)</td>
                             <td class="text-center font-bold text-slate-800" id="tfMon">0:00</td>
                             <td class="text-center font-bold text-slate-800" id="tfTue">0:00</td>
                             <td class="text-center font-bold text-slate-800" id="tfWed">0:00</td>
@@ -236,7 +201,6 @@
             </div>
         </section>
 
-        <!-- Bottom Charts & Actions -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div class="glass-card p-5">
                 <h3 class="text-xs font-extrabold text-slate-800 uppercase mb-4 tracking-wider">Weekly Hours By Project</h3>
@@ -257,7 +221,6 @@
         </section>
     </main>
 
-    <!-- Panggil enjin navigasi dan enjin timesheet -->
     <script type="module" src="../js/sidebar.js"></script>
     <script type="module" src="../js/timesheet.js"></script>
 </body>
