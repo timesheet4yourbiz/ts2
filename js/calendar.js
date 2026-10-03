@@ -6,6 +6,7 @@ let currentDate = new Date();
 let viewStart = new Date();
 let viewEnd = new Date();
 let weekDays = [];
+let currentView = 'week'; // 'week' or 'month'
 
 let employeesData = [];
 let projectsData = [];
@@ -15,7 +16,7 @@ let entriesData = [];
 let activeEntryId = null;
 const START_HOUR = 8; 
 const END_HOUR = 19;  
-const ROW_HEIGHT = 60; // 60px per jam
+const ROW_HEIGHT = 60; 
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -46,25 +47,54 @@ document.addEventListener('DOMContentLoaded', async () => {
             if(formEmpContainer) formEmpContainer.style.display = 'none';
         }
 
-        setupCalendarBase();
         await loadDropdowns();
-        calculateWeekRange();
+        calculateDateRange();
         await fetchEntries();
 
-        const btnPrevWeek = document.getElementById('btnPrevWeek');
-        const btnNextWeek = document.getElementById('btnNextWeek');
+        const btnPrevNav = document.getElementById('btnPrevNav');
+        const btnNextNav = document.getElementById('btnNextNav');
         const btnToday = document.getElementById('btnToday');
         const filterEmp = document.getElementById('filterEmp');
         const filterProj = document.getElementById('filterProj');
 
-        if (btnPrevWeek) btnPrevWeek.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() - 7); calculateWeekRange(); fetchEntries(); });
-        if (btnNextWeek) btnNextWeek.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() + 7); calculateWeekRange(); fetchEntries(); });
-        if (btnToday) btnToday.addEventListener('click', () => { currentDate = new Date(); calculateWeekRange(); fetchEntries(); });
+        if (btnPrevNav) btnPrevNav.addEventListener('click', () => { 
+            if(currentView === 'week') currentDate.setDate(currentDate.getDate() - 7);
+            else currentDate.setMonth(currentDate.getMonth() - 1);
+            calculateDateRange(); fetchEntries(); 
+        });
+        
+        if (btnNextNav) btnNextNav.addEventListener('click', () => { 
+            if(currentView === 'week') currentDate.setDate(currentDate.getDate() + 7);
+            else currentDate.setMonth(currentDate.getMonth() + 1);
+            calculateDateRange(); fetchEntries(); 
+        });
+        
+        if (btnToday) btnToday.addEventListener('click', () => { 
+            currentDate = new Date(); calculateDateRange(); fetchEntries(); 
+        });
+        
         if (filterEmp) filterEmp.addEventListener('change', fetchEntries);
         if (filterProj) filterProj.addEventListener('change', fetchEntries);
 
-        setupModal();
+        // Binding Toggles
+        const btnViewWeek = document.getElementById('btnViewWeek');
+        const btnViewMonth = document.getElementById('btnViewMonth');
+        
+        if(btnViewWeek) btnViewWeek.addEventListener('click', () => {
+            currentView = 'week';
+            btnViewWeek.className = 'view-btn active';
+            if(btnViewMonth) btnViewMonth.className = 'view-btn inactive';
+            calculateDateRange(); fetchEntries();
+        });
+        
+        if(btnViewMonth) btnViewMonth.addEventListener('click', () => {
+            currentView = 'month';
+            btnViewMonth.className = 'view-btn active';
+            if(btnViewWeek) btnViewWeek.className = 'view-btn inactive';
+            calculateDateRange(); fetchEntries();
+        });
 
+        setupModal();
         setInterval(updateCurrentTimeLine, 60000);
 
     } catch (err) {
@@ -72,41 +102,70 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-function calculateWeekRange() {
-    const curr = new Date(currentDate);
-    const dayOfWeek = curr.getDay();
-    const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+function calculateDateRange() {
+    const formatFull = (d) => d.getDate() + ' ' + d.toLocaleString('en-US', {month:'short'}) + ' ' + d.getFullYear();
     
-    viewStart = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + diffToMonday);
-    viewStart.setHours(0, 0, 0, 0);
-    
-    viewEnd = new Date(viewStart);
-    viewEnd.setDate(viewStart.getDate() + 6);
-    viewEnd.setHours(23, 59, 59, 999);
+    if (currentView === 'week') {
+        const curr = new Date(currentDate);
+        const dayOfWeek = curr.getDay();
+        const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        
+        viewStart = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + diffToMonday);
+        viewStart.setHours(0, 0, 0, 0);
+        
+        viewEnd = new Date(viewStart);
+        viewEnd.setDate(viewStart.getDate() + 6);
+        viewEnd.setHours(23, 59, 59, 999);
 
-    weekDays = [];
-    for (let i = 0; i < 7; i++) {
-        const d = new Date(viewStart);
-        d.setDate(viewStart.getDate() + i);
-        weekDays.push(d);
+        weekDays = [];
+        for (let i = 0; i < 7; i++) {
+            const d = new Date(viewStart);
+            d.setDate(viewStart.getDate() + i);
+            weekDays.push(d);
+        }
+
+        const dStr = viewStart.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ' - ' + viewEnd.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+        const currentPeriodText = document.getElementById('currentPeriodText');
+        if(currentPeriodText) currentPeriodText.textContent = dStr;
+        
+    } else {
+        // Logik Paparan Bulan (Mengikut Isnin / Sama macam reports.js)
+        const curr = new Date(currentDate);
+        const year = curr.getFullYear();
+        const month = curr.getMonth() + 1;
+        
+        let weeks = [];
+        for (let day = 1; day <= 31; day++) {
+            let d = new Date(year, month - 1, day);
+            if (d.getMonth() !== month - 1) break; 
+            
+            if (d.getDay() === 1) { // 1 = Isnin
+                let start = new Date(d);
+                start.setHours(0,0,0,0);
+                
+                let end = new Date(start);
+                end.setDate(start.getDate() + 6);
+                end.setHours(23,59,59,999);
+                
+                weeks.push({ start: start, end: end });
+            }
+        }
+        
+        if(weeks.length > 0) {
+            viewStart = weeks[0].start;
+            viewEnd = weeks[weeks.length - 1].end;
+            
+            weekDays = [];
+            let tempD = new Date(viewStart);
+            while(tempD <= viewEnd) {
+                weekDays.push(new Date(tempD));
+                tempD.setDate(tempD.getDate() + 1);
+            }
+            
+            const currentPeriodText = document.getElementById('currentPeriodText');
+            if(currentPeriodText) currentPeriodText.textContent = formatFull(viewStart) + ' - ' + formatFull(viewEnd);
+        }
     }
-
-    const dStr = viewStart.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ' - ' + viewEnd.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-    const currentPeriodText = document.getElementById('currentPeriodText');
-    if(currentPeriodText) currentPeriodText.textContent = dStr;
-
-    renderCalendarHeaders();
-}
-
-function setupCalendarBase() {
-    const timeCol = document.getElementById('calTimeCol');
-    if(!timeCol) return;
-    let timeHtml = '';
-    for(let i = START_HOUR; i <= END_HOUR; i++) {
-        const h = i.toString().padStart(2, '0') + ':00';
-        timeHtml += '<div class="cal-time-slot">' + h + '</div>';
-    }
-    timeCol.innerHTML = timeHtml;
 }
 
 function renderCalendarHeaders() {
@@ -114,19 +173,27 @@ function renderCalendarHeaders() {
     if(!header) return;
     const daysArr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     
-    let html = '<div class="cal-header-cell flex items-center justify-center text-[10px]">GMT+8</div>';
-    
-    const todayStr = new Date().toDateString();
+    if (currentView === 'week') {
+        header.style.gridTemplateColumns = '60px repeat(7, 1fr)';
+        let html = '<div class="cal-header-cell flex items-center justify-center text-[10px]">GMT+8</div>';
+        const todayStr = new Date().toDateString();
 
-    weekDays.forEach((d, i) => {
-        const isToday = d.toDateString() === todayStr;
-        const cls = isToday ? 'cal-header-cell today' : 'cal-header-cell';
-        html += '<div class="' + cls + '">' + daysArr[i] + 
-                '<span class="cal-header-date">' + d.getDate() + '</span></div>';
-    });
-
-    header.innerHTML = html;
-    updateCurrentTimeLine();
+        weekDays.forEach((d, i) => {
+            const isToday = d.toDateString() === todayStr;
+            const cls = isToday ? 'cal-header-cell today' : 'cal-header-cell';
+            html += '<div class="' + cls + '">' + daysArr[i] + 
+                    '<span class="cal-header-date">' + d.getDate() + '</span></div>';
+        });
+        header.innerHTML = html;
+        
+    } else {
+        header.style.gridTemplateColumns = 'repeat(7, minmax(0, 1fr))';
+        let html = '';
+        daysArr.forEach(d => {
+            html += '<div class="cal-header-cell flex items-center justify-center bg-slate-100 py-3">' + d + '</div>';
+        });
+        header.innerHTML = html;
+    }
 }
 
 async function loadDropdowns() {
@@ -196,6 +263,7 @@ async function fetchEntries() {
     }
 
     entriesData = data || [];
+    renderCalendarHeaders();
     renderGridAndEvents();
     updateKPIs();
 }
@@ -210,97 +278,182 @@ const colors = [
 
 function renderGridAndEvents() {
     const gridArea = document.getElementById('calGridArea');
-    if(!gridArea) return;
+    const timeCol = document.getElementById('calTimeCol');
+    const calBody = document.getElementById('calBody');
+    if(!gridArea || !timeCol || !calBody) return;
     
-    let html = '';
-    for(let i = 0; i < 7; i++) {
-        const dStr = weekDays[i].getFullYear() + '-' + String(weekDays[i].getMonth()+1).padStart(2,'0') + '-' + String(weekDays[i].getDate()).padStart(2,'0');
-        html += '<div class="cal-day-col" data-date="' + dStr + '"></div>';
-    }
-    
-    html += '<div id="currentTimeLine" class="current-time-line" style="display: none;"></div>';
-    gridArea.innerHTML = html;
-
-    entriesData.forEach(entry => {
-        let entryDate;
-        if(entry.work_date) {
-            const pts = entry.work_date.split('-');
-            entryDate = new Date(parseInt(pts[0]), parseInt(pts[1])-1, parseInt(pts[2]));
-        } else {
-            entryDate = new Date(entry.start_time);
-        }
-
-        const dStr = entryDate.getFullYear() + '-' + String(entryDate.getMonth()+1).padStart(2,'0') + '-' + String(entryDate.getDate()).padStart(2,'0');
-        const col = gridArea.querySelector('.cal-day-col[data-date="' + dStr + '"]');
+    if (currentView === 'week') {
+        calBody.style.display = 'grid';
+        calBody.style.gridTemplateColumns = '60px 1fr';
+        timeCol.style.display = 'flex';
         
-        if (col) {
-            let startDt = new Date(entry.start_time);
-            let startH = startDt.getHours() + (startDt.getMinutes() / 60);
-            
-            if(startDt.getUTCHours() === 0 && startDt.getUTCMinutes() === 0 && startDt.getUTCSeconds() === 0) {
-                startH = 9.0; 
-            }
-            
-            const durHrs = (entry.duration_seconds || 3600) / 3600;
-            
-            let topPx = (startH - START_HOUR) * ROW_HEIGHT;
-            let heightPx = durHrs * ROW_HEIGHT;
-            
-            if (topPx < 0) { heightPx += topPx; topPx = 0; }
-            if (topPx + heightPx > (END_HOUR - START_HOUR + 1) * ROW_HEIGHT) {
-                heightPx = ((END_HOUR - START_HOUR + 1) * ROW_HEIGHT) - topPx;
+        let timeHtml = '';
+        for(let i = START_HOUR; i <= END_HOUR; i++) {
+            const h = i.toString().padStart(2, '0') + ':00';
+            timeHtml += '<div class="cal-time-slot">' + h + '</div>';
+        }
+        timeCol.innerHTML = timeHtml;
+
+        gridArea.style.gridTemplateColumns = 'repeat(7, minmax(0, 1fr))';
+        gridArea.style.gridAutoRows = 'auto';
+        gridArea.style.backgroundImage = 'linear-gradient(to bottom, #f1f5f9 1px, transparent 1px)';
+        
+        let html = '';
+        for(let i = 0; i < 7; i++) {
+            const dStr = weekDays[i].getFullYear() + '-' + String(weekDays[i].getMonth()+1).padStart(2,'0') + '-' + String(weekDays[i].getDate()).padStart(2,'0');
+            html += '<div class="cal-day-col" data-date="' + dStr + '"></div>';
+        }
+        
+        html += '<div id="currentTimeLine" class="current-time-line" style="display: none;"></div>';
+        gridArea.innerHTML = html;
+
+        entriesData.forEach(entry => {
+            let entryDate;
+            if(entry.work_date) {
+                const pts = entry.work_date.split('-');
+                entryDate = new Date(parseInt(pts[0]), parseInt(pts[1])-1, parseInt(pts[2]));
+            } else {
+                entryDate = new Date(entry.start_time);
             }
 
-            if (heightPx > 5) {
+            const dStr = entryDate.getFullYear() + '-' + String(entryDate.getMonth()+1).padStart(2,'0') + '-' + String(entryDate.getDate()).padStart(2,'0');
+            const col = gridArea.querySelector('.cal-day-col[data-date="' + dStr + '"]');
+            
+            if (col) {
+                let startDt = new Date(entry.start_time);
+                let startH = startDt.getHours() + (startDt.getMinutes() / 60);
+                
+                if(startDt.getUTCHours() === 0 && startDt.getUTCMinutes() === 0 && startDt.getUTCSeconds() === 0) {
+                    startH = 9.0; 
+                }
+                
+                const durHrs = (entry.duration_seconds || 3600) / 3600;
+                let topPx = (startH - START_HOUR) * ROW_HEIGHT;
+                let heightPx = durHrs * ROW_HEIGHT;
+                
+                if (topPx < 0) { heightPx += topPx; topPx = 0; }
+                if (topPx + heightPx > (END_HOUR - START_HOUR + 1) * ROW_HEIGHT) {
+                    heightPx = ((END_HOUR - START_HOUR + 1) * ROW_HEIGHT) - topPx;
+                }
+
+                if (heightPx > 5) {
+                    const colorObj = colors[entry.project_id ? (entry.project_id.charCodeAt(0) % colors.length) : 0];
+                    const pName = entry.project ? entry.project.project_name : 'No Project';
+                    const tName = entry.task ? entry.task.task_name : '';
+                    const eName = entry.employee ? entry.employee.name : '';
+                    
+                    const titleHtml = isAdmin ? '[' + eName.split(' ')[0] + '] ' + pName : pName;
+                    const hMins = Math.floor(durHrs) + 'h ' + Math.round((durHrs % 1) * 60) + 'm';
+
+                    const evDiv = document.createElement('div');
+                    evDiv.className = 'cal-event';
+                    evDiv.style.top = topPx + 'px';
+                    evDiv.style.height = heightPx + 'px';
+                    evDiv.style.backgroundColor = colorObj.bg;
+                    evDiv.style.borderColor = colorObj.border;
+                    evDiv.style.color = colorObj.text;
+                    
+                    evDiv.innerHTML = '<div class="cal-event-title">' + titleHtml + '</div>' +
+                                      '<div class="cal-event-time">' + tName + '</div>' +
+                                      '<div class="cal-event-time" style="margin-top:2px;">⏱ ' + hMins + '</div>';
+
+                    evDiv.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openEntryModal(entry);
+                    });
+
+                    col.appendChild(evDiv);
+                }
+            }
+        });
+
+        gridArea.querySelectorAll('.cal-day-col').forEach(col => {
+            col.addEventListener('click', (e) => {
+                if(e.target === col) {
+                    const rect = col.getBoundingClientRect();
+                    const clickY = e.clientY - rect.top;
+                    const clickHrs = START_HOUR + (clickY / ROW_HEIGHT);
+                    const clickH = Math.floor(clickHrs);
+                    const clickM = Math.floor((clickHrs % 1) * 60);
+                    
+                    const dateStr = col.getAttribute('data-date');
+                    openEntryModal(null, dateStr, clickH, clickM);
+                }
+            });
+        });
+
+        updateCurrentTimeLine();
+
+    } else {
+        // VIEW MONTH
+        calBody.style.display = 'block';
+        timeCol.style.display = 'none';
+
+        let html = '';
+        weekDays.forEach(d => {
+            const dStr = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+            const isToday = d.toDateString() === new Date().toDateString();
+            const bgCls = isToday ? 'bg-blue-50/50' : 'bg-white';
+            const txtCls = isToday ? 'text-blue-600 font-extrabold' : 'text-slate-400 font-bold';
+            
+            html += '<div class="month-day-cell ' + bgCls + ' border border-gray-100 p-2 flex flex-col gap-1 cursor-pointer hover:bg-slate-50 transition-colors min-h-[120px]" data-date="' + dStr + '">';
+            html += '<div class="text-right text-[11px] mb-1 ' + txtCls + '">' + d.getDate() + ' ' + d.toLocaleString('en-US', {month:'short'}) + '</div>';
+            html += '<div class="month-events-container flex flex-col gap-1"></div>';
+            html += '</div>';
+        });
+        
+        gridArea.innerHTML = html;
+        gridArea.style.gridTemplateColumns = 'repeat(7, minmax(0, 1fr))';
+        gridArea.style.gridAutoRows = 'minmax(120px, auto)';
+        gridArea.style.backgroundImage = 'none';
+
+        entriesData.forEach(entry => {
+            let entryDate;
+            if(entry.work_date) {
+                const pts = entry.work_date.split('-');
+                entryDate = new Date(parseInt(pts[0]), parseInt(pts[1])-1, parseInt(pts[2]));
+            } else {
+                entryDate = new Date(entry.start_time);
+            }
+
+            const dStr = entryDate.getFullYear() + '-' + String(entryDate.getMonth()+1).padStart(2,'0') + '-' + String(entryDate.getDate()).padStart(2,'0');
+            const container = gridArea.querySelector('.month-day-cell[data-date="' + dStr + '"] .month-events-container');
+            
+            if (container) {
+                const durHrs = (entry.duration_seconds || 3600) / 3600;
+                const hMins = Math.floor(durHrs) + 'h ' + Math.round((durHrs % 1) * 60) + 'm';
                 const colorObj = colors[entry.project_id ? (entry.project_id.charCodeAt(0) % colors.length) : 0];
                 const pName = entry.project ? entry.project.project_name : 'No Project';
-                const tName = entry.task ? entry.task.task_name : '';
                 const eName = entry.employee ? entry.employee.name : '';
+                const titleStr = isAdmin ? '[' + eName.split(' ')[0] + '] ' + pName : pName;
                 
-                const titleHtml = isAdmin ? '[' + eName + '] ' + pName : pName;
-                const hMins = Math.floor(durHrs) + 'h ' + Math.round((durHrs % 1) * 60) + 'm';
-
                 const evDiv = document.createElement('div');
-                evDiv.className = 'cal-event';
-                evDiv.style.top = topPx + 'px';
-                evDiv.style.height = heightPx + 'px';
+                evDiv.className = 'text-[9px] p-1.5 rounded border-l-[3px] shadow-sm font-semibold truncate';
                 evDiv.style.backgroundColor = colorObj.bg;
                 evDiv.style.borderColor = colorObj.border;
                 evDiv.style.color = colorObj.text;
+                evDiv.textContent = titleStr + ' (' + hMins + ')';
                 
-                evDiv.innerHTML = '<div class="cal-event-title">' + titleHtml + '</div>' +
-                                  '<div class="cal-event-time">' + tName + '</div>' +
-                                  '<div class="cal-event-time" style="margin-top:2px;">⏱ ' + hMins + '</div>';
-
                 evDiv.addEventListener('click', (e) => {
                     e.stopPropagation();
                     openEntryModal(entry);
                 });
-
-                col.appendChild(evDiv);
-            }
-        }
-    });
-
-    gridArea.querySelectorAll('.cal-day-col').forEach(col => {
-        col.addEventListener('click', (e) => {
-            if(e.target === col) {
-                const rect = col.getBoundingClientRect();
-                const clickY = e.clientY - rect.top;
-                const clickHrs = START_HOUR + (clickY / ROW_HEIGHT);
-                const clickH = Math.floor(clickHrs);
-                const clickM = Math.floor((clickHrs % 1) * 60);
                 
-                const dateStr = col.getAttribute('data-date');
-                openEntryModal(null, dateStr, clickH, clickM);
+                container.appendChild(evDiv);
             }
         });
-    });
 
-    updateCurrentTimeLine();
+        gridArea.querySelectorAll('.month-day-cell').forEach(cell => {
+            cell.addEventListener('click', () => {
+                const dateStr = cell.getAttribute('data-date');
+                openEntryModal(null, dateStr, 9, 0);
+            });
+        });
+    }
 }
 
 function updateCurrentTimeLine() {
+    if (currentView !== 'week') return;
     const line = document.getElementById('currentTimeLine');
     if (!line) return;
 
