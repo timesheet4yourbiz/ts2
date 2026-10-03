@@ -3,7 +3,7 @@ import { supabase } from './supabase.js';
 let currentEmployeeId = null;
 let currentDate = new Date(); 
 let tagsDataList = []; 
-let tasksDataList = []; // Menyimpan senarai Task
+let tasksDataList = []; 
 let myChartBar = null;
 let myChartDonut = null;
 
@@ -15,13 +15,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const avatarInitial = document.getElementById('avatarInitial');
         if (avatarInitial) avatarInitial.textContent = session.user.email.charAt(0).toUpperCase();
 
-        // 1. Tarik Senarai Tag
         try {
             const { data: tagsData } = await supabase.from('tags').select('*').order('tag_name');
             tagsDataList = tagsData || [];
         } catch(e) {}
 
-        // 2. Tarik Senarai Task
         try {
             const { data: tasksData } = await supabase.from('tasks').select('*').order('task_name');
             tasksDataList = tasksData || [];
@@ -35,29 +33,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderHeader();
             await loadData();
         } else {
-            document.getElementById('timesheetTableBody').innerHTML = '<tr><td colspan="14" class="text-center text-red-500 py-6 font-bold">Akses Ditolak: Emel tidak didaftarkan sebagai pekerja sah.</td></tr>';
+            const tb = document.getElementById('timesheetTableBody');
+            if(tb) tb.innerHTML = '<tr><td colspan="13" class="text-center text-red-500 py-6 font-bold">Akses Ditolak: Emel tidak didaftarkan sebagai pekerja sah.</td></tr>';
         }
 
         document.getElementById('prevWeekBtn')?.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() - 7); renderHeader(); loadData(); });
         document.getElementById('nextWeekBtn')?.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() + 7); renderHeader(); loadData(); });
         document.getElementById('addNewRowBtn')?.addEventListener('click', togglePopup);
 
-        // --- ENJIN DROPDOWN COPY LAST WEEK ---
         const copyBtn = document.getElementById('copyLastWeekBtn');
         const copyMenu = document.getElementById('copyLastWeekMenu');
         if (copyBtn && copyMenu) {
             copyBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                copyMenu.classList.toggle('hidden');
+                copyMenu.style.display = copyMenu.style.display === 'block' ? 'none' : 'block';
             });
             document.addEventListener('click', (e) => {
-                if (!copyBtn.contains(e.target) && !copyMenu.contains(e.target)) copyMenu.classList.add('hidden');
+                if (!copyBtn.contains(e.target) && !copyMenu.contains(e.target)) copyMenu.style.display = 'none';
             });
             document.getElementById('btnCopyActivitiesOnly')?.addEventListener('click', async () => {
-                copyMenu.classList.add('hidden'); await executeCopyLastWeek(false);
+                copyMenu.style.display = 'none'; await executeCopyLastWeek(false);
             });
             document.getElementById('btnCopyActivitiesAndTime')?.addEventListener('click', async () => {
-                copyMenu.classList.add('hidden'); await executeCopyLastWeek(true);
+                copyMenu.style.display = 'none'; await executeCopyLastWeek(true);
             });
         }
 
@@ -92,7 +90,7 @@ const parseTime = (val) => {
 const renderHeader = () => {
     const { start, end, days } = getWeekRange(currentDate);
     const dStr = start.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ' - ' + end.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-    ['filterDateRange', 'tableDateRange'].forEach(id => {
+    ['filterDateRange', 'tableDateRange', 'weekDateRangeTop', 'weekDateRange'].forEach(id => {
         const el = document.getElementById(id); if (el) el.textContent = dStr;
     });
     const daysArr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -164,7 +162,8 @@ const saveEntry = async (dateStr, pid, taskId, sec, isInit = false, tagId = null
 
 const loadData = async () => {
     const tbody = document.getElementById('timesheetTableBody');
-    tbody.innerHTML = '<tr><td colspan="14" class="text-center py-6 text-gray-400 font-semibold">Loading...</td></tr>';
+    if(!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="13" class="text-center py-6 text-gray-400 font-semibold">Loading...</td></tr>';
 
     const { start, end, days } = getWeekRange(currentDate);
     const sIso = new Date(Date.UTC(start.getFullYear(), start.getMonth(), start.getDate(), 0,0,0)).toISOString();
@@ -204,17 +203,9 @@ const loadData = async () => {
         let tagOpts = '<option value="">- Tag -</option>';
         tagsDataList.forEach(t => { tagOpts += '<option value="' + t.id + '" ' + (row.tag==t.id?'selected':'') + '>' + (t.tag_name || t.name) + '</option>'; });
 
-        let taskOpts = '<option value="">- Task -</option>';
-        tasksDataList.forEach(tsk => { 
-            if (tsk.project_id === row.pid) {
-                taskOpts += '<option value="' + tsk.id + '" ' + (row.task==tsk.id?'selected':'') + '>' + tsk.task_name + '</option>';
-            }
-        });
-
-        html += '<tr class="hover:bg-slate-50 transition-colors">' +
-            '<td class="text-center text-xs font-bold text-gray-500 border-r border-gray-100">' + (idx++) + '</td>' +
-            '<td class="font-extrabold text-[11px] text-slate-800 uppercase tracking-tight"><span class="inline-block w-2.5 h-2.5 rounded-full mr-2 shadow-sm" style="background:'+row.color+'"></span>' + row.name + '</td>' +
-            '<td><select class="ts-input font-semibold text-slate-700 bind-task" data-pid="'+row.pid+'">' + taskOpts + '</select></td>' +
+        html += '<tr style="border-bottom: 1px solid #e2e8f0; background: white;" data-task="'+row.task+'">' +
+            '<td style="text-align: center; font-weight: 500; color: #64748b;">' + (idx++) + '</td>' +
+            '<td style="font-size: 0.85rem; color: #1e293b; font-weight: 600;"><span style="display:inline-block; width:8px; height:8px; background:'+row.color+'; border-radius:50%; margin-right:8px;"></span>' + row.name + '</td>' +
             '<td><select class="ts-input font-semibold text-slate-700 bind-tag" data-pid="'+row.pid+'">' + tagOpts + '</select></td>' +
             '<td><input type="text" class="ts-input text-slate-700 font-medium bind-note" data-pid="'+row.pid+'" value="'+row.note+'" placeholder="Remarks..."></td>';
 
@@ -229,25 +220,25 @@ const loadData = async () => {
         gTotal += rTotal;
         chartLabels.push(row.name); chartData.push((rTotal/3600).toFixed(2));
 
-        html += '<td class="text-center font-black text-blue-700 border-l border-blue-100 bg-blue-50/30">' + formatHMS(rTotal) + '</td>' +
-            '<td class="text-center"><button class="text-gray-400 hover:text-red-500 font-bold transition-colors bind-del" data-pid="'+row.pid+'" title="Padam Baris">🗑️</button></td></tr>';
+        html += '<td style="font-weight: 700; color: #1e293b; font-size: 0.9rem; text-align: center;">' + formatHMS(rTotal) + '</td>' +
+            '<td style="text-align: center;"><button class="text-gray-400 hover:text-red-500 font-bold transition-colors bind-del" data-pid="'+row.pid+'" title="Padam Baris">🗑️</button></td></tr>';
     });
 
-    if(html === '') html = '<tr><td colspan="14" class="text-center py-10 text-gray-400 font-semibold bg-gray-50/50">Tiada entri minggu ini. Sila klik butang <span class="text-blue-600">+ ADD ROW</span></td></tr>';
+    if(html === '') html = '<tr><td colspan="13" class="text-center py-10 text-gray-400 font-semibold bg-gray-50/50">Tiada entri minggu ini. Sila klik butang <span class="text-blue-600">+ ADD PROJECT</span></td></tr>';
     tbody.innerHTML = html;
 
     const daysArr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     daysArr.forEach((d, i) => { const tf = document.getElementById('tf'+d); if(tf) tf.textContent = dTotal[i]>0 ? formatHMS(dTotal[i]) : '0:00'; });
     const tfTotal = document.getElementById('tfTotal'); if(tfTotal) tfTotal.textContent = formatHMS(gTotal);
 
-    document.getElementById('kpiTotalHrs').textContent = formatHMS(gTotal);
-    document.getElementById('kpiProjects').textContent = Object.keys(matrix).length;
-    document.getElementById('kpiTasks').textContent = '-';
-    document.getElementById('kpiDays').textContent = activeDays.size + ' / 7';
+    // [PENYELAMAT/SAFETY CHECKER UNTUK KPI YANG TIADA]
+    const kTotal = document.getElementById('kpiTotalHrs'); if(kTotal) kTotal.textContent = formatHMS(gTotal);
+    const kProj = document.getElementById('kpiProjects'); if(kProj) kProj.textContent = Object.keys(matrix).length;
+    const kTask = document.getElementById('kpiTasks'); if(kTask) kTask.textContent = '-';
+    const kDay = document.getElementById('kpiDays'); if(kDay) kDay.textContent = activeDays.size + ' / 7';
 
     updateCharts(chartLabels, chartData, Object.values(matrix));
 
-    // Event Listener untuk Time Input
     document.querySelectorAll('.bind-time').forEach(inp => {
         inp.addEventListener('focus', function(){ this.dataset.old = this.value; if(this.value==='0:00')this.value=''; });
         inp.addEventListener('blur', function(){ if(this.value.trim()==='') this.value='0:00'; });
@@ -258,7 +249,7 @@ const loadData = async () => {
             
             const tr = this.closest('tr');
             const tag = tr.querySelector('.bind-tag').value;
-            const task = tr.querySelector('.bind-task').value;
+            const task = tr.getAttribute('data-task');
             const note = tr.querySelector('.bind-note').value;
             
             this.style.opacity = '0.5';
@@ -267,13 +258,12 @@ const loadData = async () => {
         });
     });
 
-    // Event Listener untuk Task, Tag & Note
-    document.querySelectorAll('.bind-task, .bind-tag, .bind-note').forEach(inp => {
+    document.querySelectorAll('.bind-tag, .bind-note').forEach(inp => {
         inp.addEventListener('change', async function() {
             const tr = this.closest('tr');
             const pid = this.dataset.pid;
             const tag = tr.querySelector('.bind-tag').value;
-            const task = tr.querySelector('.bind-task').value;
+            const task = tr.getAttribute('data-task');
             const note = tr.querySelector('.bind-note').value;
             
             const { days } = getWeekRange(currentDate);
@@ -324,7 +314,6 @@ const updateCharts = (labels, data, matrixVals) => {
     });
 };
 
-// --- FUNGSI COPY LAST WEEK KE DATABASE ---
 const executeCopyLastWeek = async (includeTime) => {
     const copyBtn = document.getElementById('copyLastWeekBtn');
     const originalHtml = copyBtn.innerHTML;
