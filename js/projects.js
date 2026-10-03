@@ -8,27 +8,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return window.location.href = '../pages/login.html';
         
-        // Avatar & Tarikh Header
+        // Pengekstrakan Nama & Initial Profil
         const avatarInitial = document.getElementById('avatarInitial');
-        if (avatarInitial) avatarInitial.textContent = session.user.email.charAt(0).toUpperCase();
-
-        const topDateText = document.getElementById('topDateText');
-        if (topDateText) {
-            const today = new Date();
-            const start = new Date(today.setDate(today.getDate() - today.getDay() + 1));
-            const end = new Date(today.setDate(today.getDate() + 6));
-            topDateText.textContent = start.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ' - ' + end.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-        }
+        const profileName = document.getElementById('profileName');
+        const userEmail = session.user.email;
+        if (avatarInitial) avatarInitial.textContent = userEmail.charAt(0).toUpperCase();
+        if (profileName) profileName.textContent = userEmail.split('@')[0].toUpperCase();
 
         // Semak Role
         const { data: profile } = await supabase.from('employees').select('system_role').eq('id', session.user.id).single();
-        if (profile && profile.system_role === 'Admin') isAdmin = true;
+        if (profile && profile.system_role === 'Admin') {
+            isAdmin = true;
+            const profileRole = document.getElementById('profileRole');
+            if(profileRole) profileRole.textContent = 'Administrator';
+        }
 
-        // BINDING MODAL & SEARCH
         setupModal();
         setupSearchAndFilter();
 
-        // FETCH DATA
         await loadClientsDropdown();
         await loadProjects();
 
@@ -65,6 +62,9 @@ async function loadClientsDropdown() {
         const opts = data.map(c => '<option value="' + c.id + '">' + c.client_name + '</option>').join('');
         if(cSelect) cSelect.innerHTML = '<option value="">Select client</option>' + opts;
         if(fClient) fClient.innerHTML = '<option value="">All Clients</option>' + opts;
+        
+        const kpiClients = document.getElementById('kpiClients');
+        if (kpiClients) kpiClients.textContent = data.length;
     }
 }
 
@@ -72,16 +72,15 @@ async function loadProjects() {
     const tbody = document.getElementById('projectsList');
     if (!tbody) return;
     
-    tbody.innerHTML = '<tr><td colspan="10" class="text-center py-10 text-gray-400">Loading projects...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" class="text-center py-10 text-gray-400 font-semibold">Loading projects...</td></tr>';
     
     const { data: pData, error } = await supabase.from('projects').select('*, clients(client_name)').order('project_name', { ascending: true });
 
     if (error) {
-        tbody.innerHTML = '<tr><td colspan="10" class="text-center py-10 text-red-500">Ralat: ' + error.message + '</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center py-10 text-red-500 font-bold">Ralat: ' + error.message + '</td></tr>';
         return;
     }
 
-    // MENGATASI HAD 1000 BARIS (PAGINATION LOOP) UNTUK TIME ENTRIES
     let allTimeEntries = [];
     let from = 0;
     const step = 999;
@@ -113,7 +112,6 @@ async function loadProjects() {
         }
     });
 
-    // Simpan dalam memori secara telus
     projectsData = (pData || []).map(p => {
         p.tracked_seconds = projectHours[p.id] || 0;
         p.tracked_hours = (p.tracked_seconds / 3600).toFixed(1);
@@ -128,56 +126,55 @@ function renderProjectsTable(data) {
     if (!tbody) return;
 
     if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" class="text-center py-10 text-gray-400">No projects found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center py-10 text-gray-400 font-semibold">No projects found.</td></tr>';
         updateKPIs([]);
         return;
     }
 
     let html = '';
-    const dotColors = ['bg-blue-500', 'bg-purple-500', 'bg-emerald-500', 'bg-orange-500', 'bg-sky-500'];
+    const dotColors = ['bg-blue-500', 'bg-purple-500', 'bg-emerald-500', 'bg-amber-500', 'bg-rose-500'];
 
     data.forEach((p, idx) => {
         const cName = p.clients ? p.clients.client_name : '-';
         const color = dotColors[idx % dotColors.length];
         const totalHours = p.tracked_hours || '0.0';
         
-        // Simulasi Progress & Status (Mengikut Mockup)
         let progVal = 0; let statText = 'Not Started'; let statColor = 'bg-slate-100 text-slate-600'; let statDot = 'bg-slate-400';
         if(idx % 4 === 1) { progVal = 40; statText = 'In Progress'; statColor = 'bg-blue-50 text-blue-600 border border-blue-100'; statDot = 'bg-blue-500'; }
         else if(idx % 4 === 2) { progVal = 75; statText = 'On Track'; statColor = 'bg-emerald-50 text-emerald-600 border border-emerald-100'; statDot = 'bg-emerald-500'; }
 
         const actionHtml = isAdmin 
-            ? '<button class="text-slate-400 hover:text-red-500 font-bold transition-colors text-lg del-project-btn" data-id="' + p.id + '" title="Delete">⋮</button>'
+            ? '<button class="text-slate-400 hover:text-red-500 font-bold transition-colors text-lg del-project-btn" data-id="' + p.id + '" title="Delete">🗑️</button>'
             : '<span class="text-slate-300 text-xs font-semibold cursor-not-allowed">View Only</span>';
 
         html += '<tr class="hover:bg-slate-50 transition-colors">' +
-            '<td class="text-center border-b border-slate-100 py-3"><input type="checkbox" class="rounded border-gray-300"></td>' +
-            '<td class="border-b border-slate-100 py-3 text-slate-500 text-sm font-medium">' + (idx + 1) + '</td>' +
-            '<td class="border-b border-slate-100 py-3 font-semibold text-slate-800">' +
+            '<td class="text-center"><input type="checkbox" class="rounded border-gray-300"></td>' +
+            '<td class="text-slate-500 text-xs font-bold">' + (idx + 1) + '</td>' +
+            '<td class="font-extrabold text-[11px] text-slate-800 uppercase tracking-tight">' +
                 '<div class="flex items-center gap-3">' +
-                    '<div class="w-2.5 h-2.5 rounded-full ' + color + '"></div>' +
+                    '<div class="w-2.5 h-2.5 rounded-full shadow-sm ' + color + '"></div>' +
                     '<a href="project-details.html?id=' + p.id + '" class="hover:text-blue-600 transition-colors">' + (p.project_name || p.project_code || 'Tiada Nama').toUpperCase() + '</a>' +
                 '</div>' +
             '</td>' +
-            '<td class="border-b border-slate-100 py-3 text-slate-600 text-xs font-bold">' + cName + '</td>' +
-            '<td class="border-b border-slate-100 py-3 text-blue-600 text-sm font-bold">' + totalHours + 'h</td>' +
-            '<td class="border-b border-slate-100 py-3 text-slate-500 text-sm">0.00</td>' +
-            '<td class="border-b border-slate-100 py-3">' +
+            '<td class="text-slate-600 text-xs font-bold">' + cName + '</td>' +
+            '<td class="text-blue-600 text-xs font-black">' + totalHours + 'h</td>' +
+            '<td class="text-slate-500 text-xs font-medium">0.00</td>' +
+            '<td>' +
                 '<div class="flex items-center gap-3">' +
                     '<div class="w-24 bg-slate-100 rounded-full h-1.5">' +
                         '<div class="bg-' + (progVal>50?'emerald':'blue') + '-500 h-1.5 rounded-full" style="width: ' + progVal + '%"></div>' +
                     '</div>' +
-                    '<span class="text-xs text-slate-500 font-semibold">' + progVal + '%</span>' +
+                    '<span class="text-[10px] text-slate-500 font-bold">' + progVal + '%</span>' +
                 '</div>' +
             '</td>' +
-            '<td class="border-b border-slate-100 py-3 text-slate-500 text-xs font-semibold flex items-center gap-1">🌐 Public</td>' +
-            '<td class="border-b border-slate-100 py-3">' +
-                '<span class="px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide flex items-center gap-1.5 w-max ' + statColor + '">' +
+            '<td class="text-slate-500 text-[10px] font-bold uppercase">🌐 Public</td>' +
+            '<td>' +
+                '<span class="px-2.5 py-1 rounded-md text-[9px] font-extrabold tracking-wider flex items-center gap-1.5 w-max uppercase ' + statColor + '">' +
                     '<div class="w-1.5 h-1.5 rounded-full ' + statDot + '"></div>' +
                     statText +
                 '</span>' +
             '</td>' +
-            '<td class="text-center border-b border-slate-100 py-3">' + actionHtml + '</td>' +
+            '<td class="text-center">' + actionHtml + '</td>' +
         '</tr>';
     });
 
@@ -198,25 +195,19 @@ function renderProjectsTable(data) {
 
 function updateKPIs(data) {
     const total = data.length;
-    document.getElementById('kpiTotal').textContent = total;
     
-    // Anggaran Active Projects
-    const kpiActive = document.getElementById('kpiActive');
-    if (kpiActive) kpiActive.textContent = total > 0 ? total : 0; 
+    const kTotal = document.getElementById('kpiTotal'); if (kTotal) kTotal.textContent = total;
+    const kActive = document.getElementById('kpiActive'); if (kActive) kActive.textContent = total > 0 ? total : 0; 
     
-    document.getElementById('tableTitleCount').textContent = total;
-    document.getElementById('paginationInfo').textContent = 'Showing 1 to ' + total + ' of ' + total + ' projects';
+    const tTitle = document.getElementById('tableTitleCount'); if (tTitle) tTitle.textContent = total;
+    const pInfo = document.getElementById('paginationInfo'); if (pInfo) pInfo.textContent = 'Showing 1 to ' + total + ' of ' + total + ' projects';
 
-    // Kira jumlah keseluruhan jam tracked
     let grandTotalSeconds = 0;
     data.forEach(p => { grandTotalSeconds += (p.tracked_seconds || 0); });
     const grandTotalHrs = (grandTotalSeconds / 3600).toFixed(1);
 
-    // Update Kad KPI Tracked Hours
-    const kpiCards = document.querySelectorAll('.glass-card .text-3xl');
-    if (kpiCards.length > 1) {
-        kpiCards[1].innerHTML = grandTotalHrs + '<span class="text-sm text-gray-500 ml-1">hrs</span>';
-    }
+    const kTracked = document.getElementById('kpiTracked'); 
+    if (kTracked) kTracked.innerHTML = grandTotalHrs + '<span class="text-xs text-gray-500 ml-1 font-medium lowercase">hrs</span>';
 }
 
 function setupModal() {
@@ -258,7 +249,7 @@ function setupModal() {
             
             const { error } = await supabase.from('projects').insert([payload]);
             
-            saveBtn.disabled = false; saveBtn.textContent = 'Create Project';
+            saveBtn.disabled = false; saveBtn.textContent = 'CREATE';
             if (error) {
                 alert('Ralat mencipta projek: ' + error.message);
             } else {
