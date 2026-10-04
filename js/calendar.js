@@ -180,7 +180,7 @@ function renderCalendarHeaders() {
     const header = document.getElementById('calHeader');
     if(!header) return;
     const daysArr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    
+
     if (currentView === 'week') {
         header.style.gridTemplateColumns = '60px repeat(7, 1fr)';
         let html = '<div class="cal-header-cell flex items-center justify-center text-[10px]">GMT+8</div>';
@@ -189,8 +189,9 @@ function renderCalendarHeaders() {
         weekDays.forEach((d, i) => {
             const isToday = d.toDateString() === todayStr;
             const cls = isToday ? 'cal-header-cell today' : 'cal-header-cell';
-            html += '<div class="' + cls + '">' + daysArr[i] + 
-                    '<span class="cal-header-date">' + d.getDate() + '</span></div>';
+            
+            html += '<div class="' + cls + '" style="font-weight: 500;">' + daysArr[i] + 
+                    '<span class="cal-header-date" style="font-weight: 600; font-size: 1.1rem;">' + d.getDate() + '</span></div>';
         });
         header.innerHTML = html;
         
@@ -203,7 +204,6 @@ function renderCalendarHeaders() {
         header.innerHTML = html;
     }
 }
-
 async function loadDropdowns() {
     const [{ data: emps }, { data: projs }, { data: tasks }] = await Promise.all([
         supabase.from('employees').select('id, name, email').order('name'),
