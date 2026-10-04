@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return window.location.href = '../pages/login.html';
 
-        // Profil header diuruskan oleh sidebar.js, kita fokus pada fungsionaliti Reports di sini.
         await populateFilters();
 
         const rm = document.getElementById('reportMonth');
@@ -116,7 +115,7 @@ async function populateFilters() {
     } catch (e) {}
 }
 
-// LOGIK KUNCI (CLAMP) AKHIR & AWAL BULAN MENGIKUT KALENDAR SEBENAR
+// LOGIK MINGGU (ISNIN-AHAD) SEPERTI YANG DIMINTA
 function getWeekDates(year, month) {
     let weeks = [];
     const formatFull = (dt) => {
@@ -147,13 +146,7 @@ function getWeekDates(year, month) {
             continue;
         }
 
-        // KUNCI PERMULAAN: Jangan tarik tarikh dari bulan lepas (Elak double count gaji)
-        if (start < firstDayOfMonth) {
-            start = new Date(firstDayOfMonth);
-            start.setHours(0, 0, 0, 0);
-        }
-
-        // KUNCI PENGHUJUNG: Jangan tarik tarikh dari bulan hadapan
+        // KUNCI PENGHUJUNG: Kekalkan logik potong di hujung bulan (tidak melangkau ke bulan depan)
         if (end > lastDayOfMonth) {
             end = new Date(lastDayOfMonth);
             end.setHours(23, 59, 59, 999);
@@ -210,7 +203,10 @@ async function generateReport() {
     });
 
     const validWeeks = weeks.filter(w => w.start !== null);
-    if(validWeeks.length === 0) return;
+    if(validWeeks.length === 0) {
+        if (btnGen) { btnGen.disabled = false; btnGen.innerHTML = '▽  Generate Report'; }
+        return;
+    }
 
     const sDt = validWeeks[0].start;
     const eDt = validWeeks[validWeeks.length - 1].end;
