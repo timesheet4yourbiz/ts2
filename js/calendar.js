@@ -32,9 +32,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data: profile } = await supabase.from('employees').select('id, system_role').eq('email', userEmail).single();
         if (profile) {
             currentEmployeeId = profile.id;
-            isAdmin = (profile.system_role === 'Admin' || profile.system_role === 'Manager');
+            isAdmin = (profile.system_role === 'Admin' || profile.system_role === 'Administrator');
             const profileRole = document.getElementById('profileRole');
             if(profileRole) profileRole.textContent = profile.system_role === 'Admin' ? 'Administrator' : profile.system_role;
+            
+            // PENGESAHAN ADMIN UNTUK FILTER PEKERJA DI TOOLBAR
+            const empFilter = document.getElementById('filterEmp');
+            if (empFilter) {
+                if (!isAdmin) {
+                    empFilter.style.display = 'none'; // Ghaibkan jika bukan Admin
+                }
+            }
         }
 
         const logoutBtn = document.getElementById('logoutBtn');
@@ -129,7 +137,7 @@ function calculateDateRange() {
         if(currentPeriodText) currentPeriodText.textContent = dStr;
         
     } else {
-        // Logik Paparan Bulan (Mengikut Isnin / Sama macam reports.js)
+        // Logik Paparan Bulan (Mengikut Isnin)
         const curr = new Date(currentDate);
         const year = curr.getFullYear();
         const month = curr.getMonth() + 1;
