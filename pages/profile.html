@@ -2,68 +2,104 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile - WorkTime</title>
-    <!-- Pastikan fail CSS dipanggil -->
-    <link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
-    <!-- SIDEBAR -->
-    <div id="sidebar-container"></div>
+    <meta name="viewport" content="width=1280">
+    <title>My Profile | WORKTIMESYS</title>
     
-    <!-- KANDUNGAN UTAMA -->
-    <div class="main-content">
-        <div class="top-header">
-            <h1 class="page-title">My Profile</h1>
-            <span id="userEmail" style="color:#64748b; font-size:0.85rem;">Loading...</span>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body { background-color: #f8fafc; -webkit-font-smoothing: antialiased; min-width: 1280px !important; overflow-x: auto !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; }
+        .glass-card { background: white; box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.03), 0 2px 8px -2px rgba(0, 0, 0, 0.02) !important; border: 1px solid rgba(226, 232, 240, 0.6) !important; border-radius: 12px !important; transition: all 0.3s ease; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .topbar { height: 60px; background: rgba(255,255,255,.97); border-bottom: 1px solid #e4edf7; display: flex; align-items: center; padding: 0 24px; gap: 22px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 12px rgba(7,26,59,.04) !important; }
+        .brand { min-width: 195px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #071a3b; }
+        .brand-mark { width: 34px; height: 38px; position: relative; flex: 0 0 auto; display: grid; place-items: center; }
+        .brand-mark::before, .brand-mark::after { content: ""; position: absolute; width: 19px; height: 19px; transform: rotate(30deg) skew(-4deg); border-radius: 4px; }
+        .brand-mark::before { background: linear-gradient(135deg, #0d6efd 0 52%, #f59e0b 52% 100%); top: 3px; left: 3px; }
+        .brand-mark::after { background: linear-gradient(135deg, #0b2d60 0 52%, #ef4444 52% 100%); bottom: 3px; right: 1px; }
+        .brand-copy strong { display: block; font-size: 19px; line-height: 18px; letter-spacing: -.8px; font-weight: 800; }
+        .brand-copy strong span { color: #0d6efd; }
+        .brand-copy small { display: block; margin-top: 3px; font-size: 9px; font-weight: 800; letter-spacing: .35px; color: #34527d; }
+        .nav { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0; }
+        .nav-link { height: 40px; padding: 0 11px; border-radius: 8px; display: inline-flex; align-items: center; gap: 7px; color: #122b54; text-decoration: none; font-size: 12px; font-weight: 600; white-space: nowrap; transition: .2s ease; }
+        .nav-link:hover { background: #f0f6ff; }
+        .nav-link.active { color: white; background: linear-gradient(135deg, #0d6efd, #187bff); box-shadow: 0 6px 14px rgba(13,110,253,.22); }
+        .profile { height: 40px; display: flex; align-items: center; gap: 9px; padding-left: 3px; cursor: pointer; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: white; background: #1677ff; font-weight: 700; font-size: 15px; }
+
+        .btn-primary { background-color: #2563eb; color: white; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: background-color 0.2s; border-radius: 8px; padding: 12px 16px;}
+        .btn-primary:hover { background-color: #1d4ed8; }
+
+        .form-input { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; box-sizing: border-box; }
+        .form-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <!-- TOP MENU STANDARD (Diuruskan oleh sidebar.js) -->
+    <header class="topbar" id="topbarContainer"></header>
+
+    <main class="p-6 max-w-[800px] mx-auto space-y-6">
+
+        <!-- PAGE HEADER -->
+        <div class="flex items-center gap-4 mb-2">
+            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl">👤</div>
+            <div>
+                <h1 class="text-2xl font-black text-slate-800 m-0 tracking-tight">My Profile</h1>
+                <p class="text-sm font-semibold text-slate-400 m-0">Manage your account settings</p>
+            </div>
         </div>
 
-        <!-- MAKLUMAT DIRI (GLACIER CARD) -->
-        <div class="glacier-card" style="max-width: 650px; margin-top: 0; margin-bottom: 24px;">
-            <h2 style="font-size: 1.1rem; font-weight: 600; color: #1e293b; margin-top: 0; margin-bottom: 24px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
-                Account Details
-            </h2>
+        <!-- ACCOUNT DETAILS CARD -->
+        <div class="glass-card p-6">
+            <h2 class="text-lg font-extrabold text-slate-800 m-0 mb-4 pb-4 border-b border-slate-100">Account Details</h2>
             
-            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.95rem; color: #334155;">
-                <div><span style="font-weight: 600; width: 120px; display: inline-block;">Email:</span> <span id="profileEmail">Loading...</span></div>
-                <div><span style="font-weight: 600; width: 120px; display: inline-block;">Name:</span> <span id="profileName">Loading...</span></div>
-                <div>
-                    <span style="font-weight: 600; width: 120px; display: inline-block;">System Role:</span> 
-                    <span id="profileRole" class="status-badge status-active">Loading...</span>
+            <div class="flex flex-col gap-4 text-sm">
+                <div class="flex items-center">
+                    <span class="w-32 font-bold text-slate-500">Email:</span>
+                    <span id="profileEmail" class="font-semibold text-slate-800">Loading...</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="w-32 font-bold text-slate-500">Name:</span>
+                    <span id="profileDataName" class="font-semibold text-slate-800">Loading...</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="w-32 font-bold text-slate-500">System Role:</span>
+                    <span id="profileDataRole" class="px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 font-bold text-[10px] rounded-full uppercase tracking-wider">Loading...</span>
                 </div>
             </div>
         </div>
 
-        <!-- TUKAR KATA LALUAN (GLACIER CARD) -->
-        <div class="glacier-card" style="max-width: 650px; margin-top: 0;">
-            <h2 style="font-size: 1.1rem; font-weight: 600; color: #ef4444; margin-top: 0; margin-bottom: 8px;">
-                Change Password
-            </h2>
-            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 24px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
-                Update your password to keep your account secure. (Min. 8 characters)
-            </p>
+        <!-- CHANGE PASSWORD CARD -->
+        <div class="glass-card p-6">
+            <h2 class="text-lg font-extrabold text-red-500 m-0 mb-2">Change Password</h2>
+            <p class="text-xs font-semibold text-slate-400 m-0 mb-6 pb-4 border-b border-slate-100">Update your password to keep your account secure. (Min. 8 characters)</p>
             
             <form id="changePwdForm">
-                
-                <div style="margin-bottom: 24px;">
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: #475569; margin-bottom: 8px;">New Password</label>
-                    <input type="password" id="newPwd" required minlength="8" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='#0ea5e9'" onblur="this.style.borderColor='#cbd5e1'">
+                <div class="mb-5">
+                    <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">New Password</label>
+                    <input type="password" id="newPwd" required minlength="8" class="form-input">
                 </div>
 
-                <div style="margin-bottom: 32px;">
-                    <label style="display: block; font-weight: 600; font-size: 0.85rem; color: #475569; margin-bottom: 8px;">Confirm New Password</label>
-                    <input type="password" id="confirmPwd" required minlength="8" style="width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='#0ea5e9'" onblur="this.style.borderColor='#cbd5e1'">
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Confirm New Password</label>
+                    <input type="password" id="confirmPwd" required minlength="8" class="form-input">
                 </div>
 
-                <button type="submit" id="btnUpdatePwd" style="background-color: #10b981; color: white; border: none; width: 100%; padding: 12px; font-size: 0.9rem; font-weight: 600; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#059669'" onmouseout="this.style.backgroundColor='#10b981'">
-                    UPDATE PASSWORD
-                </button>
-
+                <button type="submit" id="btnUpdatePwd" class="btn-primary w-full tracking-widest uppercase">Update Password</button>
             </form>
         </div>
 
-    </div>
+    </main>
     
+    <script type="module" src="../js/sidebar.js"></script>
     <script type="module" src="../js/profile.js"></script>
 </body>
 </html>
