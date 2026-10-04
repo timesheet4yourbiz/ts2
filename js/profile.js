@@ -2,30 +2,37 @@ import { supabase } from './supabase.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Semak Sesi Login
+        // 1. Semak Sesi Login
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return window.location.href = '../pages/login.html';
 
-        // Tarik Data Profil dari Supabase (Jadual Employees)
+        const pEmail = document.getElementById('profileEmail');
+        const pName = document.getElementById('profileDataName');
+        const pRole = document.getElementById('profileDataRole');
+
+        // Fallback lalai jika data gagal ditarik, supaya tak lekat di "Loading..."
+        if (pEmail) pEmail.textContent = session.user.email;
+        if (pName) pName.textContent = 'Not Set';
+        if (pRole) pRole.textContent = 'User';
+
+        // 2. Tarik Data Profil dari Supabase menggunakan Email dan maybeSingle()
         const { data: profile } = await supabase
             .from('employees')
             .select('name, email, system_role')
-            .eq('id', session.user.id)
-            .single();
+            .eq('email', session.user.email)
+            .maybeSingle();
 
         if (profile) {
-            const pEmail = document.getElementById('profileEmail');
-            const pName = document.getElementById('profileDataName');
-            const pRole = document.getElementById('profileDataRole');
-
             if (pEmail) pEmail.textContent = profile.email || session.user.email;
             if (pName) pName.textContent = profile.name || 'Not Set';
             if (pRole) {
-                pRole.textContent = profile.system_role === 'Admin' ? 'Administrator' : (profile.system_role || 'Employee');
+                pRole.textContent = profile.system_role === 'Admin' ? 'Administrator' : (profile.system_role || 'User');
                 
-                // Set warna lencana berdasarkan peranan
+                // Set warna lencana berdasarkan peranan (Admin = Kuning, User = Hijau)
                 if (profile.system_role === 'Admin') {
                     pRole.className = 'px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 font-bold text-[10px] rounded-full uppercase tracking-wider';
+                } else {
+                    pRole.className = 'px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 font-bold text-[10px] rounded-full uppercase tracking-wider';
                 }
             }
         }
