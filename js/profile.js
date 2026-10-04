@@ -2,7 +2,6 @@ import { supabase } from './supabase.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // 1. Semak Sesi Login
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return window.location.href = '../pages/login.html';
 
@@ -10,26 +9,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         const pName = document.getElementById('profileDataName');
         const pRole = document.getElementById('profileDataRole');
 
-        // Fallback lalai jika data gagal ditarik, supaya tak lekat di "Loading..."
         if (pEmail) pEmail.textContent = session.user.email;
         if (pName) pName.textContent = 'Not Set';
         if (pRole) pRole.textContent = 'User';
 
-        // 2. Tarik Data Profil dari Supabase menggunakan Email dan maybeSingle()
+        // KEMAS KINI: Gunakan ID untuk carian (Paling selamat)
         const { data: profile } = await supabase
             .from('employees')
             .select('name, email, system_role')
-            .eq('email', session.user.email)
+            .eq('id', session.user.id)
             .maybeSingle();
 
         if (profile) {
             if (pEmail) pEmail.textContent = profile.email || session.user.email;
             if (pName) pName.textContent = profile.name || 'Not Set';
             if (pRole) {
-                pRole.textContent = profile.system_role === 'Admin' ? 'Administrator' : (profile.system_role || 'User');
+                const isAdmin = profile.system_role && profile.system_role.toLowerCase() === 'admin';
+                pRole.textContent = isAdmin ? 'Administrator' : (profile.system_role || 'User');
                 
-                // Set warna lencana berdasarkan peranan (Admin = Kuning, User = Hijau)
-                if (profile.system_role === 'Admin') {
+                if (isAdmin) {
                     pRole.className = 'px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 font-bold text-[10px] rounded-full uppercase tracking-wider';
                 } else {
                     pRole.className = 'px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 font-bold text-[10px] rounded-full uppercase tracking-wider';
@@ -42,7 +40,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Fungsi Tukar Password
 const pwdForm = document.getElementById('changePwdForm');
 if (pwdForm) {
     pwdForm.addEventListener('submit', async (e) => {
