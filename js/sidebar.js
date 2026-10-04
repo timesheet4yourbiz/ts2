@@ -5,17 +5,18 @@ export async function loadSidebar() {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return;
 
+        // KEMAS KINI: Cari profil menggunakan email dan .maybeSingle() agar sama dengan profile.js
         const { data: profile } = await supabase
             .from('employees')
             .select('system_role, email')
-            .eq('id', session.user.id)
-            .single();
+            .eq('email', session.user.email)
+            .maybeSingle();
 
         const isAdmin = profile && profile.system_role === 'Admin';
         const userEmail = profile ? profile.email : session.user.email;
         const initial = userEmail.charAt(0).toUpperCase();
         const fullName = userEmail.split('@')[0].toUpperCase();
-        const roleText = isAdmin ? 'Administrator' : (profile ? profile.system_role : 'User');
+        const roleText = isAdmin ? 'Administrator' : (profile && profile.system_role ? profile.system_role : 'User');
         
         const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
 
@@ -53,10 +54,9 @@ export async function loadSidebar() {
         }
         navHtml += '</nav>';
 
-        // -- BAHAGIAN KANAN: ACTIONS & PROFILE (Korporat & Sebaris) --
+        // -- BAHAGIAN KANAN: ACTIONS & PROFILE --
         navHtml += '<div class="flex items-center gap-4 flex-none ml-4">' +
                         
-                        // Loceng Notifikasi
                         '<button class="relative text-slate-400 hover:text-blue-600 transition-colors flex items-center justify-center" title="Notifications">' +
                             '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                                 '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>' +
@@ -65,10 +65,8 @@ export async function loadSidebar() {
                             '<span class="absolute -top-1 -right-1 bg-red-500 w-2 h-2 rounded-full border-2 border-white"></span>' +
                         '</button>' +
 
-                        // Pembahagi
                         '<div class="w-px h-6 bg-slate-200"></div>' +
 
-                        // Info Profil (Nama dipotong jika terlalu panjang)
                         '<div class="flex items-center gap-3">' +
                             '<div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">' + initial + '</div>' +
                             '<div class="flex flex-col hidden sm:flex">' +
@@ -77,13 +75,9 @@ export async function loadSidebar() {
                             '</div>' +
                         '</div>' +
 
-                        // Pembahagi
                         '<div class="w-px h-6 bg-slate-200"></div>' +
 
-                        // Butang Kemaskini (Edit Profil) & Log Keluar (Logout)
                         '<div class="flex items-center gap-1.5">' +
-                            
-                            // Edit Profile Icon
                             '<a href="profile.html" title="Update Profile" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-blue-600 transition-colors">' +
                                 '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                                     '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>' +
@@ -91,7 +85,6 @@ export async function loadSidebar() {
                                 '</svg>' +
                             '</a>' +
                             
-                            // Logout Icon (Pintu & Anak Panah)
                             '<button id="logoutBtn" title="Logout" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors">' +
                                 '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                                     '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>' +
@@ -99,7 +92,6 @@ export async function loadSidebar() {
                                     '<line x1="21" y1="12" x2="9" y2="12"></line>' +
                                 '</svg>' +
                             '</button>' +
-                            
                         '</div>' +
 
                     '</div>';
