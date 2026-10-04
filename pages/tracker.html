@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=1280">
-   <title>Time Tracker | WORKTIMESYS</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1280">
+    <title>Time Tracker | WORKTIMESYS</title>
     
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-   <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 
-   <style>
+    <style>
         body { background-color: #f8fafc; -webkit-font-smoothing: antialiased; min-width: 1280px !important; overflow-x: auto !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; }
         .glass-card { background: white; box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.03), 0 2px 8px -2px rgba(0, 0, 0, 0.02) !important; border: 1px solid rgba(226, 232, 240, 0.6) !important; border-radius: 12px !important; transition: all 0.3s ease; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -38,75 +38,76 @@
 
         .ts-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; color: #334155; outline: none; transition: .2s; }
         .ts-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
-   </style>
+    </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
 
-   <header class="topbar" id="topbarContainer"></header>
+    <header class="topbar" id="topbarContainer"></header>
 
-   <main class="p-6 max-w-[1480px] mx-auto space-y-6">
+    <main class="p-6 max-w-[1480px] mx-auto space-y-6">
 
-       <!-- Tracker Control Card -->
-       <div class="glass-card flex items-center shadow-sm bg-white overflow-hidden">
-           <!-- Description -->
-           <div class="flex-1 px-4 py-3">
-               <input type="text" id="taskDescInput" placeholder="What are you working on?" class="w-full border-none outline-none text-slate-700 bg-transparent placeholder-slate-400 font-medium">
-           </div>
+        <!-- Tracker Control Card -->
+        <div class="glass-card flex items-center shadow-sm bg-white overflow-hidden">
+            <!-- Description -->
+            <div class="flex-1 px-4 py-3">
+                <input type="text" id="taskDescInput" placeholder="What are you working on?" class="w-full border-none outline-none text-slate-700 bg-transparent placeholder-slate-400 font-medium">
+            </div>
             
-           <!-- Project & Task -->
-           <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200">
-               <span class="text-blue-500">⊕</span>
-               <select id="projectSelect" class="border-none bg-transparent outline-none text-blue-600 font-semibold cursor-pointer max-w-[140px] text-sm">
-                   <option value="">Select Project</option>
-               </select>
-               <select id="taskSelect" class="border-none bg-transparent outline-none text-slate-500 font-semibold cursor-pointer max-w-[140px] text-xs hidden">
-                   <option value="">Select Task</option>
-               </select>
-           </div>
+            <!-- Project & Task -->
+            <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200">
+                <span class="text-blue-500">⊕</span>
+                <select id="projectSelect" class="border-none bg-transparent outline-none text-blue-600 font-semibold cursor-pointer max-w-[140px] text-sm">
+                    <option value="">Select Project</option>
+                </select>
+                <select id="taskSelect" class="border-none bg-transparent outline-none text-slate-500 font-semibold cursor-pointer max-w-[140px] text-xs hidden">
+                    <option value="">Select Task</option>
+                </select>
+            </div>
             
-           <!-- Tag -->
-           <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200">
-               <span class="text-slate-400 text-lg">🏷️</span>
-               <select id="tagSelect" class="border-none bg-transparent outline-none text-slate-500 font-medium cursor-pointer w-24 text-xs">
-                   <option value="">Tag</option>
-               </select>
-           </div>
+            <!-- Tag -->
+            <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200">
+                <span class="text-slate-400 text-lg">🏷️</span>
+                <select id="tagSelect" class="border-none bg-transparent outline-none text-slate-500 font-medium cursor-pointer w-24 text-xs">
+                    <option value="">Tag</option>
+                </select>
+            </div>
             
-           <!-- Billable -->
-           <div class="px-4 py-3 border-l border-dashed border-slate-200 text-slate-300 font-bold text-lg cursor-pointer hover:text-blue-500 transition-colors" title="Billable">
+            <!-- Billable -->
+            <div class="px-4 py-3 border-l border-dashed border-slate-200 text-slate-300 font-bold text-lg cursor-pointer hover:text-blue-500 transition-colors" title="Billable">
                 $</div>
             
-           <!-- Start & End Time -->
-           <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200 text-slate-500 text-xs font-semibold">
-               <input type="text" id="startTimeInput" placeholder="--:--" class="w-12 border-none outline-none text-center bg-transparent"> - 
-               <input type="text" id="endTimeInput" placeholder="--:--" class="w-12 border-none outline-none text-center bg-transparent">
-           </div>
+            <!-- Start & End Time -->
+            <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200 text-slate-500 text-xs font-semibold">
+                <input type="text" id="startTimeInput" placeholder="--:--" class="w-12 border-none outline-none text-center bg-transparent"> - 
+                <input type="text" id="endTimeInput" placeholder="--:--" class="w-12 border-none outline-none text-center bg-transparent">
+            </div>
             
-           <!-- Date -->
-           <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200 text-slate-500 text-xs font-semibold cursor-pointer">
+            <!-- Date -->
+            <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200 text-slate-500 text-xs font-semibold cursor-pointer">
                 📅 Today
-           </div>
+            </div>
             
-           <!-- Timer Display -->
-           <div id="timerDisplay" class="px-6 py-3 border-l border-dashed border-slate-200 text-xl font-black text-slate-800 min-w-[120px] text-center tracking-wide">
+            <!-- Timer Display -->
+            <div id="timerDisplay" class="px-6 py-3 border-l border-dashed border-slate-200 text-xl font-black text-slate-800 min-w-[120px] text-center tracking-wide">
                 0:00:00
-           </div>
+            </div>
             
-           <!-- Buttons -->
-           <button id="timerBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold tracking-widest text-sm h-full px-8 uppercase transition-colors min-h-[60px]">START</button>
-           <div class="px-4 bg-slate-50 border-l border-slate-200 h-full flex items-center text-slate-400 font-bold text-xl cursor-pointer hover:bg-slate-100 min-h-[60px]">
+            <!-- Buttons -->
+            <button id="timerBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold tracking-widest text-sm h-full px-8 uppercase transition-colors min-h-[60px]">START</button>
+            <div class="px-4 bg-slate-50 border-l border-slate-200 h-full flex items-center text-slate-400 font-bold text-xl cursor-pointer hover:bg-slate-100 min-h-[60px]">
                 ⋮
-           </div>
-       </div>
+            </div>
+        </div>
 
-       <!-- Entries List -->
-       <div id="entriesContainer" class="mt-8">
-           <div class="text-center p-10 text-slate-400 font-semibold">Memuatkan rekod...</div>
-       </div>
+        <!-- Entries List -->
+        <div id="entriesContainer" class="mt-8">
+            <div class="text-center p-10 text-slate-400 font-semibold">Memuatkan rekod...</div>
+        </div>
 
-   </main>
+    </main>
 
-   <script type="module" src="../js/tracker.js"></script>
+    <script type="module" src="../js/sidebar.js"></script>
+    <script type="module" src="../js/tracker.js"></script>
 </body>
 </html>
