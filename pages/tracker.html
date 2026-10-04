@@ -1,81 +1,147 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Tracker - WorkTime</title>
-    <!-- Rujukan Tunggal ke style.css -->
-    <link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <div id="sidebar-container"></div>
+(BUKA)!DOCTYPE html>
+(BUKA)html lang="en">
+(BUKA)head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=1280">
+   <title>Time Tracker | WORKTIMESYS(BUKA)/title>
+    
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+   <script src="https://cdn.tailwindcss.com">(BUKA)/script>
+
+   <style>
+        body { background-color: #f8fafc; -webkit-font-smoothing: antialiased; min-width: 1280px !important; overflow-x: auto !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; }
+        .glass-card { background: white; box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.03), 0 2px 8px -2px rgba(0, 0, 0, 0.02) !important; border: 1px solid rgba(226, 232, 240, 0.6) !important; border-radius: 12px !important; transition: all 0.3s ease; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         
-        <main class="main-content">
-            <div class="top-header">
-                <h1 class="page-title">Time Tracker</h1>
-                <span id="userEmail" style="color:#64748b; font-size:0.85rem;">Loading...</span>
-            </div>
+        .topbar { height: 60px; background: rgba(255,255,255,.97); border-bottom: 1px solid #e4edf7; display: flex; align-items: center; padding: 0 24px; gap: 22px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 12px rgba(7,26,59,.04) !important; }
+        .brand { min-width: 195px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #071a3b; }
+        .brand-mark { width: 34px; height: 38px; position: relative; flex: 0 0 auto; display: grid; place-items: center; }
+        .brand-mark::before, .brand-mark::after { content: ""; position: absolute; width: 19px; height: 19px; transform: rotate(30deg) skew(-4deg); border-radius: 4px; }
+        .brand-mark::before { background: linear-gradient(135deg, #0d6efd 0 52%, #f59e0b 52% 100%); top: 3px; left: 3px; }
+        .brand-mark::after { background: linear-gradient(135deg, #0b2d60 0 52%, #ef4444 52% 100%); bottom: 3px; right: 1px; }
+        .brand-copy strong { display: block; font-size: 19px; line-height: 18px; letter-spacing: -.8px; font-weight: 800; }
+        .brand-copy strong span { color: #0d6efd; }
+        .brand-copy small { display: block; margin-top: 3px; font-size: 9px; font-weight: 800; letter-spacing: .35px; color: #34527d; }
+        .nav { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0; }
+        .nav-link { height: 40px; padding: 0 11px; border-radius: 8px; display: inline-flex; align-items: center; gap: 7px; color: #122b54; text-decoration: none; font-size: 12px; font-weight: 600; white-space: nowrap; transition: .2s ease; }
+        .nav-link:hover { background: #f0f6ff; }
+        .nav-link.active { color: white; background: linear-gradient(135deg, #0d6efd, #187bff); box-shadow: 0 6px 14px rgba(13,110,253,.22); }
+        .profile { height: 40px; display: flex; align-items: center; gap: 9px; padding-left: 3px; cursor: pointer; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: white; background: #1677ff; font-weight: 700; font-size: 15px; }
 
-            <div class="content-area">
+        .btn-primary { background-color: #2563eb; color: white; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: background-color 0.2s; border-radius: 8px; padding: 8px 16px;}
+        .btn-primary:hover { background-color: #1d4ed8; }
+
+        .ts-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; color: #334155; outline: none; transition: .2s; }
+        .ts-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
+   </style>
+(BUKA)/head>
+
+(BUKA)body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+   <header class="topbar">
+       <a class="brand" href="dashboard.html" aria-label="WORKTIMESYS">
+           <div class="brand-mark">(BUKA)/div>
+           <div class="brand-copy">
+               <strong>WORKTIME(BUKA)span>SYS(BUKA)/span>(BUKA)/strong>
+               <small>TIME | PROJECT | TEAM(BUKA)/small>
+           </div>
+       </a>
+
+       <nav class="nav">
+           <a class="nav-link" href="dashboard.html">(BUKA)span class="nav-icon">⌂(BUKA)/span>Dashboard(BUKA)/a>
+           <a class="nav-link active" href="time-tracking.html">(BUKA)span class="nav-icon">◷(BUKA)/span>Time Tracking(BUKA)/a>
+           <a class="nav-link" href="timesheet.html">(BUKA)span class="nav-icon">▣(BUKA)/span>Timesheet(BUKA)/a>
+           <a class="nav-link" href="calendar.html">(BUKA)span class="nav-icon">▦(BUKA)/span>Calendar(BUKA)/a>
+           <a class="nav-link" href="projects.html">(BUKA)span class="nav-icon">📁(BUKA)/span>Projects(BUKA)/a>
+           <a class="nav-link" href="tasks.html">(BUKA)span class="nav-icon">☷(BUKA)/span>Tasks(BUKA)/a>
+           <a class="nav-link" href="clients.html">(BUKA)span class="nav-icon">♙(BUKA)/span>Clients(BUKA)/a>
+           <a class="nav-link" href="team.html">(BUKA)span class="nav-icon">♧(BUKA)/span>Team(BUKA)/a>
+           <a class="nav-link" href="reports.html">(BUKA)span class="nav-icon">▥(BUKA)/span>Reports(BUKA)/a>
+       </nav>
+
+       <div class="top-actions">
+           <div class="profile relative group">
+               <div class="avatar" id="avatarInitial">M(BUKA)/div>
+               <div class="profile-text hidden sm:block">
+                   <strong id="profileName">USER(BUKA)/strong>
+                   <small id="profileRole">Loading...(BUKA)/small>
+               </div>
+               <span class="ml-1 text-gray-400">⌄(BUKA)/span>
                 
-                <!-- KOTAK TIME TRACKER BARU (GLACIER STYLE) -->
-                <div class="glacier-card" style="padding: 0; display: flex; align-items: center; margin-bottom: 24px; overflow: hidden; gap: 0;">
-                    
-                    <!-- 1. Description -->
-                    <input type="text" id="taskDescInput" placeholder="What have you worked on?" style="flex: 1; padding: 15px 24px; border: none; outline: none; font-size: 0.95rem; color: #334155; background: transparent;">
-                    
-                    <!-- 2. Project & Task Select -->
-                    <div style="display: flex; align-items: center; padding: 0 15px; border-left: 1px dashed #cbd5e1; gap: 5px;">
-                        <select id="projectSelect" style="border:none; background:transparent; outline:none; color:#0ea5e9; font-weight:600; cursor:pointer; max-width:150px; font-size:0.9rem;">
-                            <option value="">⊕ Select Project</option>
-                        </select>
-                        <select id="taskSelect" style="border:none; background:transparent; outline:none; color:#64748b; font-weight:500; cursor:pointer; max-width:150px; font-size:0.85rem; display:none;">
-                            <option value="">Select Task</option>
-                        </select>
-                    </div>
-                    
-                    <!-- 3. Tags & Billable -->
-                    <div style="display: flex; align-items: center; padding: 0 15px; border-left: 1px dashed #cbd5e1; gap: 5px;">
-                        <span style="color: #cbd5e1; font-size: 1.1rem;">🏷️</span>
-                        <select id="tagSelect" style="border:none; background:transparent; outline:none; color:#64748b; font-weight:500; cursor:pointer; width:100px; font-size:0.85rem;">
-                            <option value="">Select Tag</option>
-                        </select>
-                    </div>
-                    <div style="padding: 0 15px; border-left: 1px dashed #cbd5e1; color: #cbd5e1; cursor: pointer; font-weight: bold; font-size: 1.1rem;" title="Billable">$</div>
-                    
-                    <!-- 4. Start & End Time -->
-                    <div style="display: flex; align-items: center; padding: 0 15px; border-left: 1px dashed #cbd5e1; gap: 5px; color: #475569; font-size: 0.9rem;">
-                        <input type="text" id="startTimeInput" placeholder="10:21 PM" style="width: 70px; border: none; outline: none; text-align: center; color: #475569; background: transparent;"> - 
-                        <input type="text" id="endTimeInput" placeholder="10:21 PM" style="width: 70px; border: none; outline: none; text-align: center; color: #475569; background: transparent;">
-                    </div>
-                    
-                    <!-- 5. Date -->
-                    <div style="padding: 0 15px; border-left: 1px dashed #cbd5e1; display: flex; align-items: center; gap: 5px; color: #475569; cursor: pointer; font-size: 0.9rem;">
-                        📅 Today
-                    </div>
-                    
-                    <!-- 6. Timer Display -->
-                    <div id="timerDisplay" style="padding: 0 20px; border-left: 1px dashed #cbd5e1; font-size: 1.2rem; font-weight: 600; color: #334155; min-width: 90px; text-align: center;">
-                        0:00:00
-                    </div>
-                    
-                    <!-- 7. Buttons -->
-                    <button id="timerBtn" class="btn-primary" style="height: 56px; border-radius: 0 !important; padding: 0 30px !important;">START</button>
-                    <div style="padding: 0 15px; color: #cbd5e1; font-size: 1.2rem; cursor: pointer; background: white; border-left: 1px solid var(--border-color); height: 56px; display: flex; align-items: center;">≡</div>
-                </div>
+               <div class="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
+                   <button id="logoutBtn" class="w-full text-left px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors">⏻ Logout(BUKA)/button>
+               </div>
+           </div>
+       </div>
+   </header>
 
-                <!-- SENARAI REKOD -->
-                <div id="entriesContainer">
-                    <div style="padding:20px; text-align:center; color:#888;">Memuatkan rekod...</div>
-                </div>
+   <main class="p-6 max-w-[1480px] mx-auto space-y-6">
 
-            </div>
-        </main>
-    </div>
+       <!-- Tracker Control Card -->
+       <div class="glass-card flex items-center shadow-sm bg-white overflow-hidden">
+           <!-- Description -->
+           <div class="flex-1 px-4 py-3">
+               <input type="text" id="taskDescInput" placeholder="What are you working on?" class="w-full border-none outline-none text-slate-700 bg-transparent placeholder-slate-400 font-medium">
+           </div>
+            
+           <!-- Project & Task -->
+           <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200">
+               <span class="text-blue-500">⊕(BUKA)/span>
+               <select id="projectSelect" class="border-none bg-transparent outline-none text-blue-600 font-semibold cursor-pointer max-w-[140px] text-sm">
+                   <option value="">Select Project(BUKA)/option>
+               </select>
+               <select id="taskSelect" class="border-none bg-transparent outline-none text-slate-500 font-semibold cursor-pointer max-w-[140px] text-xs hidden">
+                   <option value="">Select Task(BUKA)/option>
+               </select>
+           </div>
+            
+           <!-- Tag -->
+           <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200">
+               <span class="text-slate-400 text-lg">🏷️(BUKA)/span>
+               <select id="tagSelect" class="border-none bg-transparent outline-none text-slate-500 font-medium cursor-pointer w-24 text-xs">
+                   <option value="">Tag(BUKA)/option>
+               </select>
+           </div>
+            
+           <!-- Billable -->
+           <div class="px-4 py-3 border-l border-dashed border-slate-200 text-slate-300 font-bold text-lg cursor-pointer hover:text-blue-500 transition-colors" title="Billable">
+                $(BUKA)/div>
+            
+           <!-- Start & End Time -->
+           <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200 text-slate-500 text-xs font-semibold">
+               <input type="text" id="startTimeInput" placeholder="--:--" class="w-12 border-none outline-none text-center bg-transparent"> - 
+               <input type="text" id="endTimeInput" placeholder="--:--" class="w-12 border-none outline-none text-center bg-transparent">
+           </div>
+            
+           <!-- Date -->
+           <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200 text-slate-500 text-xs font-semibold cursor-pointer">
+                📅 Today
+           </div>
+            
+           <!-- Timer Display -->
+           <div id="timerDisplay" class="px-6 py-3 border-l border-dashed border-slate-200 text-xl font-black text-slate-800 min-w-[120px] text-center tracking-wide">
+                0:00:00
+           </div>
+            
+           <!-- Buttons -->
+           <button id="timerBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold tracking-widest text-sm h-full px-8 uppercase transition-colors min-h-[60px]">START(BUKA)/button>
+           <div class="px-4 bg-slate-50 border-l border-slate-200 h-full flex items-center text-slate-400 font-bold text-xl cursor-pointer hover:bg-slate-100 min-h-[60px]">
+                ⋮
+           </div>
+       </div>
 
-    <!-- Pautan JS -->
-    <script type="module" src="../js/tracker.js"></script>
-</body>
-</html>
+       <!-- Entries List -->
+       <div id="entriesContainer" class="mt-8">
+           <div class="text-center p-10 text-slate-400 font-semibold">Memuatkan rekod...(BUKA)/div>
+       </div>
+
+   </main>
+
+   <script type="module" src="../js/tracker.js">(BUKA)/script>
+(BUKA)/body>
+(BUKA)/html>
