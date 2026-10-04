@@ -13,7 +13,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return window.location.href = '../pages/login.html';
 
-        const { data: profile } = await supabase.from('employees').select('system_role').eq('id', session.user.id).maybeSingle();
+        // KEMAS KINI: Gunakan carian e-mel kalis huruf besar/kecil untuk pengesahan Admin
+        const { data: profiles } = await supabase
+            .from('employees')
+            .select('system_role')
+            .ilike('email', session.user.email.trim())
+            .limit(1);
+            
+        const profile = profiles && profiles.length > 0 ? profiles[0] : null;
+        
         if (profile && profile.system_role) {
             isAdmin = profile.system_role.toLowerCase() === 'admin';
         }
@@ -124,7 +132,6 @@ function filterMembers() {
 
     const filtered = membersData.filter(m => {
         const matchName = (m.name || '').toLowerCase().includes(term) || (m.email || '').toLowerCase().includes(term);
-        // Semakan peranan kalis huruf besar/kecil
         const matchRole = role === 'all' || (m.system_role && m.system_role.toLowerCase() === role.toLowerCase());
         const matchDept = dept === 'all' || m.department === dept;
         const matchStat = stat === 'all' || (m.status||'').toUpperCase() === stat.toUpperCase();
@@ -190,7 +197,7 @@ function renderMembersTable(data) {
                 
         if (isAdmin) {
             html += '<button class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-blue-600 hover:border-blue-200 shadow-sm transition-colors bind-edit" data-id="' + m.id + '">✏</button>' +
-                    '<button class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 shadow-sm transition-colors bind-del text-sm" data-id="' + m.id + '">🗑️</button>';
+                    '<button class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 shadow-sm transition-colors bind-del text-sm" data-id="' + m.id + '">🗑️️</button>';
         } else {
             html += '🔒';
         }
@@ -270,7 +277,6 @@ function setupMemberModal() {
     const modal = document.getElementById('memberModal');
     const form = document.getElementById('memberForm');
     
-    // PENYELESAIAN ISU BUTANG X
     const btnClose = document.getElementById('btnCloseModal');
     if (btnClose) {
         btnClose.addEventListener('click', () => {
