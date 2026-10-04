@@ -142,21 +142,20 @@
         <!-- VISUAL FILTER BAR BARU (ADAP PERTANYAAN TERKINI) -->
         <div class="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6">
             
-            <!-- 1. Penapis Tarikh / Minggu (BARU DITAMBAH) -->
-            <div class="flex-1 min-w-[160px]">
-                <div class="relative">
-                    <span class="absolute left-3 top-2.5 text-slate-400">📅</span>
-                    <select id="filterPeriod" class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 appearance-none text-slate-600 bg-white cursor-pointer">
-                        <option value="this_week">This Week</option>
-                        <option value="last_week">Last Week</option>
-                        <option value="this_month">This Month</option>
-                        <option value="all_time">All Time</option>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400">
-                        ▼
-                    </div>
-                </div>
-            </div>
+            <!-- 1. Penapis Tarikh / Minggu (GAYA BUTANG PREV/NEXT) -->
+<div class="flex-none min-w-[240px]">
+    <div class="flex items-center border border-slate-300 rounded-lg bg-white text-sm h-[38px] overflow-hidden shadow-sm">
+        <button id="btnPrevDate" class="px-4 h-full flex items-center justify-center hover:bg-slate-50 border-r border-slate-300 transition-colors text-blue-700 font-medium">
+            <
+        </button>
+        <div id="currentDateDisplay" class="flex-1 text-center font-medium px-4 text-[#19325c]">
+            Sep 28 - Oct 4, 2026
+        </div>
+        <button id="btnNextDate" class="px-4 h-full flex items-center justify-center hover:bg-slate-50 border-l border-slate-300 transition-colors text-blue-700 font-medium">
+            >
+        </button>
+    </div>
+</div>
 
             <!-- 2. Penapis Projek -->
             <div class="flex-1 min-w-[160px]">
