@@ -5,14 +5,15 @@ export async function loadSidebar() {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return;
 
-        // KEMAS KINI: Cari profil menggunakan email dan .maybeSingle() agar sama dengan profile.js
         const { data: profile } = await supabase
             .from('employees')
             .select('system_role, email')
             .eq('email', session.user.email)
             .maybeSingle();
 
-        const isAdmin = profile && profile.system_role === 'Admin';
+        // KEMAS KINI: Jadikan carian kalis huruf besar/kecil (ADMIN, Admin, admin semua diterima)
+        const isAdmin = profile && profile.system_role && profile.system_role.toLowerCase() === 'admin';
+        
         const userEmail = profile ? profile.email : session.user.email;
         const initial = userEmail.charAt(0).toUpperCase();
         const fullName = userEmail.split('@')[0].toUpperCase();
