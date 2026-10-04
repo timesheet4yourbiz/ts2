@@ -5,7 +5,6 @@ let filterState = { startDate: '', endDate: '', projectId: 'all', teamId: 'all' 
 let chartBar = null, chartDonut = null, chartProjectStatus = null, projectCatalog = [];
 let teamDataList = [], currentPage = 1, recordsPerPage = 20;
 
-// TAMBAHAN BARU: Pembolehubah Carian, Penapis Status & Default Susunan Jam Paling Sedikit
 let searchQuery = '';
 let statusFilter = 'all'; 
 let currentSort = { column: 'tracked', isAsc: true }; 
@@ -22,25 +21,40 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) return window.location.href = '../pages/login.html';
-        const emailEl = document.getElementById('userEmail'); if (emailEl) emailEl.textContent = session.user.email;
+        
         let currentDashDate = new Date();
         const getDashWeekRange = (d) => { const c = new Date(d), day = c.getDay(), diff = c.getDate() - day + (day === 0 ? -6 : 1); const s = new Date(c.setDate(diff)); s.setHours(0, 0, 0, 0); const e = new Date(s); e.setDate(s.getDate() + 6); e.setHours(23, 59, 59, 999); return { start: s, end: e }; };
-        const updateDashDateDisplay = () => { const { start, end } = getDashWeekRange(currentDashDate); filterState.startDate = safeDateStr(start); filterState.endDate = safeDateStr(end); const el = document.getElementById('dashDateRangeText'); if (el) el.textContent = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' - ' + end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); };
-        document.getElementById('prevDashBtn')?.addEventListener('click', async () => { currentDashDate.setDate(currentDashDate.getDate() - 7); updateDashDateDisplay(); await refreshDashboardData(); });
-        document.getElementById('nextDashBtn')?.addEventListener('click', async () => { currentDashDate.setDate(currentDashDate.getDate() + 7); updateDashDateDisplay(); await refreshDashboardData(); });
-        updateDashDateDisplay(); bindFilters(); bindTableFilters(); bindPaginationControls(); bindSortingControls(); await loadProjectDropdown(); await refreshDashboardData();
+        
+        // ENJIN F1: PENGIKAT BUTANG TARIKH BARU
+        const updateDashDateDisplay = () => { 
+            const { start, end } = getDashWeekRange(currentDashDate); 
+            filterState.startDate = safeDateStr(start); 
+            filterState.endDate = safeDateStr(end); 
+            const el = document.getElementById('currentDateDisplay'); 
+            if (el) el.textContent = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' - ' + end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); 
+        };
+        
+        document.getElementById('btnPrevDate')?.addEventListener('click', async () => { currentDashDate.setDate(currentDashDate.getDate() - 7); updateDashDateDisplay(); await refreshDashboardData(); });
+        document.getElementById('btnNextDate')?.addEventListener('click', async () => { currentDashDate.setDate(currentDashDate.getDate() + 7); updateDashDateDisplay(); await refreshDashboardData(); });
+        
+        updateDashDateDisplay(); 
+        bindFilters(); 
+        bindTableFilters(); 
+        bindPaginationControls(); 
+        bindSortingControls(); 
+        await loadProjectDropdown(); 
+        await refreshDashboardData();
     } catch (e) { console.error(e); }
 });
 
 function bindFilters() {
     ['filterProject', 'filterProject2'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => { filterState.projectId = e.target.value; refreshDashboardData(); }));
     ['filterTeam', 'filterTeam2'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => { filterState.teamId = e.target.value; refreshDashboardData(); }));
+    
+    // PENGIKAT BUTANG APPLY FILTER
+    document.getElementById('applyDashboardFilter')?.addEventListener('click', () => { refreshDashboardData(); });
 }
 
-
-
-
-// TAMBAHAN BARU: Membaca input Carian dan Penapis Status Jadual
 function bindTableFilters() {
     const searchInput = document.getElementById('searchMemberInput');
     if (searchInput) { searchInput.addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase(); currentPage = 1; applySortingAndRender(); }); }
@@ -85,9 +99,6 @@ function processBarChart(entries) {
     const ctx = document.getElementById('stackedBarChart'); if (!ctx) return; if (chartBar) chartBar.destroy();
     chartBar = new Chart(ctx, { type: 'bar', data: { labels, datasets }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, beginAtZero: true, border: { display: false } } } } });
 }
-
-
-
 
 function processDonutAndRanking(entries) {
     const projMap = {}; let grandTotal = 0;
@@ -134,10 +145,6 @@ function renderPremiumDashboard(entries, employees) {
     if (statusCanvas) { if (chartProjectStatus) chartProjectStatus.destroy(); chartProjectStatus = new Chart(statusCanvas, { type: 'doughnut', data: { labels: ['Tracked', 'No Activity'], datasets: [{ data: [trackedCount, noActivity], backgroundColor: ['#18cf6d', '#f6a21a'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false } } } }); }
 }
 
-
-
-
-
 function processTeamActivitiesData(entries, employees) {
     const teamMap = {}, todayStr = safeDateStr(new Date());
     employees.forEach(emp => { teamMap[emp.id] = { id: emp.id, name: emp.name || (emp.email ? emp.email.split('@')[0] : 'Unnamed'), email: emp.email || '', totalSec: 0, todaySec: 0, latest: null, isTracking: false, projects: {} }; });
@@ -162,7 +169,6 @@ function bindSortingControls() {
     });
 }
 
-// TAMBAHAN BARU: Memproses saringan carian (Search) dan saringan status jadual
 function applySortingAndRender() {
     let filteredList = teamDataList.filter(m => {
         const matchSearch = m.name.toLowerCase().includes(searchQuery) || m.email.toLowerCase().includes(searchQuery);
@@ -199,10 +205,6 @@ function getStatusAndBadge(member) {
     return '<span class="bg-gray-50 text-gray-500 font-semibold text-[10px] px-2 py-0.5 rounded-full border border-gray-200">No activity</span>';
 }
 
-
-
-
-// TAMBAHAN BARU: Terima data yang telah ditapis dan Anjak saiz Column
 function renderTeamActivities(listToRender) {
     const tbody = document.getElementById('teamActivitiesBody'); if (!tbody) return; tbody.innerHTML = '';
     const totalRecs = listToRender.length; 
@@ -222,7 +224,6 @@ function renderTeamActivities(listToRender) {
         for (const [pName, pSec] of Object.entries(member.projects)) { if (pSec > 0 && member.totalSec > 0) { const perc = (pSec / member.totalSec) * 100; barSegments += '<div class="h-full" style="width: ' + perc + '%; background-color: ' + getProjectColor(pName) + ';"></div>'; } }
         let breakdownHtml = '<div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex">' + barSegments + '</div>';
         
-        // PENGUBAHSUAIAN CSS: Rapatkan No Index & Besarkan bahagian Action / Breakdown
         tbody.innerHTML += '<tr class="hover:bg-slate-50/80 transition-colors">' +
             '<td class="py-3 pl-4 pr-1 text-center text-slate-800 font-semibold w-8">' + actualIndex + '</td>' +
             '<td class="py-3 px-2 w-64"><div class="flex items-center gap-2.5">' +
@@ -258,8 +259,3 @@ document.addEventListener('click', async (e) => {
         finally { chaseBtn.disabled = false; chaseBtn.innerHTML = originalText; const popup = chaseBtn.closest('.action-menu-popup'); if (popup) popup.classList.add('hidden'); }
     }
 });
-
-
-
-
-
