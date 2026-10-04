@@ -5,10 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return window.location.href = '../pages/login.html';
 
-        const profileName = document.getElementById('profileName');
-        const avatarInitial = document.getElementById('avatarInitial');
-        if (profileName) profileName.textContent = session.user.email.split('@')[0].toUpperCase();
-        if (avatarInitial) avatarInitial.textContent = session.user.email.charAt(0).toUpperCase();
+        // Profil header diuruskan oleh sidebar.js, kita fokus pada fungsionaliti Reports di sini.
 
         await populateFilters();
 
@@ -120,7 +117,7 @@ async function populateFilters() {
     } catch (e) {}
 }
 
-// LOGIK ISO-8601 BAHARU: MINGGU MENGIKUT HARI ISNIN (Menghalang Pertindihan)
+// LOGIK ISO-8601 BAHARU: MINGGU MENGIKUT HARI ISNIN
 function getWeekDates(year, month) {
     let weeks = [];
     const formatFull = (dt) => {
@@ -128,17 +125,16 @@ function getWeekDates(year, month) {
         return String(dt.getDate()).padStart(2, '0') + ' - ' + mStr;
     };
     
-    // Cari semua hari Isnin dalam bulan yang dipilih
     for (let day = 1; day <= 31; day++) {
         let d = new Date(year, month - 1, day);
-        if (d.getMonth() !== month - 1) break; // Berhenti jika masuk bulan depan
+        if (d.getMonth() !== month - 1) break; 
         
-        if (d.getDay() === 1) { // 1 = Hari Isnin
+        if (d.getDay() === 1) { 
             let start = new Date(d);
             start.setHours(0,0,0,0);
             
             let end = new Date(start);
-            end.setDate(start.getDate() + 6); // Tambah 6 hari untuk dapat Ahad
+            end.setDate(start.getDate() + 6); 
             end.setHours(23,59,59,999);
             
             weeks.push({
@@ -149,14 +145,12 @@ function getWeekDates(year, month) {
         }
     }
     
-    // Jika bulan tersebut hanya ada 4 minggu Isnin, letak 'N/A' untuk kotak minggu ke-5
     while (weeks.length < 5) {
         weeks.push({ start: null, end: null, text: 'N/A' });
     }
     
     return weeks;
 }
-
 
 async function generateReport() {
     const monthInput = document.getElementById('reportMonth').value;
@@ -197,13 +191,11 @@ async function generateReport() {
     const validWeeks = weeks.filter(w => w.start !== null);
     if(validWeeks.length === 0) return;
 
-    // Pertukaran dari ISO Date ke Local String (Format YYYY-MM-DD)
     const sDt = validWeeks[0].start;
     const eDt = validWeeks[validWeeks.length - 1].end;
     const startStr = sDt.getFullYear() + '-' + String(sDt.getMonth()+1).padStart(2,'0') + '-' + String(sDt.getDate()).padStart(2,'0');
     const endStr = eDt.getFullYear() + '-' + String(eDt.getMonth()+1).padStart(2,'0') + '-' + String(eDt.getDate()).padStart(2,'0');
 
-    // MENGATASI HAD 1000 BARIS SUPABASE (PAGINATION LOOP)
     let allEntries = [];
     let from = 0;
     const step = 999;
