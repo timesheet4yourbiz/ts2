@@ -43,17 +43,19 @@ export async function loadSidebar() {
                     '</a>';
 
         navHtml += '<nav class="flex flex-1 items-center gap-1.5 min-w-0" id="mainNav">';
-        navHtml += '<a class="nav-link ' + (currentPage.includes('timesheet') ? 'active' : '') + '" href="timesheet.html"><span class="nav-icon">▣</span>TIMESHEET</a>';
-        navHtml += '<a class="nav-link ' + (currentPage.includes('calendar') ? 'active' : '') + '" href="calendar.html"><span class="nav-icon">▦</span>CALENDAR</a>';
-/*      navHtml += '<a class="nav-link ' + (currentPage.includes('tracker') || currentPage.includes('tracking') ? 'active' : '') + '" href="tracker.html"><span class="nav-icon">◷</span>TRACKING</a>'; */ 
-        navHtml += '<a class="nav-link ' + (currentPage.includes('dashboard') ? 'active' : '') + '" href="dashboard.html"><span class="nav-icon">⌂</span>OVERVIEW</a>';
-        navHtml += '<a class="nav-link ' + (currentPage.includes('reports') ? 'active' : '') + '" href="reports.html"><span class="nav-icon">▥</span>ANALYTICS</a>';
+        navHtml += '<a class="nav-link ' + (currentPage.includes('timesheet') ? 'active' : '') + '" href="timesheet.html">TIMESHEET</a>';
+        navHtml += '<a class="nav-link ' + (currentPage.includes('calendar') ? 'active' : '') + '" href="calendar.html">CALENDAR</a>';
+        
+/*      navHtml += '<a class="nav-link ' + (currentPage.includes('tracker') || currentPage.includes('tracking') ? 'active' : '') + '" href="tracker.html">TRACKING</a>'; */ 
+        
+        navHtml += '<a class="nav-link ' + (currentPage.includes('dashboard') ? 'active' : '') + '" href="dashboard.html">OVERVIEW</a>';
+        navHtml += '<a class="nav-link ' + (currentPage.includes('reports') ? 'active' : '') + '" href="reports.html">ANALYTICS</a>';
 
         if (isAdmin) {
-            navHtml += '<a class="nav-link ' + (currentPage.includes('projects') ? 'active' : '') + '" href="projects.html"><span class="nav-icon">📁</span>PROJECT</a>';
-            navHtml += '<a class="nav-link ' + (currentPage.includes('tags') ? 'active' : '') + '" href="tags.html"><span class="nav-icon">🏷</span>TAGS</a>';
-            navHtml += '<a class="nav-link ' + (currentPage.includes('employee') || currentPage.includes('team') ? 'active' : '') + '" href="employees.html"><span class="nav-icon">♧</span>TEAM</a>';
-            navHtml += '<a class="nav-link ' + (currentPage.includes('clients') ? 'active' : '') + '" href="clients.html"><span class="nav-icon">♙</span>CLIENTS</a>';
+            navHtml += '<a class="nav-link ' + (currentPage.includes('projects') ? 'active' : '') + '" href="projects.html">PROJECT</a>';
+            navHtml += '<a class="nav-link ' + (currentPage.includes('tags') ? 'active' : '') + '" href="tags.html">TAGS</a>';
+            navHtml += '<a class="nav-link ' + (currentPage.includes('employee') || currentPage.includes('team') ? 'active' : '') + '" href="employees.html">TEAM</a>';
+            navHtml += '<a class="nav-link ' + (currentPage.includes('clients') ? 'active' : '') + '" href="clients.html">CLIENTS</a>';
         }
         navHtml += '</nav>';
 
