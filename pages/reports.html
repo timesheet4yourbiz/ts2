@@ -8,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- INI SKRIP YANG TERTINGGAL SEBELUM INI -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         :root {
@@ -65,73 +68,6 @@
             box-shadow: 0 2px 12px rgba(7,26,59,.04);
         }
 
-        .brand {
-            min-width: 195px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--navy);
-        }
-
-        .brand-mark {
-            width: 34px;
-            height: 38px;
-            position: relative;
-            flex: 0 0 auto;
-            display: grid;
-            place-items: center;
-        }
-
-        .brand-mark::before,
-        .brand-mark::after {
-            content: "";
-            position: absolute;
-            width: 19px;
-            height: 19px;
-            transform: rotate(30deg) skew(-4deg);
-            border-radius: 4px;
-        }
-
-        .brand-mark::before {
-            background: linear-gradient(135deg, #0d6efd 0 52%, #f59e0b 52% 100%);
-            top: 3px;
-            left: 3px;
-        }
-
-        .brand-mark::after {
-            background: linear-gradient(135deg, #0b2d60 0 52%, #ef4444 52% 100%);
-            bottom: 3px;
-            right: 1px;
-        }
-
-        .brand-copy strong {
-            display: block;
-            font-size: 20px;
-            line-height: 18px;
-            letter-spacing: -.8px;
-            font-weight: 800;
-        }
-
-        .brand-copy strong span { color: var(--blue); }
-
-        .brand-copy small {
-            display: block;
-            margin-top: 3px;
-            font-size: 9px;
-            font-weight: 800;
-            letter-spacing: .35px;
-            color: #34527d;
-        }
-
-        .nav {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            flex: 1;
-            min-width: 0;
-        }
-
         .nav-link {
             height: 40px;
             padding: 0 11px;
@@ -154,74 +90,6 @@
             background: linear-gradient(135deg, #0d6efd, #187bff);
             box-shadow: 0 6px 14px rgba(13,110,253,.22);
         }
-
-        .nav-icon {
-            width: 16px;
-            height: 16px;
-            display: inline-grid;
-            place-items: center;
-            font-size: 15px;
-        }
-
-        .top-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 0 0 auto;
-        }
-
-        .icon-btn {
-            width: 40px;
-            height: 40px;
-            border: 1px solid var(--line);
-            background: #fff;
-            border-radius: 9px;
-            color: var(--navy);
-            display: grid;
-            place-items: center;
-            position: relative;
-        }
-
-        .notification-dot {
-            position: absolute;
-            right: -2px;
-            top: -4px;
-            min-width: 18px;
-            height: 18px;
-            padding: 0 4px;
-            border-radius: 99px;
-            background: #ef3340;
-            color: #fff;
-            font-size: 9px;
-            font-weight: 800;
-            display: grid;
-            place-items: center;
-            border: 2px solid #fff;
-        }
-
-        .profile {
-            height: 40px;
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            padding-left: 3px;
-        }
-
-        .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            color: white;
-            background: #1677ff;
-            font-weight: 700;
-            font-size: 15px;
-        }
-
-        .profile-text { line-height: 1.15; }
-        .profile-text strong { display: block; font-size: 11px; }
-        .profile-text small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
 
         /* =========================
            PAGE
@@ -1017,8 +885,6 @@
 
     </main>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script type="module" src="../js/sidebar.js"></script>
 <script type="module" src="../js/reports.js"></script>
