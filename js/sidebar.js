@@ -5,6 +5,7 @@ export async function loadSidebar() {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return;
 
+        // Semak Peranan (Role)
         const { data: profile } = await supabase
             .from('employees')
             .select('system_role, email')
@@ -14,11 +15,12 @@ export async function loadSidebar() {
         const isAdmin = profile && profile.system_role === 'Admin';
         const userEmail = profile ? profile.email : session.user.email;
         const initial = userEmail.charAt(0).toUpperCase();
+        const roleText = isAdmin ? 'Administrator' : (profile ? profile.system_role : 'User');
         
         const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
 
-        // Sasarkan elemen yang akan digantikan (Header atau Container Menu)
-        const headerContainer = document.querySelector('.topbar') || document.getElementById('sidebar-container');
+        // Cari bekas Topbar
+        const headerContainer = document.getElementById('topbarContainer') || document.querySelector('.topbar');
         if (!headerContainer) return;
 
         let navHtml = '';
@@ -35,25 +37,16 @@ export async function loadSidebar() {
         // -- BAHAGIAN TENGAH: NAVIGATION LINKS --
         navHtml += '<nav class="nav" id="mainNav">';
         
-        // 1. TIMESHEET
         navHtml += '<a class="nav-link ' + (currentPage.includes('timesheet') ? 'active' : '') + '" href="timesheet.html"><span class="nav-icon">▣</span>TIMESHEET</a>';
-        
-        // 2. CALENDAR
         navHtml += '<a class="nav-link ' + (currentPage.includes('calendar') ? 'active' : '') + '" href="calendar.html"><span class="nav-icon">▦</span>CALENDAR</a>';
-        
-        // 3. TRACKING
         navHtml += '<a class="nav-link ' + (currentPage.includes('tracker') || currentPage.includes('tracking') ? 'active' : '') + '" href="tracker.html"><span class="nav-icon">◷</span>TRACKING</a>';
-        
-        // 4. OVERVIEW (Dashboard)
         navHtml += '<a class="nav-link ' + (currentPage.includes('dashboard') ? 'active' : '') + '" href="dashboard.html"><span class="nav-icon">⌂</span>OVERVIEW</a>';
-        
-        // 5. ANALYTICS (Reports)
         navHtml += '<a class="nav-link ' + (currentPage.includes('reports') ? 'active' : '') + '" href="reports.html"><span class="nav-icon">▥</span>ANALYTICS</a>';
 
-        // Menu Admin Sahaja
+        // Menu Tambahan Jika Admin
         if (isAdmin) {
             navHtml += '<a class="nav-link ' + (currentPage.includes('projects') ? 'active' : '') + '" href="projects.html"><span class="nav-icon">📁</span>PROJECT</a>';
-            navHtml += '<a class="nav-link ' + (currentPage.includes('tags') ? 'active' : '') + '" href="tags.html"><span class="nav-icon">🏷️</span>TAGS</a>';
+            navHtml += '<a class="nav-link ' + (currentPage.includes('tags') ? 'active' : '') + '" href="tags.html"><span class="nav-icon">🏷️️</span>TAGS</a>';
             navHtml += '<a class="nav-link ' + (currentPage.includes('employee') ? 'active' : '') + '" href="employees.html"><span class="nav-icon">♧</span>EMPLOYEES</a>';
             navHtml += '<a class="nav-link ' + (currentPage.includes('clients') ? 'active' : '') + '" href="clients.html"><span class="nav-icon">♙</span>CLIENTS</a>';
         }
@@ -70,7 +63,7 @@ export async function loadSidebar() {
                             '<div class="avatar" id="avatarInitial">' + initial + '</div>' +
                             '<div class="profile-text hidden sm:block">' +
                                 '<strong id="profileName">' + userEmail.split('@')[0].toUpperCase() + '</strong>' +
-                                '<small id="profileRole">' + (isAdmin ? 'Administrator' : profile.system_role) + '</small>' +
+                                '<small id="profileRole">' + roleText + '</small>' +
                             '</div>' +
                             '<span class="ml-1 text-gray-400">⌄</span>' +
                             
@@ -80,10 +73,10 @@ export async function loadSidebar() {
                         '</div>' +
                     '</div>';
 
-        // Render ke dalam header
+        // Masukkan struktur Menu ke dalam container di HTML
         headerContainer.innerHTML = navHtml;
         
-        // Bind fungsi Logout
+        // Setup Butang Logout
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
