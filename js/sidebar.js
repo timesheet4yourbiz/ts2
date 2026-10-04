@@ -45,7 +45,7 @@ export async function loadSidebar() {
         navHtml += '<nav class="flex flex-1 items-center gap-1.5 min-w-0" id="mainNav">';
         navHtml += '<a class="nav-link ' + (currentPage.includes('timesheet') ? 'active' : '') + '" href="timesheet.html"><span class="nav-icon">▣</span>TIMESHEET</a>';
         navHtml += '<a class="nav-link ' + (currentPage.includes('calendar') ? 'active' : '') + '" href="calendar.html"><span class="nav-icon">▦</span>CALENDAR</a>';
-        navHtml += '<a class="nav-link ' + (currentPage.includes('tracker') || currentPage.includes('tracking') ? 'active' : '') + '" href="tracker.html"><span class="nav-icon">◷</span>TRACKING</a>';
+/*      navHtml += '<a class="nav-link ' + (currentPage.includes('tracker') || currentPage.includes('tracking') ? 'active' : '') + '" href="tracker.html"><span class="nav-icon">◷</span>TRACKING</a>'; */ 
         navHtml += '<a class="nav-link ' + (currentPage.includes('dashboard') ? 'active' : '') + '" href="dashboard.html"><span class="nav-icon">⌂</span>OVERVIEW</a>';
         navHtml += '<a class="nav-link ' + (currentPage.includes('reports') ? 'active' : '') + '" href="reports.html"><span class="nav-icon">▥</span>ANALYTICS</a>';
 
