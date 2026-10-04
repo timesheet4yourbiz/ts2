@@ -20,32 +20,32 @@ export async function loadSidebar() {
         let navHtml = '';
 
         // 1. TIMESHEET
-        navHtml += '(BUKA)a class="nav-link ' + (currentPage.includes('timesheet') ? 'active' : '') + '" href="timesheet.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)▣(BUKA)/span(TUTUP)TIMESHEET(BUKA)/a(TUTUP)';
+        navHtml += '<a class="nav-link ' + (currentPage.includes('timesheet') ? 'active' : '') + '" href="timesheet.html"><span class="nav-icon">▣</span>TIMESHEET</a>';
         
         // 2. CALENDAR
-        navHtml += '(BUKA)a class="nav-link ' + (currentPage.includes('calendar') ? 'active' : '') + '" href="calendar.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)▦(BUKA)/span(TUTUP)CALENDAR(BUKA)/a(TUTUP)';
+        navHtml += '<a class="nav-link ' + (currentPage.includes('calendar') ? 'active' : '') + '" href="calendar.html"><span class="nav-icon">▦</span>CALENDAR</a>';
         
         // 3. TRACKING
-        navHtml += '(BUKA)a class="nav-link ' + (currentPage.includes('tracking') ? 'active' : '') + '" href="tracking.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)◷(BUKA)/span(TUTUP)TRACKING(BUKA)/a(TUTUP)';
+        navHtml += '<a class="nav-link ' + (currentPage.includes('tracking') ? 'active' : '') + '" href="tracking.html"><span class="nav-icon">◷</span>TRACKING</a>';
         
         // 4. OVERVIEW
-        navHtml += '(BUKA)a class="nav-link ' + (currentPage.includes('dashboard') ? 'active' : '') + '" href="dashboard.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)⌂(BUKA)/span(TUTUP)OVERVIEW(BUKA)/a(TUTUP)';
+        navHtml += '<a class="nav-link ' + (currentPage.includes('dashboard') ? 'active' : '') + '" href="dashboard.html"><span class="nav-icon">⌂</span>OVERVIEW</a>';
         
         // 5. ANALYTICS
-        navHtml += '(BUKA)a class="nav-link ' + (currentPage.includes('reports') ? 'active' : '') + '" href="reports.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)▥(BUKA)/span(TUTUP)ANALYTICS(BUKA)/a(TUTUP)';
+        navHtml += '<a class="nav-link ' + (currentPage.includes('reports') ? 'active' : '') + '" href="reports.html"><span class="nav-icon">▥</span>ANALYTICS</a>';
 
         if (isAdmin) {
             // 6. PROJECT
-            navHtml += '(BUKA)a class="nav-link ' + (currentPage.includes('projects') ? 'active' : '') + '" href="projects.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)📁(BUKA)/span(TUTUP)PROJECT(BUKA)/a(TUTUP)';
+            navHtml += '<a class="nav-link ' + (currentPage.includes('projects') ? 'active' : '') + '" href="projects.html"><span class="nav-icon">📁</span>PROJECT</a>';
             
             // 7. TAGS
-            navHtml += '(BUKA)a class="nav-link ' + (currentPage.includes('tags') ? 'active' : '') + '" href="tags.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)🏷️(BUKA)/span(TUTUP)TAGS(BUKA)/a(TUTUP)';
+            navHtml += '<a class="nav-link ' + (currentPage.includes('tags') ? 'active' : '') + '" href="tags.html"><span class="nav-icon">🏷️</span>TAGS</a>';
             
             // 8. EMPLOYEES
-            navHtml += '(BUKA)a class="nav-link ' + (currentPage.includes('employee') ? 'active' : '') + '" href="employee.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)♧(BUKA)/span(TUTUP)EMPLOYEES(BUKA)/a(TUTUP)';
+            navHtml += '<a class="nav-link ' + (currentPage.includes('employee') ? 'active' : '') + '" href="employee.html"><span class="nav-icon">♧</span>EMPLOYEES</a>';
             
             // 9. CLIENTS
-            navHtml += '(BUKA)a class="nav-link ' + (currentPage.includes('clients') ? 'active' : '') + '" href="clients.html"(TUTUP)(BUKA)span class="nav-icon"(TUTUP)♙(BUKA)/span(TUTUP)CLIENTS(BUKA)/a(TUTUP)';
+            navHtml += '<a class="nav-link ' + (currentPage.includes('clients') ? 'active' : '') + '" href="clients.html"><span class="nav-icon">♙</span>CLIENTS</a>';
         }
 
         nav.innerHTML = navHtml;
