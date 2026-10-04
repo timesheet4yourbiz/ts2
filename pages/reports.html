@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1280">
-    <title>Reports | WORKTIME</title>
+    <title>Reports | WORKTIMESYS</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,7 +49,7 @@
         }
 
         /* =========================
-           TOP NAVIGATION
+           TOP NAVIGATION (Diurus oleh sidebar.js)
            ========================= */
         .topbar {
             height: 60px;
@@ -782,44 +782,8 @@
 <body>
 <div class="app">
 
-    <!-- TOP NAVIGATION -->
-    <header class="topbar">
-        <a class="brand" href="dashboard.html" aria-label="WORKTIME">
-            <div class="brand-mark"></div>
-            <div class="brand-copy">
-                <strong>CRANE<span>TRACK</span></strong>
-                <small>TIME | PROJECT | TEAM</small>
-            </div>
-        </a>
-
-        <nav class="nav" aria-label="Main navigation">
-            <a class="nav-link" href="dashboard.html"><span class="nav-icon">⌂</span>Dashboard</a>
-            <a class="nav-link" href="time-tracking.html"><span class="nav-icon">◷</span>Time Tracking</a>
-            <a class="nav-link" href="timesheet.html"><span class="nav-icon">▣</span>Timesheet</a>
-            <a class="nav-link" href="calendar.html"><span class="nav-icon">▦</span>Calendar</a>
-            <a class="nav-link" href="projects.html"><span class="nav-icon">▣</span>Projects</a>
-            <a class="nav-link" href="tasks.html"><span class="nav-icon">☷</span>Tasks</a>
-            <a class="nav-link" href="clients.html"><span class="nav-icon">♙</span>Clients</a>
-            <a class="nav-link" href="team.html"><span class="nav-icon">♧</span>Team</a>
-            <a class="nav-link active" href="reports.html"><span class="nav-icon">▥</span>Reports</a>
-        </nav>
-
-        <div class="top-actions">
-            <button class="icon-btn" type="button" title="Notifications">
-                ♧
-                <span class="notification-dot">3</span>
-            </button>
-
-            <div class="profile">
-                <div class="avatar" id="avatarInitial">M</div>
-                <div class="profile-text">
-                    <strong id="profileName">MOHAMAD</strong>
-                    <small id="profileRole">Administrator</small>
-                </div>
-                <span>⌄</span>
-            </div>
-        </div>
-    </header>
+    <!-- TOP NAVIGATION KINI DIURUSKAN OLEH SIDEBAR.JS -->
+    <header class="topbar" id="topbarContainer"></header>
 
     <main class="page">
 
@@ -1002,7 +966,7 @@
                     <div class="sheet-brand">
                         <div class="sheet-logo"></div>
                         <div>
-                            <strong>CRANE<span>TRACK</span></strong>
+                            <strong>WORKTIME<span>SYS</span></strong>
                             <small>TIME | PROJECT | TEAM</small>
                         </div>
                     </div>
@@ -1056,6 +1020,7 @@
 
 <div class="toast" id="toast"></div>
 
+<script type="module" src="../js/sidebar.js"></script>
 <script type="module" src="../js/reports.js"></script>
 </body>
 </html>
