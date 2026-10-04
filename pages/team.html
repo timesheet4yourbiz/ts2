@@ -1,117 +1,277 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team - WorkTime</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <meta name="viewport" content="width=1280">
+    <title>Team | WORKTIMESYS</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        body { margin: 0; background: #f4f7f6; font-family: system-ui, -apple-system, sans-serif; overflow-x: hidden; color: #334155; }
-        .main-content { position: absolute; top: 0; left: 250px; right: 0; padding: 24px 32px; min-height: 100vh; box-sizing: border-box; }
+        body { background-color: #f8fafc; -webkit-font-smoothing: antialiased; min-width: 1280px !important; overflow-x: auto !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; }
+        .glass-card { background: white; box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.03), 0 2px 8px -2px rgba(0, 0, 0, 0.02) !important; border: 1px solid rgba(226, 232, 240, 0.6) !important; border-radius: 12px !important; transition: all 0.3s ease; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .page-title { margin: 0; font-size: 1.5rem; font-weight: 600; color: #0f172a; }
-        
-        /* Submenu Navigation Bar */
-        .team-nav { display: flex; gap: 8px; border-bottom: 1px solid #e2e8f0; margin-bottom: 24px; padding-bottom: 0; }
-        .nav-item { padding: 8px 16px; font-size: 0.85rem; font-weight: 500; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; margin-bottom: -1px; text-decoration: none; text-transform: uppercase; letter-spacing: 0.5px;}
-        .nav-item:hover { color: #0ea5e9; }
-        .nav-item.active { color: #0ea5e9; border-bottom-color: #0ea5e9; font-weight: 600; }
+        .topbar { height: 60px; background: rgba(255,255,255,.97); border-bottom: 1px solid #e4edf7; display: flex; align-items: center; padding: 0 24px; gap: 22px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 12px rgba(7,26,59,.04) !important; }
+        .brand { min-width: 195px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #071a3b; }
+        .brand-mark { width: 34px; height: 38px; position: relative; flex: 0 0 auto; display: grid; place-items: center; }
+        .brand-mark::before, .brand-mark::after { content: ""; position: absolute; width: 19px; height: 19px; transform: rotate(30deg) skew(-4deg); border-radius: 4px; }
+        .brand-mark::before { background: linear-gradient(135deg, #0d6efd 0 52%, #f59e0b 52% 100%); top: 3px; left: 3px; }
+        .brand-mark::after { background: linear-gradient(135deg, #0b2d60 0 52%, #ef4444 52% 100%); bottom: 3px; right: 1px; }
+        .brand-copy strong { display: block; font-size: 19px; line-height: 18px; letter-spacing: -.8px; font-weight: 800; }
+        .brand-copy strong span { color: #0d6efd; }
+        .brand-copy small { display: block; margin-top: 3px; font-size: 9px; font-weight: 800; letter-spacing: .35px; color: #34527d; }
+        .nav { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0; }
+        .nav-link { height: 40px; padding: 0 11px; border-radius: 8px; display: inline-flex; align-items: center; gap: 7px; color: #122b54; text-decoration: none; font-size: 12px; font-weight: 600; white-space: nowrap; transition: .2s ease; }
+        .nav-link:hover { background: #f0f6ff; }
+        .nav-link.active { color: white; background: linear-gradient(135deg, #0d6efd, #187bff); box-shadow: 0 6px 14px rgba(13,110,253,.22); }
+        .profile { height: 40px; display: flex; align-items: center; gap: 9px; padding-left: 3px; cursor: pointer; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: white; background: #1677ff; font-weight: 700; font-size: 15px; }
 
-        /* Toolbar & Filters */
-        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 16px; }
-        .filter-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .control-input, .control-select { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.85rem; color: #475569; background: white; outline: none; height: 36px; box-sizing: border-box; }
-        .control-input { width: 220px; }
-        
-        .btn-primary { background: #0ea5e9; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; height: 36px; }
-        .btn-primary:hover { background: #0284c7; }
+        .btn-primary { background-color: #2563eb; color: white; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: background-color 0.2s; border-radius: 8px; padding: 8px 16px;}
+        .btn-primary:hover { background-color: #1d4ed8; }
 
-        /* Table Card */
-        .table-card { background: white; border-radius: 6px; border: 1px solid #e2e8f0; box-shadow: 0 1px 2px rgba(0,0,0,0.02); overflow: hidden; }
-        .table-container { width: 100%; overflow-x: auto; }
-        .team-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 900px; }
-        .team-table th { font-size: 0.75rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; padding: 14px 16px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
-        .team-table td { padding: 14px 16px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; vertical-align: middle; }
-        .team-table tr:hover { background: #f8fafc; }
-        
-        /* Member Info Styling */
-        .member-info { display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem; }
-        .m-name { font-weight: 600; color: #334155; }
-        .m-meta { color: #94a3b8; font-size: 0.75rem; margin-top: 2px; }
-        
-        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
-        .status-active { background: #dcfce7; color: #166534; }
-        .status-inactive { background: #f1f5f9; color: #64748b; }
+        .tab-btn { font-size: 0.75rem; font-weight: 700; color: #64748b; padding: 10px 16px; border-bottom: 2px solid transparent; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px;}
+        .tab-btn:hover { color: #3b82f6; }
+        .tab-btn.active { color: #3b82f6; border-bottom-color: #3b82f6; }
 
-        .action-btn { background: none; border: none; cursor: pointer; color: #94a3b8; font-size: 1.2rem; padding: 4px 8px; border-radius: 4px; }
-        .action-btn:hover { background: #f1f5f9; color: #334155; }
-        
-        .loading-overlay, .empty-state { text-align: center; padding: 40px; color: #94a3b8; font-size: 0.9rem; }
+        .status-active { background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 12px; font-size: 0.65rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;}
+        .status-inactive { background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 12px; font-size: 0.65rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;}
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); z-index: 100; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
+        .modal-content { background: white; width: 100%; max-width: 600px; border-radius: 12px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .form-input, .form-select { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; color: #334155; outline: none; margin-bottom: 12px;}
+        .form-input:focus, .form-select:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1); }
     </style>
 </head>
-<body>
-    <div id="sidebar-container"></div>
-    
-    <div class="main-content">
-        <div class="top-header">
-            <h1 class="page-title">Team</h1>
-            <span id="userEmail" style="color:#64748b; font-size:0.85rem;"></span>
+
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <header class="topbar" id="topbarContainer"></header>
+
+    <main class="p-6 max-w-[1480px] mx-auto space-y-6">
+
+        <div class="flex items-center justify-between mb-2">
+            <div>
+                <h1 class="text-2xl font-black text-slate-800 m-0">Team Management</h1>
+                <p class="text-sm text-slate-500 font-medium m-0">Manage your organization's employees, roles, and groups.</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="text-right">
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Members</div>
+                    <div class="text-xl font-black text-blue-600" id="kpiTotal">0</div>
+                </div>
+                <div class="w-px bg-slate-200"></div>
+                <div class="text-right">
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active</div>
+                    <div class="text-xl font-black text-emerald-500" id="kpiActive">0</div>
+                </div>
+            </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="team-nav">
-            <a class="nav-item active" data-tab="members">Members</a>
-            <a class="nav-item" data-tab="groups">Groups</a>
-            <a class="nav-item" data-tab="reminders">Reminders</a>
+        <div class="glass-card flex overflow-hidden border-b-0 rounded-b-none">
+            <button class="tab-btn active" data-tab="membersView">Members</button>
+            <button class="tab-btn" data-tab="groupsView">Groups</button>
         </div>
 
-        <div id="moduleContent">
-            <!-- Toolbar -->
-            <div class="toolbar">
-                <div class="filter-group">
-                    <input type="text" id="searchMember" class="control-input" placeholder="Search by name or email...">
-                    <select id="filterRole" class="control-select">
+        <!-- PANDANGAN AHLI (MEMBERS) -->
+        <div id="membersView" class="glass-card p-0 rounded-t-none border-t-0">
+            <div class="flex flex-wrap items-center justify-between p-4 border-b border-slate-100 bg-white gap-4">
+                <div class="flex items-center gap-3 flex-wrap">
+                    <input type="text" id="searchMember" placeholder="Search name or email..." class="border border-slate-200 rounded-lg px-3 py-2 text-sm w-64 outline-none focus:border-blue-500">
+                    <select id="filterRole" class="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-600 outline-none">
                         <option value="all">All Roles</option>
                         <option value="Admin">Admin</option>
                         <option value="Manager">Manager</option>
                         <option value="Supervisor">Supervisor</option>
                         <option value="Employee">Employee</option>
                     </select>
-                    <select id="filterStatus" class="control-select">
+                    <select id="filterDept" class="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-600 outline-none">
+                        <option value="all">All Departments</option>
+                    </select>
+                    <select id="filterStatus" class="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-600 outline-none">
                         <option value="all">All Status</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="INACTIVE">Inactive</option>
+                    </select>
+                </div>
+                <div class="flex gap-2">
+                    <input type="file" id="excelFileInput" accept=".xlsx, .xls" style="display: none;">
+                    <button id="btnImportExcel" class="px-4 py-2 bg-slate-100 text-slate-600 font-bold rounded-lg text-sm hover:bg-slate-200">Import Excel</button>
+                    <button id="btnAddMember" class="btn-primary">+ Add Member</button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[900px]">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-400 text-[10px] uppercase tracking-wider font-bold">
+                            <th class="p-4 w-10 text-center border-b border-slate-100"><input type="checkbox" class="rounded"></th>
+                            <th class="p-4 border-b border-slate-100">#</th>
+                            <th class="p-4 border-b border-slate-100">Employee Info</th>
+                            <th class="p-4 border-b border-slate-100">Role & Position</th>
+                            <th class="p-4 border-b border-slate-100">Department</th>
+                            <th class="p-4 border-b border-slate-100">Rate (RM)</th>
+                            <th class="p-4 border-b border-slate-100">Status</th>
+                            <th class="p-4 border-b border-slate-100 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="membersTableBody" class="divide-y divide-slate-50 bg-white">
+                        <tr><td colspan="8" class="text-center py-10 text-slate-400 text-sm font-medium">Loading team members...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex justify-between items-center p-4 bg-slate-50 border-t border-slate-100 text-sm">
+                <span id="paginationInfo" class="text-slate-500 font-medium">Showing 0 members</span>
+                <div class="flex items-center gap-4">
+                    <span id="pageNumbers" class="text-slate-500 font-bold">Page 1</span>
+                    <div class="flex gap-2">
+                        <button id="btnPrevPage" class="px-3 py-1 bg-white border border-slate-200 rounded text-slate-600 font-bold hover:bg-slate-50"><</button>
+                        <button id="btnNextPage" class="px-3 py-1 bg-white border border-slate-200 rounded text-slate-600 font-bold hover:bg-slate-50">></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANDANGAN KUMPULAN (GROUPS) -->
+        <div id="groupsView" class="glass-card p-0 rounded-t-none border-t-0" style="display: none;">
+            <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-white">
+                <input type="text" id="searchGroup" placeholder="Search groups..." class="border border-slate-200 rounded-lg px-3 py-2 text-sm w-64 outline-none focus:border-blue-500">
+                <button id="btnAddGroup" class="btn-primary">+ Add Group</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-400 text-[10px] uppercase tracking-wider font-bold">
+                            <th class="p-4 border-b border-slate-100">Group Name</th>
+                            <th class="p-4 border-b border-slate-100">Manager</th>
+                            <th class="p-4 border-b border-slate-100">Members</th>
+                            <th class="p-4 border-b border-slate-100">Status</th>
+                            <th class="p-4 border-b border-slate-100 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="groupsTableBody" class="divide-y divide-slate-50 bg-white">
+                        <tr><td colspan="5" class="text-center py-10 text-slate-400 text-sm font-medium">Loading groups...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL: MEMBER -->
+    <div class="modal-overlay" id="memberModal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-bold text-slate-800 m-0" id="modalTitle">Add Member</h2>
+                <button class="text-gray-400 hover:text-red-500 text-2xl leading-none" id="btnCloseModal">×</button>
+            </div>
+            <form id="memberForm">
+                <div class="mb-3">
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Email (Login ID)</label>
+                    <input type="email" id="formEmail" class="form-input" required>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Full Name</label>
+                    <input type="text" id="formName" class="form-input" required>
+                </div>
+                <div class="flex gap-4 mb-3">
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Employee ID</label>
+                        <input type="text" id="formEmpNo" class="form-input">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Phone</label>
+                        <input type="text" id="formPhone" class="form-input">
+                    </div>
+                </div>
+                <div class="flex gap-4 mb-3">
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Department</label>
+                        <input type="text" id="formDept" class="form-input">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Position</label>
+                        <input type="text" id="formPosition" class="form-input">
+                    </div>
+                </div>
+                <div class="flex gap-4 mb-3">
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">System Role</label>
+                        <select id="formRole" class="form-select">
+                            <option value="Employee">Employee</option>
+                            <option value="Supervisor">Supervisor</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Group</label>
+                        <select id="formGroup" class="form-select"></select>
+                    </div>
+                </div>
+                <div class="flex gap-4 mb-6">
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Billable Rate (RM/hr)</label>
+                        <input type="number" id="formRate" step="0.01" class="form-input" value="0.00">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">Status</label>
+                        <select id="formStatus" class="form-select">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" id="btnSaveMember" class="btn-primary">Save Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: GROUP -->
+    <div class="modal-overlay" id="groupModal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-bold text-slate-800 m-0" id="groupModalTitle">Add Group</h2>
+                <button class="text-gray-400 hover:text-red-500 text-2xl leading-none" id="btnCloseGroupModal">×</button>
+            </div>
+            <form id="groupForm">
+                <div class="mb-3">
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Group Name</label>
+                    <input type="text" id="formGroupName" class="form-input" required>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Description</label>
+                    <input type="text" id="formGroupDesc" class="form-input">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Manager</label>
+                    <select id="formGroupManager" class="form-select"></select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-xs font-bold text-slate-600 mb-1">Status</label>
+                    <select id="formGroupStatus" class="form-select">
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
                     </select>
                 </div>
-                <button class="btn-primary" id="btnAddMember">+ ADD NEW MEMBER</button>
-            </div>
-
-            <!-- Table Card -->
-            <div class="table-card">
-                <div class="table-container">
-                    <table class="team-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 40px;"><input type="checkbox" id="selectAll"></th>
-                                <th>Name</th>
-                                <th>Role</th>
-                                <th>Group</th>
-                                <th>Rate (RM)</th>
-                                <th>Status</th>
-                                <th style="width: 50px; text-align: center;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="membersTableBody">
-                            <tr><td colspan="7" class="loading-overlay">Memuatkan senarai ahli pasukan...</td></tr>
-                        </tbody>
-                    </table>
+                <div class="flex justify-end">
+                    <button type="submit" class="btn-primary">Save Group</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
-    
-    <script type="module" src="../js/team.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script type="module" src="../js/sidebar.js"></script>
+    <script type="module" src="../js/employees.js"></script>
 </body>
 </html>
