@@ -16,7 +16,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (profileName) profileName.textContent = userEmail.split('@')[0].toUpperCase();
 
         // Semak Role
-        const { data: profile } = await supabase.from('employees').select('system_role').eq('id', session.user.id).single();
+        const { data: profiles } = await supabase.from('employees').select('system_role').ilike('email', session.user.email.trim()).limit(1);
+const profile = profiles && profiles.length > 0 ? profiles[0] : null;
+        
         if (profile && profile.system_role === 'Admin') {
             isAdmin = true;
             const profileRole = document.getElementById('profileRole');
