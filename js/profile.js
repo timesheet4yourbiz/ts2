@@ -1,18 +1,12 @@
 import { supabase } from './supabase.js';
-import { loadSidebar } from './sidebar.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        loadSidebar();
-        
-        // 1. Semak Log Masuk
+        // Semak Sesi Login
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return window.location.href = '../pages/login.html';
 
-        const userEmailEl = document.getElementById('userEmail');
-        if (userEmailEl) userEmailEl.textContent = session.user.email;
-
-        // 2. Tarik Data Profil dari Database
+        // Tarik Data Profil dari Supabase (Jadual Employees)
         const { data: profile } = await supabase
             .from('employees')
             .select('name, email, system_role')
@@ -20,9 +14,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             .single();
 
         if (profile) {
-            document.getElementById('profileEmail').textContent = profile.email || session.user.email;
-            document.getElementById('profileName').textContent = profile.name || 'Not Set';
-            document.getElementById('profileRole').textContent = profile.system_role || 'Employee';
+            const pEmail = document.getElementById('profileEmail');
+            const pName = document.getElementById('profileDataName');
+            const pRole = document.getElementById('profileDataRole');
+
+            if (pEmail) pEmail.textContent = profile.email || session.user.email;
+            if (pName) pName.textContent = profile.name || 'Not Set';
+            if (pRole) {
+                pRole.textContent = profile.system_role === 'Admin' ? 'Administrator' : (profile.system_role || 'Employee');
+                
+                // Set warna lencana berdasarkan peranan
+                if (profile.system_role === 'Admin') {
+                    pRole.className = 'px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 font-bold text-[10px] rounded-full uppercase tracking-wider';
+                }
+            }
         }
 
     } catch (err) {
@@ -30,27 +35,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// 3. Fungsi Tukar Password
-document.getElementById('changePwdForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('btnUpdatePwd');
-    const pwd1 = document.getElementById('newPwd').value;
-    const pwd2 = document.getElementById('confirmPwd').value;
+// Fungsi Tukar Password
+const pwdForm = document.getElementById('changePwdForm');
+if (pwdForm) {
+    pwdForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btnUpdatePwd');
+        const pwd1 = document.getElementById('newPwd').value;
+        const pwd2 = document.getElementById('confirmPwd').value;
 
-    if (pwd1 !== pwd2) return alert("Passwords do not match!");
+        if (pwd1 !== pwd2) return alert("Passwords do not match!");
 
-    btn.textContent = "Updating...";
-    btn.disabled = true;
+        if (btn) {
+            btn.textContent = "Updating...";
+            btn.disabled = true;
+        }
 
-    const { error } = await supabase.auth.updateUser({ password: pwd1 });
+        const { error } = await supabase.auth.updateUser({ password: pwd1 });
 
-    btn.textContent = "UPDATE PASSWORD";
-    btn.disabled = false;
+        if (btn) {
+            btn.textContent = "UPDATE PASSWORD";
+            btn.disabled = false;
+        }
 
-    if (error) {
-        alert("Failed: " + error.message);
-    } else {
-        alert("Success! Password updated.");
-        document.getElementById('changePwdForm').reset();
-    }
-});
+        if (error) {
+            alert("Failed: " + error.message);
+        } else {
+            alert("Success! Password updated.");
+            pwdForm.reset();
+        }
+    });
+}
