@@ -1,14 +1,14 @@
-(BUKA)!DOCTYPE html>
-(BUKA)html lang="en">
-(BUKA)head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=1280">
-   <title>Time Tracker | WORKTIMESYS(BUKA)/title>
+   <title>Time Tracker | WORKTIMESYS</title>
     
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-   <script src="https://cdn.tailwindcss.com">(BUKA)/script>
+   <script src="https://cdn.tailwindcss.com"></script>
 
    <style>
         body { background-color: #f8fafc; -webkit-font-smoothing: antialiased; min-width: 1280px !important; overflow-x: auto !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; }
@@ -39,42 +39,42 @@
         .ts-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; color: #334155; outline: none; transition: .2s; }
         .ts-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }
    </style>
-(BUKA)/head>
+</head>
 
-(BUKA)body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
 
    <header class="topbar">
        <a class="brand" href="dashboard.html" aria-label="WORKTIMESYS">
-           <div class="brand-mark">(BUKA)/div>
+           <div class="brand-mark"></div>
            <div class="brand-copy">
-               <strong>WORKTIME(BUKA)span>SYS(BUKA)/span>(BUKA)/strong>
-               <small>TIME | PROJECT | TEAM(BUKA)/small>
+               <strong>WORKTIME<span>SYS</span></strong>
+               <small>TIME | PROJECT | TEAM</small>
            </div>
        </a>
 
        <nav class="nav">
-           <a class="nav-link" href="dashboard.html">(BUKA)span class="nav-icon">⌂(BUKA)/span>Dashboard(BUKA)/a>
-           <a class="nav-link active" href="time-tracking.html">(BUKA)span class="nav-icon">◷(BUKA)/span>Time Tracking(BUKA)/a>
-           <a class="nav-link" href="timesheet.html">(BUKA)span class="nav-icon">▣(BUKA)/span>Timesheet(BUKA)/a>
-           <a class="nav-link" href="calendar.html">(BUKA)span class="nav-icon">▦(BUKA)/span>Calendar(BUKA)/a>
-           <a class="nav-link" href="projects.html">(BUKA)span class="nav-icon">📁(BUKA)/span>Projects(BUKA)/a>
-           <a class="nav-link" href="tasks.html">(BUKA)span class="nav-icon">☷(BUKA)/span>Tasks(BUKA)/a>
-           <a class="nav-link" href="clients.html">(BUKA)span class="nav-icon">♙(BUKA)/span>Clients(BUKA)/a>
-           <a class="nav-link" href="team.html">(BUKA)span class="nav-icon">♧(BUKA)/span>Team(BUKA)/a>
-           <a class="nav-link" href="reports.html">(BUKA)span class="nav-icon">▥(BUKA)/span>Reports(BUKA)/a>
+           <a class="nav-link" href="dashboard.html"><span class="nav-icon">⌂</span>Dashboard</a>
+           <a class="nav-link active" href="time-tracking.html"><span class="nav-icon">◷</span>Time Tracking</a>
+           <a class="nav-link" href="timesheet.html"><span class="nav-icon">▣</span>Timesheet</a>
+           <a class="nav-link" href="calendar.html"><span class="nav-icon">▦</span>Calendar</a>
+           <a class="nav-link" href="projects.html"><span class="nav-icon">📁</span>Projects</a>
+           <a class="nav-link" href="tasks.html"><span class="nav-icon">☷</span>Tasks</a>
+           <a class="nav-link" href="clients.html"><span class="nav-icon">♙</span>Clients</a>
+           <a class="nav-link" href="team.html"><span class="nav-icon">♧</span>Team</a>
+           <a class="nav-link" href="reports.html"><span class="nav-icon">▥</span>Reports</a>
        </nav>
 
        <div class="top-actions">
            <div class="profile relative group">
-               <div class="avatar" id="avatarInitial">M(BUKA)/div>
+               <div class="avatar" id="avatarInitial">M</div>
                <div class="profile-text hidden sm:block">
-                   <strong id="profileName">USER(BUKA)/strong>
-                   <small id="profileRole">Loading...(BUKA)/small>
+                   <strong id="profileName">USER</strong>
+                   <small id="profileRole">Loading...</small>
                </div>
-               <span class="ml-1 text-gray-400">⌄(BUKA)/span>
+               <span class="ml-1 text-gray-400">⌄</span>
                 
                <div class="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
-                   <button id="logoutBtn" class="w-full text-left px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors">⏻ Logout(BUKA)/button>
+                   <button id="logoutBtn" class="w-full text-left px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors">⏻ Logout</button>
                </div>
            </div>
        </div>
@@ -91,26 +91,26 @@
             
            <!-- Project & Task -->
            <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200">
-               <span class="text-blue-500">⊕(BUKA)/span>
+               <span class="text-blue-500">⊕</span>
                <select id="projectSelect" class="border-none bg-transparent outline-none text-blue-600 font-semibold cursor-pointer max-w-[140px] text-sm">
-                   <option value="">Select Project(BUKA)/option>
+                   <option value="">Select Project</option>
                </select>
                <select id="taskSelect" class="border-none bg-transparent outline-none text-slate-500 font-semibold cursor-pointer max-w-[140px] text-xs hidden">
-                   <option value="">Select Task(BUKA)/option>
+                   <option value="">Select Task</option>
                </select>
            </div>
             
            <!-- Tag -->
            <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200">
-               <span class="text-slate-400 text-lg">🏷️(BUKA)/span>
+               <span class="text-slate-400 text-lg">🏷️</span>
                <select id="tagSelect" class="border-none bg-transparent outline-none text-slate-500 font-medium cursor-pointer w-24 text-xs">
-                   <option value="">Tag(BUKA)/option>
+                   <option value="">Tag</option>
                </select>
            </div>
             
            <!-- Billable -->
            <div class="px-4 py-3 border-l border-dashed border-slate-200 text-slate-300 font-bold text-lg cursor-pointer hover:text-blue-500 transition-colors" title="Billable">
-                $(BUKA)/div>
+                $</div>
             
            <!-- Start & End Time -->
            <div class="flex items-center gap-2 px-4 py-3 border-l border-dashed border-slate-200 text-slate-500 text-xs font-semibold">
@@ -129,7 +129,7 @@
            </div>
             
            <!-- Buttons -->
-           <button id="timerBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold tracking-widest text-sm h-full px-8 uppercase transition-colors min-h-[60px]">START(BUKA)/button>
+           <button id="timerBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold tracking-widest text-sm h-full px-8 uppercase transition-colors min-h-[60px]">START</button>
            <div class="px-4 bg-slate-50 border-l border-slate-200 h-full flex items-center text-slate-400 font-bold text-xl cursor-pointer hover:bg-slate-100 min-h-[60px]">
                 ⋮
            </div>
@@ -137,11 +137,11 @@
 
        <!-- Entries List -->
        <div id="entriesContainer" class="mt-8">
-           <div class="text-center p-10 text-slate-400 font-semibold">Memuatkan rekod...(BUKA)/div>
+           <div class="text-center p-10 text-slate-400 font-semibold">Memuatkan rekod...</div>
        </div>
 
    </main>
 
-   <script type="module" src="../js/tracker.js">(BUKA)/script>
-(BUKA)/body>
-(BUKA)/html>
+   <script type="module" src="../js/tracker.js"></script>
+</body>
+</html>
