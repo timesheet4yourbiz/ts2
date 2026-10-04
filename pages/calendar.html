@@ -79,30 +79,65 @@
 
     <main class="p-6 max-w-[1480px] mx-auto space-y-6">
 
-        <!-- KPI Summary -->
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl">⏱️</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Total Hours</div><div class="text-2xl font-black text-gray-800" id="kpiHours">0h 0m</div></div>
+       <!-- KPI Summary -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <!-- Kad 1: Total Hours (Biru) -->
+            <div class="glass-card p-4 flex items-center gap-4">
+                <div class="w-14 h-14 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Hours</div>
+                    <div class="text-2xl font-black text-gray-800 truncate" id="kpiHours">0h 0m</div>
                 </div>
             </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xl">👥</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Active Staff</div><div class="text-2xl font-black text-gray-800" id="kpiStaff">0</div></div>
+
+            <!-- Kad 2: Active Staff (Hijau) -->
+            <div class="glass-card p-4 flex items-center gap-4">
+                <div class="w-14 h-14 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Active Staff</div>
+                    <div class="text-2xl font-black text-gray-800 truncate" id="kpiStaff">0</div>
                 </div>
             </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl">📁</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Projects</div><div class="text-2xl font-black text-gray-800" id="kpiProjects">0</div></div>
+
+            <!-- Kad 3: Projects (Oren) -->
+            <div class="glass-card p-4 flex items-center gap-4">
+                <div class="w-14 h-14 bg-orange-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Projects</div>
+                    <div class="text-2xl font-black text-gray-800 truncate" id="kpiProjects">0</div>
                 </div>
             </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xl">📝</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Entries</div><div class="text-2xl font-black text-gray-800" id="kpiEntries">0</div></div>
+
+            <!-- Kad 4: Entries (Merah) -->
+            <div class="glass-card p-4 flex items-center gap-4">
+                <div class="w-14 h-14 bg-rose-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Entries</div>
+                    <div class="text-2xl font-black text-gray-800 truncate" id="kpiEntries">0</div>
                 </div>
             </div>
         </section>
