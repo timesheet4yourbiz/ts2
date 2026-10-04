@@ -5,20 +5,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return window.location.href = '../pages/login.html';
         
-        // Pengekstrakan Nama & Initial Profil
+        // Pengekstrakan Profile dibuat oleh sidebar.js, kita hanya perlukan user email untuk carian DB.
         const userEmail = session.user.email;
-        const profileName = document.getElementById('profileName');
-        const avatarInitial = document.getElementById('avatarInitial');
-        if (profileName) profileName.textContent = userEmail.split('@')[0].toUpperCase();
-        if (avatarInitial) avatarInitial.textContent = userEmail.charAt(0).toUpperCase();
-
-        const { data: profile } = await supabase.from('employees').select('id, system_role').eq('email', userEmail).single();
-        if (profile) {
-            const profileRole = document.getElementById('profileRole');
-            if(profileRole) profileRole.textContent = profile.system_role === 'Admin' ? 'Administrator' : profile.system_role;
-        }
-
-        document.getElementById('logoutBtn')?.addEventListener('click', () => supabase.auth.signOut().then(() => window.location.href = '../pages/login.html'));
 
         const taskDescInput = document.getElementById('taskDescInput');
         const projectSelect = document.getElementById('projectSelect'); 
@@ -28,19 +16,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         const timerBtn = document.getElementById('timerBtn');
         const entriesContainer = document.getElementById('entriesContainer');
 
-        let currentEmployeeId = profile ? profile.id : null;
+        let currentEmployeeId = null;
         let activeEntryId = null;
         let timerInterval = null;
         let startTime = null;
 
-        await loadProjects();
-        await loadTags();
-        
-        if (currentEmployeeId) {
+        // Dapatkan ID Employee semasa
+        const { data: profile } = await supabase.from('employees').select('id').eq('email', userEmail).single();
+        if (profile) {
+            currentEmployeeId = profile.id;
+            await loadProjects();
+            await loadTags();
             await checkActiveTimer();
             await loadRecentEntries();
         } else {
-            if(entriesContainer) entriesContainer.innerHTML = '<div class="p-8 text-center text-red-500 font-bold bg-white rounded-xl shadow-sm border border-red-100">Akaun e-mel anda (' + userEmail + ') belum didaftarkan di modul Team. Sistem tidak dapat merekod masa.</div>';
+            if(entriesContainer) {
+                entriesContainer.innerHTML = '<div class="p-8 text-center text-red-500 font-bold bg-white rounded-xl shadow-sm border border-red-100">Akaun e-mel anda (' + userEmail + ') belum didaftarkan di modul Team. Sistem tidak dapat merekod masa.</div>';
+            }
         }
 
         if (projectSelect && taskSelect) {
@@ -63,7 +55,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
                 
                 if (data && data.length > 0) {
-                    taskSelect.innerHTML = '<option value="">Select Task</option>' + data.map(t => '<option value="' + t.id + '">' + t.task_name + '</option>').join('');
+                    let opts = '<option value="">Select Task</option>';
+                    data.forEach(t => {
+                        opts += '<option value="' + t.id + '">' + t.task_name + '</option>';
+                    });
+                    taskSelect.innerHTML = opts;
                 } else {
                     taskSelect.innerHTML = '<option value="">No Tasks</option>';
                 }
@@ -85,14 +81,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         async function loadProjects() {
             const { data } = await supabase.from('projects').select('id, project_name').order('project_name', { ascending: true });
             if (data && projectSelect) {
-                projectSelect.innerHTML = '<option value="">Select Project</option>' + data.map(p => '<option value="' + p.id + '">' + p.project_name + '</option>').join('');
+                let opts = '<option value="">Select Project</option>';
+                data.forEach(p => {
+                    opts += '<option value="' + p.id + '">' + p.project_name + '</option>';
+                });
+                projectSelect.innerHTML = opts;
             }
         }
 
         async function loadTags() {
             const { data } = await supabase.from('tags').select('id, tag_name').order('tag_name', { ascending: true });
             if (data && tagSelect) {
-                tagSelect.innerHTML = '<option value="">Tag</option>' + data.map(t => '<option value="' + t.id + '">' + t.tag_name + '</option>').join('');
+                let opts = '<option value="">Tag</option>';
+                data.forEach(t => {
+                    opts += '<option value="' + t.id + '">' + t.tag_name + '</option>';
+                });
+                tagSelect.innerHTML = opts;
             }
         }
 
@@ -113,14 +117,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const tasksReq = await supabase.from('tasks').select('id, task_name').eq('project_id', data.project_id);
                     if (tasksReq.data && tasksReq.data.length > 0 && taskSelect) {
                         taskSelect.classList.remove('hidden');
-                        taskSelect.innerHTML = '<option value="">Select Task</option>' + tasksReq.data.map(t => '<option value="' + t.id + '">' + t.task_name + '</option>').join('');
+                        let opts = '<option value="">Select Task</option>';
+                        tasksReq.data.forEach(t => {
+                            opts += '<option value="' + t.id + '">' + t.task_name + '</option>';
+                        });
+                        taskSelect.innerHTML = opts;
                         if (data.task_id) taskSelect.value = data.task_id;
                     }
                 }
-                if (data.tag_id && tagSelect) tagSelect.value = data.tag_id;
+                if (data.tag_id && tagSelect) {
+                    tagSelect.value = data.tag_id;
+                    tagSelect.disabled = true;
+                }
                 
                 if(taskSelect) taskSelect.disabled = true;
-                if(tagSelect) tagSelect.disabled = true;
                 
                 setButtonState('STOP');
                 startClock();
