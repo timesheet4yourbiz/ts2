@@ -5,10 +5,10 @@ export async function loadSidebar() {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return;
 
-        // Carian Paling Kebal: Kalis huruf besar/kecil pada e-mel, dan elak ralat duplicate
+        // KEMAS KINI: Tambah 'name' di dalam carian select()
         const { data: profiles } = await supabase
             .from('employees')
-            .select('system_role, email')
+            .select('name, system_role, email')
             .ilike('email', session.user.email.trim())
             .limit(1);
 
@@ -16,8 +16,12 @@ export async function loadSidebar() {
 
         const isAdmin = profile && profile.system_role && profile.system_role.toLowerCase() === 'admin';
         const userEmail = profile ? profile.email : session.user.email;
-        const initial = userEmail.charAt(0).toUpperCase();
-        const fullName = userEmail.split('@')[0].toUpperCase();
+        
+        // KEMAS KINI: Paparkan Nama sebenar, jika tiada baru gunakan e-mel
+        const displayName = profile && profile.name ? profile.name : userEmail.split('@')[0];
+        const initial = displayName.charAt(0).toUpperCase();
+        const fullName = displayName.toUpperCase();
+        
         const roleText = isAdmin ? 'Administrator' : (profile && profile.system_role ? profile.system_role : 'User');
         
         const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
