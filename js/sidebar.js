@@ -26,7 +26,7 @@ export async function loadSidebar() {
         navHtml += '<a class="nav-link ' + (currentPage.includes('calendar') ? 'active' : '') + '" href="calendar.html"><span class="nav-icon">▦</span>CALENDAR</a>';
         
         // 3. TRACKING
-        navHtml += '<a class="nav-link ' + (currentPage.includes('tracking') ? 'active' : '') + '" href="tracking.html"><span class="nav-icon">◷</span>TRACKING</a>';
+        navHtml += '<a class="nav-link ' + (currentPage.includes('tracking') ? 'active' : '') + '" href="tracker.html"><span class="nav-icon">◷</span>TRACKING</a>';
         
         // 4. OVERVIEW
         navHtml += '<a class="nav-link ' + (currentPage.includes('dashboard') ? 'active' : '') + '" href="dashboard.html"><span class="nav-icon">⌂</span>OVERVIEW</a>';
