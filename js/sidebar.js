@@ -5,15 +5,14 @@ export async function loadSidebar() {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return;
 
+        // KEMAS KINI: Kembali gunakan carian ID (Lebih kebal dari ralat ejaan email)
         const { data: profile } = await supabase
             .from('employees')
             .select('system_role, email')
-            .eq('email', session.user.email)
+            .eq('id', session.user.id)
             .maybeSingle();
 
-        // KEMAS KINI: Jadikan carian kalis huruf besar/kecil (ADMIN, Admin, admin semua diterima)
         const isAdmin = profile && profile.system_role && profile.system_role.toLowerCase() === 'admin';
-        
         const userEmail = profile ? profile.email : session.user.email;
         const initial = userEmail.charAt(0).toUpperCase();
         const fullName = userEmail.split('@')[0].toUpperCase();
@@ -26,7 +25,6 @@ export async function loadSidebar() {
 
         let navHtml = '';
 
-        // -- BAHAGIAN KIRI: BRANDING --
         navHtml += '<a class="flex items-center gap-2.5 min-w-[195px] no-underline text-slate-800" href="dashboard.html" aria-label="WORKTIMESYS">' +
                         '<div class="w-8 h-9 relative flex items-center justify-center flex-none">' +
                             '<div class="absolute w-[19px] h-[19px] bg-gradient-to-br from-blue-600 to-amber-500 rounded transform rotate-[30deg] -skew-x-[4deg] top-[3px] left-[3px]"></div>' +
@@ -38,9 +36,7 @@ export async function loadSidebar() {
                         '</div>' +
                     '</a>';
 
-        // -- BAHAGIAN TENGAH: NAVIGATION LINKS --
         navHtml += '<nav class="flex flex-1 items-center gap-1.5 min-w-0" id="mainNav">';
-        
         navHtml += '<a class="nav-link ' + (currentPage.includes('timesheet') ? 'active' : '') + '" href="timesheet.html"><span class="nav-icon">▣</span>TIMESHEET</a>';
         navHtml += '<a class="nav-link ' + (currentPage.includes('calendar') ? 'active' : '') + '" href="calendar.html"><span class="nav-icon">▦</span>CALENDAR</a>';
         navHtml += '<a class="nav-link ' + (currentPage.includes('tracker') || currentPage.includes('tracking') ? 'active' : '') + '" href="tracker.html"><span class="nav-icon">◷</span>TRACKING</a>';
@@ -50,14 +46,12 @@ export async function loadSidebar() {
         if (isAdmin) {
             navHtml += '<a class="nav-link ' + (currentPage.includes('projects') ? 'active' : '') + '" href="projects.html"><span class="nav-icon">📁</span>PROJECT</a>';
             navHtml += '<a class="nav-link ' + (currentPage.includes('tags') ? 'active' : '') + '" href="tags.html"><span class="nav-icon">🏷</span>TAGS</a>';
-            navHtml += '<a class="nav-link ' + (currentPage.includes('employee') ? 'active' : '') + '" href="employees.html"><span class="nav-icon">♧</span>EMPLOYEES</a>';
+            navHtml += '<a class="nav-link ' + (currentPage.includes('employee') || currentPage.includes('team') ? 'active' : '') + '" href="employees.html"><span class="nav-icon">♧</span>TEAM</a>';
             navHtml += '<a class="nav-link ' + (currentPage.includes('clients') ? 'active' : '') + '" href="clients.html"><span class="nav-icon">♙</span>CLIENTS</a>';
         }
         navHtml += '</nav>';
 
-        // -- BAHAGIAN KANAN: ACTIONS & PROFILE --
         navHtml += '<div class="flex items-center gap-4 flex-none ml-4">' +
-                        
                         '<button class="relative text-slate-400 hover:text-blue-600 transition-colors flex items-center justify-center" title="Notifications">' +
                             '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                                 '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>' +
@@ -65,9 +59,7 @@ export async function loadSidebar() {
                             '</svg>' +
                             '<span class="absolute -top-1 -right-1 bg-red-500 w-2 h-2 rounded-full border-2 border-white"></span>' +
                         '</button>' +
-
                         '<div class="w-px h-6 bg-slate-200"></div>' +
-
                         '<div class="flex items-center gap-3">' +
                             '<div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">' + initial + '</div>' +
                             '<div class="flex flex-col hidden sm:flex">' +
@@ -75,9 +67,7 @@ export async function loadSidebar() {
                                 '<span class="text-[9px] font-bold tracking-wide text-slate-400 uppercase mt-0.5">' + roleText + '</span>' +
                             '</div>' +
                         '</div>' +
-
                         '<div class="w-px h-6 bg-slate-200"></div>' +
-
                         '<div class="flex items-center gap-1.5">' +
                             '<a href="profile.html" title="Update Profile" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-blue-600 transition-colors">' +
                                 '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
@@ -85,7 +75,6 @@ export async function loadSidebar() {
                                     '<circle cx="12" cy="7" r="4"></circle>' +
                                 '</svg>' +
                             '</a>' +
-                            
                             '<button id="logoutBtn" title="Logout" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors">' +
                                 '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
                                     '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>' +
@@ -94,7 +83,6 @@ export async function loadSidebar() {
                                 '</svg>' +
                             '</button>' +
                         '</div>' +
-
                     '</div>';
 
         headerContainer.innerHTML = navHtml;
