@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (error || !session) return window.location.href = '../pages/login.html';
 
         // Profil header diuruskan oleh sidebar.js, kita fokus pada fungsionaliti Reports di sini.
-
         await populateFilters();
 
         const rm = document.getElementById('reportMonth');
@@ -117,7 +116,7 @@ async function populateFilters() {
     } catch (e) {}
 }
 
-// LOGIK KUNCI (CLAMP) AKHIR BULAN
+// LOGIK KUNCI (CLAMP) AKHIR & AWAL BULAN MENGIKUT KALENDAR SEBENAR
 function getWeekDates(year, month) {
     let weeks = [];
     const formatFull = (dt) => {
@@ -125,33 +124,46 @@ function getWeekDates(year, month) {
         return String(dt.getDate()).padStart(2, '0') + ' - ' + mStr;
     };
     
-    // Dapatkan tarikh tepat hari terakhir untuk bulan yang dipilih
+    const firstDayOfMonth = new Date(year, month - 1, 1);
     const lastDayOfMonth = new Date(year, month, 0); 
     
-    for (let day = 1; day <= 31; day++) {
-        let d = new Date(year, month - 1, day);
-        if (d.getMonth() !== month - 1) break; 
-        
-        if (d.getDay() === 1) { 
-            let start = new Date(d);
-            start.setHours(0,0,0,0);
-            
-            let end = new Date(start);
-            end.setDate(start.getDate() + 6); 
-            end.setHours(23,59,59,999);
-            
-            // Kunci: Jika end melepasi hari terakhir bulan, clamp ia kepada lastDayOfMonth
-            if (end > lastDayOfMonth) {
-                end = new Date(lastDayOfMonth);
-                end.setHours(23,59,59,999);
-            }
-            
-            weeks.push({
-                start: start,
-                end: end,
-                text: formatFull(start) + ' - ' + formatFull(end)
-            });
+    // Cari hari Isnin pertama untuk minggu yang merangkumi 1hb
+    let dayOfWeek = firstDayOfMonth.getDay(); 
+    let diff = firstDayOfMonth.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+    let currentMonday = new Date(year, month - 1, diff);
+
+    for (let i = 0; i < 5; i++) {
+        let start = new Date(currentMonday);
+        start.setDate(start.getDate() + (i * 7));
+        start.setHours(0, 0, 0, 0);
+
+        let end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        end.setHours(23, 59, 59, 999);
+
+        // Berhenti jika minggu mula melangkaui bulan ini
+        if (start > lastDayOfMonth) {
+            weeks.push({ start: null, end: null, text: 'N/A' });
+            continue;
         }
+
+        // KUNCI PERMULAAN: Jangan tarik tarikh dari bulan lepas (Elak double count gaji)
+        if (start < firstDayOfMonth) {
+            start = new Date(firstDayOfMonth);
+            start.setHours(0, 0, 0, 0);
+        }
+
+        // KUNCI PENGHUJUNG: Jangan tarik tarikh dari bulan hadapan
+        if (end > lastDayOfMonth) {
+            end = new Date(lastDayOfMonth);
+            end.setHours(23, 59, 59, 999);
+        }
+
+        weeks.push({
+            start: start,
+            end: end,
+            text: formatFull(start) + ' - ' + formatFull(end)
+        });
     }
     
     while (weeks.length < 5) {
