@@ -13,12 +13,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (pName) pName.textContent = 'Not Set';
         if (pRole) pRole.textContent = 'User';
 
-        // KEMAS KINI: Gunakan ID untuk carian (Paling selamat)
-        const { data: profile } = await supabase
+        // Carian Paling Kebal
+        const { data: profiles } = await supabase
             .from('employees')
             .select('name, email, system_role')
-            .eq('id', session.user.id)
-            .maybeSingle();
+            .ilike('email', session.user.email.trim())
+            .limit(1);
+
+        const profile = profiles && profiles.length > 0 ? profiles[0] : null;
 
         if (profile) {
             if (pEmail) pEmail.textContent = profile.email || session.user.email;
