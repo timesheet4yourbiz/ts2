@@ -60,16 +60,16 @@ function bindAllButtons() {
     document.getElementById('btnExcel')?.addEventListener('click', exportCSV);
     
     document.getElementById('btnPdf')?.addEventListener('click', () => {
-        alert('PDF Export: Sila pilih pilihan "Save as PDF" di tetingkap cetak (Print).');
+        alert('PDF Export: Please select "Save as PDF" in the print dialog.');
         window.print(); 
     });
     
     document.getElementById('btnSaveTemplate')?.addEventListener('click', () => {
-        alert('Template laporan berjaya disimpan!');
+        alert('Report template saved successfully!');
     });
 
     document.getElementById('btnLoadSavedFilter')?.addEventListener('click', () => {
-        alert('Memuatkan senarai filter yang pernah disimpan...');
+        alert('Loading saved filters...');
     });
 
     document.getElementById('btnReset')?.addEventListener('click', () => {
@@ -82,6 +82,13 @@ function bindAllButtons() {
         
         const now = new Date();
         document.getElementById('reportMonth').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+
+        for(let i=1; i<=5; i++) {
+            const s = document.getElementById('w'+i+'_s');
+            const e = document.getElementById('w'+i+'_e');
+            if(s) s.value = '';
+            if(e) e.value = '';
+        }
 
         reportCards.forEach(c => c.classList.remove('active'));
         const firstCard = document.querySelector('.report-type[data-report-type="project"]');
@@ -115,54 +122,33 @@ async function populateFilters() {
     } catch (e) {}
 }
 
-// LOGIK MINGGU (ISNIN-AHAD) SEPERTI YANG DIMINTA
-function getWeekDates(year, month) {
+function getCustomWeekDates() {
     let weeks = [];
     const formatFull = (dt) => {
         const mStr = dt.toLocaleString('en-US', {month:'short'});
         return String(dt.getDate()).padStart(2, '0') + ' - ' + mStr;
     };
     
-    const firstDayOfMonth = new Date(year, month - 1, 1);
-    const lastDayOfMonth = new Date(year, month, 0); 
-    
-    // Cari hari Isnin pertama untuk minggu yang merangkumi 1hb
-    let dayOfWeek = firstDayOfMonth.getDay(); 
-    let diff = firstDayOfMonth.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-    let currentMonday = new Date(year, month - 1, diff);
-
-    for (let i = 0; i < 5; i++) {
-        let start = new Date(currentMonday);
-        start.setDate(start.getDate() + (i * 7));
-        start.setHours(0, 0, 0, 0);
-
-        let end = new Date(start);
-        end.setDate(start.getDate() + 6);
-        end.setHours(23, 59, 59, 999);
-
-        // Berhenti jika minggu mula melangkaui bulan ini
-        if (start > lastDayOfMonth) {
-            weeks.push({ start: null, end: null, text: 'N/A' });
-            continue;
-        }
-
-        // KUNCI PENGHUJUNG: Kekalkan logik potong di hujung bulan (tidak melangkau ke bulan depan)
-        if (end > lastDayOfMonth) {
-            end = new Date(lastDayOfMonth);
+    for (let i = 1; i <= 5; i++) {
+        const startInput = document.getElementById('w' + i + '_s');
+        const endInput = document.getElementById('w' + i + '_e');
+        
+        if (startInput && endInput && startInput.value && endInput.value) {
+            let start = new Date(startInput.value);
+            start.setHours(0, 0, 0, 0);
+            
+            let end = new Date(endInput.value);
             end.setHours(23, 59, 59, 999);
+            
+            weeks.push({
+                start: start,
+                end: end,
+                text: formatFull(start) + ' - ' + formatFull(end)
+            });
+        } else {
+            weeks.push({ start: null, end: null, text: 'N/A' });
         }
-
-        weeks.push({
-            start: start,
-            end: end,
-            text: formatFull(start) + ' - ' + formatFull(end)
-        });
     }
-    
-    while (weeks.length < 5) {
-        weeks.push({ start: null, end: null, text: 'N/A' });
-    }
-    
     return weeks;
 }
 
@@ -170,22 +156,33 @@ async function generateReport() {
     const monthInput = document.getElementById('reportMonth').value;
     if (!monthInput) return;
     
-    const previewPanel = document.querySelector('.preview-panel');
-    if (previewPanel) previewPanel.style.display = 'block';
-
     const reportType = document.getElementById('reportType').value;
     const selectEl = document.getElementById('reportType');
     const subtitle = document.getElementById('previewSubtitle');
     if (subtitle && selectEl) subtitle.textContent = selectEl.options[selectEl.selectedIndex].text + ' - Generated';
 
     if (reportType !== 'PROJECT_MANHOUR') {
+        const previewPanel = document.querySelector('.preview-panel');
+        if (previewPanel) previewPanel.style.display = 'block';
         const tbody = document.getElementById('tableBodyProjects');
         if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="empty-state" style="padding:50px !important;"><strong style="font-size:14px; color:#1e293b;">Engine under development</strong><br>The engine for this specific report type will be available in the next phase.</td></tr>';
         return;
     }
     
     const btnGen = document.getElementById('btnGenerate');
+
+    const weeks = getCustomWeekDates();
+    const validWeeks = weeks.filter(w => w.start !== null);
+    
+    if(validWeeks.length === 0) {
+        alert("Please set the Start and End dates for at least Week 1 in the Custom Week Setup section.");
+        return;
+    }
+
     if (btnGen) { btnGen.disabled = true; btnGen.innerHTML = '⏳ Loading...'; }
+    
+    const previewPanel = document.querySelector('.preview-panel');
+    if (previewPanel) previewPanel.style.display = 'block';
 
     const year = parseInt(monthInput.split('-')[0]);
     const month = parseInt(monthInput.split('-')[1]);
@@ -196,20 +193,20 @@ async function generateReport() {
     const badge = document.getElementById('badgeMonthYear');
     if (badge) badge.innerHTML = monthName + '<br>' + year;
 
-    const weeks = getWeekDates(year, month);
     weeks.forEach((w, i) => {
         const el = document.getElementById('dtW' + (i+1));
         if (el) el.textContent = w.text || '-';
     });
 
-    const validWeeks = weeks.filter(w => w.start !== null);
-    if(validWeeks.length === 0) {
-        if (btnGen) { btnGen.disabled = false; btnGen.innerHTML = '▽  Generate Report'; }
-        return;
-    }
+    let minTime = validWeeks[0].start.getTime();
+    let maxTime = validWeeks[0].end.getTime();
+    validWeeks.forEach(w => {
+        if(w.start.getTime() < minTime) minTime = w.start.getTime();
+        if(w.end.getTime() > maxTime) maxTime = w.end.getTime();
+    });
 
-    const sDt = validWeeks[0].start;
-    const eDt = validWeeks[validWeeks.length - 1].end;
+    const sDt = new Date(minTime);
+    const eDt = new Date(maxTime);
     const startStr = sDt.getFullYear() + '-' + String(sDt.getMonth()+1).padStart(2,'0') + '-' + String(sDt.getDate()).padStart(2,'0');
     const endStr = eDt.getFullYear() + '-' + String(eDt.getMonth()+1).padStart(2,'0') + '-' + String(eDt.getDate()).padStart(2,'0');
 
