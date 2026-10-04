@@ -12,6 +12,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             const now = new Date();
             const m = String(now.getMonth() + 1).padStart(2, '0');
             rm.value = now.getFullYear() + '-' + m;
+            
+            // Auto-fill minggu sewaktu page di-load
+            autoFillCustomWeeks(now.getFullYear(), now.getMonth() + 1);
+
+            // Auto-fill semula setiap kali Admin tukar bulan
+            rm.addEventListener('change', (e) => {
+                const val = e.target.value;
+                if (val) {
+                    const [y, monthStr] = val.split('-');
+                    autoFillCustomWeeks(parseInt(y), parseInt(monthStr));
+                }
+            });
         }
 
         bindAllButtons(); 
@@ -23,6 +35,52 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("Reports Init Error:", err);
     }
 });
+
+// ENJIN PINTAR AUTO-FILL KOTAK TARIKH (LOGIK ADMIN)
+function autoFillCustomWeeks(year, month) {
+    const safeDateStr = (d) => {
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    };
+    
+    let firstDay = new Date(year, month - 1, 1);
+    let dayOfWeek = firstDay.getDay(); 
+    
+    let firstMonday;
+    // Jika 1hb jatuh pada Isnin, Selasa, atau Rabu (Majoriti hari bekerja di bulan ini)
+    if (dayOfWeek === 1 || dayOfWeek === 2 || dayOfWeek === 3) {
+        let diff = dayOfWeek === 1 ? 0 : (dayOfWeek === 2 ? -1 : -2);
+        firstMonday = new Date(year, month - 1, 1 + diff);
+    } 
+    // Jika 1hb jatuh pada Khamis, Jumaat, Sabtu, atau Ahad (Majoriti hari bekerja di bulan depan)
+    else {
+        let diff = dayOfWeek === 0 ? 1 : (8 - dayOfWeek);
+        firstMonday = new Date(year, month - 1, 1 + diff);
+    }
+
+    let currentMon = new Date(firstMonday);
+    for (let i = 1; i <= 5; i++) {
+        let startInput = document.getElementById('w' + i + '_s');
+        let endInput = document.getElementById('w' + i + '_e');
+        
+        // Periksa adakah minggu ini tergolong dalam bulan semasa?
+        let wednesday = new Date(currentMon);
+        wednesday.setDate(wednesday.getDate() + 2);
+        
+        // Kita paksa at least 4 minggu. Minggu ke-5 hanya keluar kalau Rabu jatuh dalam bulan tersebut
+        if (wednesday.getMonth() === (month - 1) || i <= 4) {
+            let endSun = new Date(currentMon);
+            endSun.setDate(endSun.getDate() + 6);
+            
+            if (startInput) startInput.value = safeDateStr(currentMon);
+            if (endInput) endInput.value = safeDateStr(endSun);
+        } else {
+            if (startInput) startInput.value = '';
+            if (endInput) endInput.value = '';
+        }
+        
+        currentMon.setDate(currentMon.getDate() + 7); // Pergi ke Isnin seterusnya
+    }
+}
 
 function bindAllButtons() {
     const reportCards = document.querySelectorAll('.report-type');
@@ -83,12 +141,7 @@ function bindAllButtons() {
         const now = new Date();
         document.getElementById('reportMonth').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
 
-        for(let i=1; i<=5; i++) {
-            const s = document.getElementById('w'+i+'_s');
-            const e = document.getElementById('w'+i+'_e');
-            if(s) s.value = '';
-            if(e) e.value = '';
-        }
+        autoFillCustomWeeks(now.getFullYear(), now.getMonth() + 1); // Reset kepada default auto-fill
 
         reportCards.forEach(c => c.classList.remove('active'));
         const firstCard = document.querySelector('.report-type[data-report-type="project"]');
@@ -165,7 +218,7 @@ async function generateReport() {
         const previewPanel = document.querySelector('.preview-panel');
         if (previewPanel) previewPanel.style.display = 'block';
         const tbody = document.getElementById('tableBodyProjects');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="empty-state" style="padding:50px !important;"><strong style="font-size:14px; color:#1e293b;">Engine under development</strong><br>The engine for this specific report type will be available in the next phase.</td></tr>';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="empty-state" style="padding:50px !important;"><strong style="font-size:14px; color:#1e293b;">Engine under development</strong><br>The engine for this specific report type will be available in the next phase.</td></tr>';
         return;
     }
     
@@ -289,7 +342,7 @@ function renderTable(projectGroups, weeks) {
     let idx = 1;
 
     if (Object.keys(projectGroups).length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No man-hour records found for this period.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No man-hour records found for this period.</td></tr>';
     } else {
         Object.keys(projectGroups).sort().forEach(pName => {
             const row = projectGroups[pName];
@@ -299,7 +352,6 @@ function renderTable(projectGroups, weeks) {
             tbody.innerHTML += '<tr>' +
                 '<td class="index">' + idx++ + '</td>' +
                 '<td class="project-name">' + pName + '</td>' +
-                '<td class="client-name">-</td>' +
                 '<td>' + row.w1.toFixed(1) + '</td>' +
                 '<td>' + row.w2.toFixed(1) + '</td>' +
                 '<td>' + row.w3.toFixed(1) + '</td>' +
