@@ -82,10 +82,9 @@
 
     <!-- TOP NAVIGATION STANDARD -->
     <header class="topbar" id="topbarContainer"></header>
+    
     <!-- MAIN DASHBOARD CONTENT -->
     <main class="max-w-[1600px] mx-auto p-6 space-y-6">
-
-      
 
         <!-- METRIC CARDS -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -140,34 +139,69 @@
             </div>
         </div>
 
-        <!-- VISUAL FILTER BAR -->
-        <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div class="flex items-center gap-3 flex-1 min-w-[300px]">
-                <div class="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50 flex-1">
-                    <i data-lucide="filter" class="w-3.5 h-3.5 text-gray-400"></i>
-                    <select id="filterProject2" class="bg-transparent font-medium text-slate-700 w-full outline-none">
-                        <option value="all">All Projects</option>
+        <!-- VISUAL FILTER BAR BARU (ADAP PERTANYAAN TERKINI) -->
+        <div class="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6">
+            
+            <!-- 1. Penapis Tarikh / Minggu (BARU DITAMBAH) -->
+            <div class="flex-1 min-w-[160px]">
+                <div class="relative">
+                    <span class="absolute left-3 top-2.5 text-slate-400">📅</span>
+                    <select id="filterPeriod" class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 appearance-none text-slate-600 bg-white cursor-pointer">
+                        <option value="this_week">This Week</option>
+                        <option value="last_week">Last Week</option>
+                        <option value="this_month">This Month</option>
+                        <option value="all_time">All Time</option>
                     </select>
-                </div>
-
-                <div class="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50 flex-1">
-                    <i data-lucide="users" class="w-3.5 h-3.5 text-gray-400"></i>
-                    <select id="filterTeam2" class="bg-transparent font-medium text-slate-700 w-full outline-none">
-                        <option value="all">All Teams</option>
-                    </select>
-                </div>
-
-                <div class="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-1.5 bg-gray-50 flex-1">
-                    <i data-lucide="building" class="w-3.5 h-3.5 text-gray-400"></i>
-                    <select id="filterClient" class="bg-transparent font-medium text-slate-700 w-full outline-none">
-                        <option value="all">All Clients</option>
-                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400">
+                        ▼
+                    </div>
                 </div>
             </div>
 
-            <button id="applyDashboardFilter" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-1.5 rounded-lg flex items-center gap-2 transition-colors shadow-sm">
-                <i data-lucide="check" class="w-4 h-4"></i> Apply Filter
+            <!-- 2. Penapis Projek -->
+            <div class="flex-1 min-w-[160px]">
+                <div class="relative">
+                    <span class="absolute left-3 top-2.5 text-slate-400">▽</span>
+                    <select id="filterProject2" class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 appearance-none text-slate-600 bg-white cursor-pointer">
+                        <option value="all">All Projects</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400">
+                        ▼
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Penapis Pasukan -->
+            <div class="flex-1 min-w-[160px]">
+                <div class="relative">
+                    <span class="absolute left-3 top-2.5 text-slate-400">👥</span>
+                    <select id="filterTeam2" class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 appearance-none text-slate-600 bg-white cursor-pointer">
+                        <option value="all">All Teams</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400">
+                        ▼
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Penapis Klien -->
+            <div class="flex-1 min-w-[160px]">
+                <div class="relative">
+                    <span class="absolute left-3 top-2.5 text-slate-400">🏢</span>
+                    <select id="filterClient" class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 appearance-none text-slate-600 bg-white cursor-pointer">
+                        <option value="all">All Clients</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400">
+                        ▼
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Butang Apply -->
+            <button id="applyDashboardFilter" class="bg-blue-600 text-white font-semibold text-sm px-6 py-2 rounded-lg shadow-sm hover:bg-blue-700 flex items-center gap-2 transition-colors">
+                ✓ Apply Filter
             </button>
+
         </div>
 
         <!-- MAIN CHARTS -->
