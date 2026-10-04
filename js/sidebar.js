@@ -5,12 +5,14 @@ export async function loadSidebar() {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return;
 
-        // KEMAS KINI: Kembali gunakan carian ID (Lebih kebal dari ralat ejaan email)
-        const { data: profile } = await supabase
+        // Carian Paling Kebal: Kalis huruf besar/kecil pada e-mel, dan elak ralat duplicate
+        const { data: profiles } = await supabase
             .from('employees')
             .select('system_role, email')
-            .eq('id', session.user.id)
-            .maybeSingle();
+            .ilike('email', session.user.email.trim())
+            .limit(1);
+
+        const profile = profiles && profiles.length > 0 ? profiles[0] : null;
 
         const isAdmin = profile && profile.system_role && profile.system_role.toLowerCase() === 'admin';
         const userEmail = profile ? profile.email : session.user.email;
