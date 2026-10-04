@@ -5,7 +5,6 @@ export async function loadSidebar() {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return;
 
-        // Semak Peranan (Role)
         const { data: profile } = await supabase
             .from('employees')
             .select('system_role, email')
@@ -15,27 +14,30 @@ export async function loadSidebar() {
         const isAdmin = profile && profile.system_role === 'Admin';
         const userEmail = profile ? profile.email : session.user.email;
         const initial = userEmail.charAt(0).toUpperCase();
+        const fullName = userEmail.split('@')[0].toUpperCase();
         const roleText = isAdmin ? 'Administrator' : (profile ? profile.system_role : 'User');
         
         const currentPage = window.location.pathname.split('/').pop() || 'dashboard.html';
 
-        // Cari bekas Topbar
         const headerContainer = document.getElementById('topbarContainer') || document.querySelector('.topbar');
         if (!headerContainer) return;
 
         let navHtml = '';
 
         // -- BAHAGIAN KIRI: BRANDING --
-        navHtml += '<a class="brand" href="dashboard.html" aria-label="WORKTIMESYS">' +
-                        '<div class="brand-mark"></div>' +
-                        '<div class="brand-copy">' +
-                            '<strong>WORKTIME<span>SYS</span></strong>' +
-                            '<small>TIME | PROJECT | TEAM</small>' +
+        navHtml += '<a class="flex items-center gap-2.5 min-w-[195px] no-underline text-slate-800" href="dashboard.html" aria-label="WORKTIMESYS">' +
+                        '<div class="w-8 h-9 relative flex items-center justify-center flex-none">' +
+                            '<div class="absolute w-[19px] h-[19px] bg-gradient-to-br from-blue-600 to-amber-500 rounded transform rotate-[30deg] -skew-x-[4deg] top-[3px] left-[3px]"></div>' +
+                            '<div class="absolute w-[19px] h-[19px] bg-gradient-to-br from-blue-900 to-red-500 rounded transform rotate-[30deg] -skew-x-[4deg] bottom-[3px] right-[1px]"></div>' +
+                        '</div>' +
+                        '<div>' +
+                            '<strong class="block text-[19px] leading-[18px] tracking-[-0.8px] font-extrabold">WORKTIME<span class="text-blue-600">SYS</span></strong>' +
+                            '<small class="block mt-[3px] text-[9px] font-extrabold tracking-[0.35px] text-slate-500">TIME | PROJECT | TEAM</small>' +
                         '</div>' +
                     '</a>';
 
         // -- BAHAGIAN TENGAH: NAVIGATION LINKS --
-        navHtml += '<nav class="nav" id="mainNav">';
+        navHtml += '<nav class="flex flex-1 items-center gap-1.5 min-w-0" id="mainNav">';
         
         navHtml += '<a class="nav-link ' + (currentPage.includes('timesheet') ? 'active' : '') + '" href="timesheet.html"><span class="nav-icon">▣</span>TIMESHEET</a>';
         navHtml += '<a class="nav-link ' + (currentPage.includes('calendar') ? 'active' : '') + '" href="calendar.html"><span class="nav-icon">▦</span>CALENDAR</a>';
@@ -43,40 +45,67 @@ export async function loadSidebar() {
         navHtml += '<a class="nav-link ' + (currentPage.includes('dashboard') ? 'active' : '') + '" href="dashboard.html"><span class="nav-icon">⌂</span>OVERVIEW</a>';
         navHtml += '<a class="nav-link ' + (currentPage.includes('reports') ? 'active' : '') + '" href="reports.html"><span class="nav-icon">▥</span>ANALYTICS</a>';
 
-        // Menu Tambahan Jika Admin
         if (isAdmin) {
             navHtml += '<a class="nav-link ' + (currentPage.includes('projects') ? 'active' : '') + '" href="projects.html"><span class="nav-icon">📁</span>PROJECT</a>';
-            navHtml += '<a class="nav-link ' + (currentPage.includes('tags') ? 'active' : '') + '" href="tags.html"><span class="nav-icon">🏷️️</span>TAGS</a>';
+            navHtml += '<a class="nav-link ' + (currentPage.includes('tags') ? 'active' : '') + '" href="tags.html"><span class="nav-icon">🏷</span>TAGS</a>';
             navHtml += '<a class="nav-link ' + (currentPage.includes('employee') ? 'active' : '') + '" href="employees.html"><span class="nav-icon">♧</span>EMPLOYEES</a>';
             navHtml += '<a class="nav-link ' + (currentPage.includes('clients') ? 'active' : '') + '" href="clients.html"><span class="nav-icon">♙</span>CLIENTS</a>';
         }
         navHtml += '</nav>';
 
-        // -- BAHAGIAN KANAN: ACTIONS & PROFILE --
-        navHtml += '<div class="top-actions">' +
-                        '<button class="icon-btn relative" type="button" title="Notifications">' +
-                            '🔔' +
-                            '<span class="notification-dot absolute -top-1 -right-1 bg-red-500 text-white text-[9px] w-4 h-4 flex items-center justify-center rounded-full border border-white">3</span>' +
+        // -- BAHAGIAN KANAN: ACTIONS & PROFILE (Korporat & Sebaris) --
+        navHtml += '<div class="flex items-center gap-4 flex-none ml-4">' +
+                        
+                        // Loceng Notifikasi
+                        '<button class="relative text-slate-400 hover:text-blue-600 transition-colors flex items-center justify-center" title="Notifications">' +
+                            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>' +
+                                '<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>' +
+                            '</svg>' +
+                            '<span class="absolute -top-1 -right-1 bg-red-500 w-2 h-2 rounded-full border-2 border-white"></span>' +
                         '</button>' +
 
-                        '<div class="profile relative group">' +
-                            '<div class="avatar" id="avatarInitial">' + initial + '</div>' +
-                            '<div class="profile-text hidden sm:block">' +
-                                '<strong id="profileName">' + userEmail.split('@')[0].toUpperCase() + '</strong>' +
-                                '<small id="profileRole">' + roleText + '</small>' +
-                            '</div>' +
-                            '<span class="ml-1 text-gray-400">⌄</span>' +
-                            
-                            '<div class="absolute right-0 top-full mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">' +
-                                '<button id="logoutBtn" class="w-full text-left px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors">⏻ Logout</button>' +
+                        // Pembahagi
+                        '<div class="w-px h-6 bg-slate-200"></div>' +
+
+                        // Info Profil (Nama dipotong jika terlalu panjang)
+                        '<div class="flex items-center gap-3">' +
+                            '<div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">' + initial + '</div>' +
+                            '<div class="flex flex-col hidden sm:flex">' +
+                                '<span class="text-[11px] font-extrabold text-slate-700 max-w-[130px] truncate" title="' + fullName + '">' + fullName + '</span>' +
+                                '<span class="text-[9px] font-bold tracking-wide text-slate-400 uppercase mt-0.5">' + roleText + '</span>' +
                             '</div>' +
                         '</div>' +
+
+                        // Pembahagi
+                        '<div class="w-px h-6 bg-slate-200"></div>' +
+
+                        // Butang Kemaskini (Edit Profil) & Log Keluar (Logout)
+                        '<div class="flex items-center gap-1.5">' +
+                            
+                            // Edit Profile Icon
+                            '<a href="profile.html" title="Update Profile" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-blue-600 transition-colors">' +
+                                '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                    '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>' +
+                                    '<circle cx="12" cy="7" r="4"></circle>' +
+                                '</svg>' +
+                            '</a>' +
+                            
+                            // Logout Icon (Pintu & Anak Panah)
+                            '<button id="logoutBtn" title="Logout" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors">' +
+                                '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                                    '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>' +
+                                    '<polyline points="16 17 21 12 16 7"></polyline>' +
+                                    '<line x1="21" y1="12" x2="9" y2="12"></line>' +
+                                '</svg>' +
+                            '</button>' +
+                            
+                        '</div>' +
+
                     '</div>';
 
-        // Masukkan struktur Menu ke dalam container di HTML
         headerContainer.innerHTML = navHtml;
         
-        // Setup Butang Logout
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
