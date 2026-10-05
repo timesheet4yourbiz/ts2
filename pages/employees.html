@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1280">
-    <title>Team | WORKTIME</title>
+    <title>Team | WORKTIMESYS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -62,30 +62,53 @@
 
     <main class="p-6 max-w-[1480px] mx-auto space-y-6">
 
-        <section class="grid grid-cols-3 gap-6">
+       <!-- KPI Cards -->
+        <section class="grid grid-cols-3 gap-6 mb-6">
+            <!-- Kad 1: Total Members (Biru) -->
             <div class="glass-card p-5 flex items-center gap-4">
-                <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-2xl">👥</div>
-                <div class="flex-1">
+                <div class="w-14 h-14 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
                     <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Members</div>
-                    <div class="text-3xl font-black text-gray-800" id="kpiTotal">0</div>
+                    <div class="text-3xl font-black text-gray-800 truncate" id="kpiTotal">0</div>
                 </div>
             </div>
+
+            <!-- Kad 2: Active Members (Hijau) -->
             <div class="glass-card p-5 flex items-center gap-4">
-                <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-2xl">👤</div>
-                <div class="flex-1">
+                <div class="w-14 h-14 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
                     <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Active Members</div>
-                    <div class="text-3xl font-black text-gray-800" id="kpiActive">0</div>
+                    <div class="text-3xl font-black text-gray-800 truncate" id="kpiActive">0</div>
                 </div>
             </div>
+
+            <!-- Kad 3: Inactive Members (Merah) -->
             <div class="glass-card p-5 flex items-center gap-4">
-                <div class="w-14 h-14 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-2xl">🚫</div>
-                <div class="flex-1">
+                <div class="w-14 h-14 bg-rose-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
                     <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Inactive Members</div>
-                    <div class="text-3xl font-black text-gray-800" id="kpiInactive">0</div>
+                    <div class="text-3xl font-black text-gray-800 truncate" id="kpiInactive">0</div>
                 </div>
             </div>
         </section>
-
+        
         <div class="flex border-b border-gray-200 mt-6">
             <button class="tab-btn active" data-tab="membersView">Members List</button>
             <button class="tab-btn" data-tab="groupsView">Team Groups</button>
