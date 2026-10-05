@@ -14,21 +14,21 @@
 
 
 
+
 .fc .fc-timegrid-slot-label-frame {
+    position: relative !important;
     height: 100% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
 }
 
 .fc .fc-timegrid-slot-label-cushion {
-    position: static !important;
-    transform: none !important;
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
     margin: 0 !important;
     padding: 0 !important;
-    line-height: normal !important;
+    width: 100% !important;
+    text-align: center !important;
 }
-
         
         body { background-color: #f8fafc; -webkit-font-smoothing: antialiased; min-width: 1280px !important; overflow-x: auto !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; }
         .glass-card { background: white; box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.03), 0 2px 8px -2px rgba(0, 0, 0, 0.02) !important; border: 1px solid rgba(226, 232, 240, 0.6) !important; border-radius: 16px !important; transition: all 0.3s ease; }
