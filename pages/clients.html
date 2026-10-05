@@ -46,55 +46,55 @@
             <p class="text-[#0b1d44] font-medium text-sm mt-1 mb-0 opacity-70">Manage your clients and project relationships.</p>
         </div>
 
-        <!-- KPI Cards --(TUTUP)
-        <section class="grid grid-cols-3 gap-6 mb-6"(TUTUP)
-            <!-- Kad 1: Total Clients (Biru) --(TUTUP)
-            <div class="glass-card p-5 flex items-center gap-4"(TUTUP)
-                <div class="w-14 h-14 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-sm flex-none"(TUTUP)
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"(TUTUP)
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"(TUTUP)</path(TUTUP)
-                        <circle cx="9" cy="7" r="4"(TUTUP)</circle(TUTUP)
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"(TUTUP)</path(TUTUP)
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"(TUTUP)</path(TUTUP)
-                    </svg(TUTUP)
-                </div(TUTUP)
-                <div class="flex-1 min-w-0"(TUTUP)
-                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider"(TUTUP)Total Clients</div(TUTUP)
-                    <div class="text-3xl font-black text-gray-800 truncate" id="kpiTotal"(TUTUP)0</div(TUTUP)
-                    <div class="text-xs text-blue-500 font-semibold mt-1" id="kpiTotalGrowth"(TUTUP)↑ All time</div(TUTUP)
-                </div(TUTUP)
-            </div(TUTUP)
+        <!-- KPI Cards -->
+        <section class="grid grid-cols-3 gap-6 mb-6">
+            <!-- Kad 1: Total Clients (Biru) -->
+            <div class="glass-card p-5 flex items-center gap-4">
+                <div class="w-14 h-14 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Clients</div>
+                    <div class="text-3xl font-black text-gray-800 truncate" id="kpiTotal">0</div>
+                    <div class="text-xs text-blue-500 font-semibold mt-1" id="kpiTotalGrowth">↑ All time</div>
+                </div>
+            </div>
 
-            <!-- Kad 2: Active Clients (Hijau) --(TUTUP)
-            <div class="glass-card p-5 flex items-center gap-4"(TUTUP)
-                <div class="w-14 h-14 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none"(TUTUP)
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"(TUTUP)
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"(TUTUP)</path(TUTUP)
-                        <polyline points="22 4 12 14.01 9 11.01"(TUTUP)</polyline(TUTUP)
-                    </svg(TUTUP)
-                </div(TUTUP)
-                <div class="flex-1 min-w-0"(TUTUP)
-                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider"(TUTUP)Active Clients</div(TUTUP)
-                    <div class="text-3xl font-black text-gray-800 truncate" id="kpiActive"(TUTUP)0</div(TUTUP)
-                    <div class="text-xs text-emerald-500 font-semibold mt-1"(TUTUP)Currently engaged</div(TUTUP)
-                </div(TUTUP)
-            </div(TUTUP)
+            <!-- Kad 2: Active Clients (Hijau) -->
+            <div class="glass-card p-5 flex items-center gap-4">
+                <div class="w-14 h-14 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Active Clients</div>
+                    <div class="text-3xl font-black text-gray-800 truncate" id="kpiActive">0</div>
+                    <div class="text-xs text-emerald-500 font-semibold mt-1">Currently engaged</div>
+                </div>
+            </div>
 
-            <!-- Kad 3: Inactive Clients (Merah) --(TUTUP)
-            <div class="glass-card p-5 flex items-center gap-4"(TUTUP)
-                <div class="w-14 h-14 bg-rose-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none"(TUTUP)
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"(TUTUP)
-                        <circle cx="12" cy="12" r="10"(TUTUP)</circle(TUTUP)
-                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"(TUTUP)</line(TUTUP)
-                    </svg(TUTUP)
-                </div(TUTUP)
-                <div class="flex-1 min-w-0"(TUTUP)
-                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider"(TUTUP)Inactive Clients</div(TUTUP)
-                    <div class="text-3xl font-black text-gray-800 truncate" id="kpiInactive"(TUTUP)0</div(TUTUP)
-                    <div class="text-xs text-gray-400 font-semibold mt-1"(TUTUP)No active projects</div(TUTUP)
-                </div(TUTUP)
-            </div(TUTUP)
-        </section(TUTUP)
+            <!-- Kad 3: Inactive Clients (Merah) -->
+            <div class="glass-card p-5 flex items-center gap-4">
+                <div class="w-14 h-14 bg-rose-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Inactive Clients</div>
+                    <div class="text-3xl font-black text-gray-800 truncate" id="kpiInactive">0</div>
+                    <div class="text-xs text-gray-400 font-semibold mt-1">No active projects</div>
+                </div>
+            </div>
+        </section>
         <!-- Filter Bar -->
         <section class="flex justify-between items-center mb-6">
             <div class="flex items-center gap-3 w-1/2">
