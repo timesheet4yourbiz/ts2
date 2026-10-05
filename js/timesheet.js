@@ -320,6 +320,9 @@ const loadData = async () => {
     const projColors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#f43f5e', '#14b8a6'];
     let colorIdx = 0;
 
+
+
+    
     (data || []).forEach(e => {
         const pid = e.project_id || 'null';
         const tid = e.task_id || 'null';
@@ -328,10 +331,9 @@ const loadData = async () => {
         const pName = e.project ? e.project.project_name : 'General';
         const tName = e.task ? e.task.task_name : '';
         
-        // --- FIX: READ DATE STRING DIRECTLY TO AVOID TIMEZONE SHIFT ---
+        
         let dStr = '';
         if (e.work_date) {
-            // Ambil tepat YYYY-MM-DD dari teks asal database
             dStr = String(e.work_date).split('T')[0];
         } else if (e.start_time) {
             let dObj = new Date(e.start_time);
@@ -347,7 +349,6 @@ const loadData = async () => {
             if (!matrix[key].note && e.notes) matrix[key].note = e.notes;
         }
         
-        // --- FIX: ENSURE NUMBER TYPE AND MATCH DAY EXACTLY ---
         if (matrix[key].arr[dStr] !== undefined) {
             let dur = parseInt(e.duration_seconds) || 0;
             matrix[key].arr[dStr] += dur;
@@ -355,6 +356,7 @@ const loadData = async () => {
         }
     });
 
+    
     let html = ''; let idx = 1; let chartLabels = []; let chartData = [];
     Object.values(matrix).forEach(row => {
         let rTotal = 0;
