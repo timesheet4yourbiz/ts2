@@ -321,7 +321,7 @@ const loadData = async () => {
             '</button></td></tr>';
     });
 
-    // BARIS TAMBAH PROJEK DI BAWAH (TIADA NOMBOR '#')
+    
     html += '<tr style="border-bottom: 1px solid #e2e8f0; background: white;">' +
         '<td style="text-align: center; font-weight: 500; color: #64748b;"></td>' +
         '<td style="font-size: 0.85rem;">' +
@@ -356,7 +356,7 @@ const loadData = async () => {
 
     updateCharts(chartLabels, chartData, Object.values(matrix));
 
-    // BIND POPUP PADA BARIS BARU
+    
     const openPickerBtn = document.getElementById('openPickerBtn');
     if (openPickerBtn) openPickerBtn.addEventListener('click', togglePopup);
 
@@ -406,7 +406,7 @@ const loadData = async () => {
 
     document.querySelectorAll('.bind-del').forEach(btn => {
         btn.addEventListener('click', async function(){
-            if(!confirm("Anda pasti mahu memadam keseluruhan baris rekod masa ini?")) return;
+            if(!confirm("Are you sure you want to delete this entire time record line?")) return;
             const pid = this.dataset.pid;
             const tr = this.closest('tr');
             const taskAttr = tr.getAttribute('data-task');
