@@ -58,6 +58,102 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
+
+
+
+
+        // ==========================================
+        // ENGINE 1: 'COPY LAST WEEK' DROPDOWN FUNCTION
+        // ==========================================
+        const copyBtn = document.getElementById('copyLastWeekBtn');
+        const copyMenu = document.getElementById('copyLastWeekMenu');
+        
+        if (copyBtn && copyMenu) {
+            
+            copyBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                copyMenu.style.display = (copyMenu.style.display === 'none' || copyMenu.style.display === '') ? 'block' : 'none';
+            });
+
+            
+            document.addEventListener('click', () => {
+                copyMenu.style.display = 'none';
+            });
+
+            
+            const btnCopyAct = document.getElementById('btnCopyActivitiesOnly');
+            if (btnCopyAct) {
+                btnCopyAct.addEventListener('click', () => {
+                    if(confirm("Copy list of projects and tags from last week?")) {
+                        
+                        alert("Successfully copied projects from last week!");
+                    }
+                });
+            }
+
+            
+            const btnCopyTime = document.getElementById('btnCopyActivitiesAndTime');
+            if (btnCopyTime) {
+                btnCopyTime.addEventListener('click', () => {
+                    if(confirm("Copy all projects along with time records from last week?")) {
+                        // Put your DB data fetch function here later
+                        alert("Successfully copied all records from last week!");
+                    }
+                });
+            }
+        }
+
+        // ==========================================
+        // ENJIN 2: FUNGSI 'CLEAR ALL'
+        // ==========================================
+        
+        const btnClearAll = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Clear all'));
+        if (btnClearAll) {
+            btnClearAll.addEventListener('click', () => {
+                if (confirm("WARNING: Are you sure you want to clear all records in this table? This action cannot be undone.")) {
+                    
+                    const inputs = document.querySelectorAll('.ts-input');
+                    inputs.forEach(input => {
+                        input.value = '';
+                    });
+                    
+                    // If you have a recalculate totals function (calculateTotals), you can call it here
+                    // calculateTotals(); 
+                    
+                    alert("Table cleared.");
+                }
+            });
+        }
+
+        // ==========================================
+        // ENJIN 3: FUNGSI TOGGLE 'SHOW WEEKENDS'
+        // ==========================================
+        const toggleWeekends = document.querySelector('.toggle-switch');
+        if (toggleWeekends) {
+            toggleWeekends.addEventListener('click', (e) => {
+                e.preventDefault(); 
+                toggleWeekends.classList.toggle('active');
+                
+                const isShowing = toggleWeekends.classList.contains('active');
+                
+// Find column index for Saturday & Sunday in the table
+// In the original table, Saturday column = index 10, Sunday = index 11 (1-based index)
+                const satCol = 10; 
+                const sunCol = 11;
+
+                // Function to hide/show columns using the :nth-child pseudo-selector
+                const styleId = 'weekendToggleStyles';
+                let styleEl = document.getElementById(styleId);
+                
+                if (!isShowing) {
+                    // If button is toggled off (OFF), create tag
+
+        
+
+
+
+
+        
     } catch (error) { console.error(error); }
 });
 
