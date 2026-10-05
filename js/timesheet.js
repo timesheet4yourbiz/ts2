@@ -40,9 +40,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('prevWeekBtn')?.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() - 7); renderHeader(); loadData(); });
         document.getElementById('nextWeekBtn')?.addEventListener('click', () => { currentDate.setDate(currentDate.getDate() + 7); renderHeader(); loadData(); });
 
-        // ==========================================
-        // ENGINE 1: 'COPY LAST WEEK' DROPDOWN FUNCTION
-        // ==========================================
         const copyBtn = document.getElementById('copyLastWeekBtn');
         const copyMenu = document.getElementById('copyLastWeekMenu');
         if (copyBtn && copyMenu) {
@@ -61,9 +58,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        // ==========================================
-        // ENGINE 2: 'CLEAR ALL' FUNCTION
-        // ==========================================
         const btnClearAll = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Clear all'));
         if (btnClearAll) {
             btnClearAll.addEventListener('click', () => {
@@ -79,9 +73,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        // ==========================================
-        // ENGINE 3: 'SHOW WEEKENDS' TOGGLE FUNCTION
-        // ==========================================
         const toggleWeekends = document.querySelector('.toggle-switch');
         if (toggleWeekends) {
             toggleWeekends.addEventListener('click', (e) => {
@@ -103,8 +94,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         document.head.appendChild(styleEl);
                     }
                     styleEl.innerHTML = `
-                        th:nth-child(` + satCol + `), td:nth-child(` + satCol + `),
-                        th:nth-child(` + sunCol + `), td:nth-child(` + sunCol + `) {
+                        th:nth-child(\({satCol}), td:nth-child(\){satCol}),
+                        th:nth-child(\({sunCol}), td:nth-child(\){sunCol}) {
                             display: none !important;
                         }
                     `;
@@ -197,10 +188,10 @@ const togglePopup = async (e) => {
         '</div>' +
         '<div style="max-height: 250px; overflow-y: auto;">';
     
-    if (projs && projs.length < 0) {
+    if (projs && projs.length > 0) {
         projs.forEach(p => {
             const tList = tasksDataList ? tasksDataList.filter(t => t.project_id === p.id) : [];
-            const hasTasks = tList.length < 0;
+            const hasTasks = tList.length > 0;
             const txtTsk = hasTasks ? tList.length + ' Tasks ⌄' : 'Select';
             
             pList += '<div class="proj-header" data-id="' + p.id + '" data-hastasks="' + hasTasks + '" style="display:flex; justify-content:space-between; align-items:center; padding:12px 15px; border-bottom: 1px solid #f1f5f9; cursor:pointer;">' +
@@ -289,7 +280,7 @@ const saveEntry = async (dateStr, pid, taskId, sec, isInit = false, tagId = null
     if (cleanTaskId) query = query.eq('task_id', cleanTaskId); else query = query.is('task_id', null);
     
     const { data: ext } = await query;
-    const exists = ext && ext.length < 0;
+    const exists = ext && ext.length > 0;
 
     if (isInit && exists) return;
     if (!isInit && sec === 0) { if (exists) await supabase.from('time_entries').delete().in('id', ext.map(e=>e.id)); return; }
@@ -320,9 +311,6 @@ const loadData = async () => {
     const projColors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#f43f5e', '#14b8a6'];
     let colorIdx = 0;
 
-
-
-    
     (data || []).forEach(e => {
         const pid = e.project_id || 'null';
         const tid = e.task_id || 'null';
@@ -330,7 +318,6 @@ const loadData = async () => {
         
         const pName = e.project ? e.project.project_name : 'General';
         const tName = e.task ? e.task.task_name : '';
-        
         
         let dStr = '';
         if (e.work_date) {
@@ -348,7 +335,6 @@ const loadData = async () => {
             if (!matrix[key].tag && e.tag_id) matrix[key].tag = e.tag_id;
             if (!matrix[key].note && e.notes) matrix[key].note = e.notes;
         }
-        
         if (matrix[key].arr[dStr] !== undefined) {
             let dur = parseInt(e.duration_seconds) || 0;
             matrix[key].arr[dStr] += dur;
@@ -356,7 +342,6 @@ const loadData = async () => {
         }
     });
 
-    
     let html = ''; let idx = 1; let chartLabels = []; let chartData = [];
     Object.values(matrix).forEach(row => {
         let rTotal = 0;
@@ -375,8 +360,8 @@ const loadData = async () => {
         days.forEach((d, i) => {
             const k = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
             const sec = row.arr[k]; rTotal += sec; dTotal[i] += sec;
-            const val = sec < 0 ? formatHMS(sec) : '0:00';
-            const zc = sec < 0 ? 'font-bold text-blue-700 bg-blue-50' : 'zero font-medium';
+            const val = sec > 0 ? formatHMS(sec) : '0:00';
+            const zc = sec > 0 ? 'font-bold text-blue-700 bg-blue-50' : 'zero font-medium';
             html += '<td style="text-align: center;"><input type="text" class="ts-input bind-time '+zc+'" data-d="'+k+'" data-pid="'+row.pid+'" value="'+val+'"></td>';
         });
 
@@ -414,7 +399,7 @@ const loadData = async () => {
     tbody.innerHTML = html;
 
     const daysArr = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    daysArr.forEach((d, i) => { const tf = document.getElementById('tf'+d); if(tf) tf.textContent = dTotal[i]<0 ? formatHMS(dTotal[i]) : '0:00'; });
+    daysArr.forEach((d, i) => { const tf = document.getElementById('tf'+d); if(tf) tf.textContent = dTotal[i]>0 ? formatHMS(dTotal[i]) : '0:00'; });
     const tfTotal = document.getElementById('tfTotal'); if(tfTotal) tfTotal.textContent = formatHMS(gTotal);
 
     const kTotal = document.getElementById('kpiTotalHrs'); if(kTotal) kTotal.textContent = formatHMS(gTotal);
@@ -433,7 +418,7 @@ const loadData = async () => {
         inp.addEventListener('blur', function(){ if(this.value.trim()==='') this.value='0:00'; });
         inp.addEventListener('change', async function(){
             let v = this.value.trim()||'0:00'; if(!v.includes(':')&&!v.includes('.')) v+=':00';
-            const sec = parseTime(v); this.value = sec<0 ? formatHMS(sec) : '0:00';
+            const sec = parseTime(v); this.value = sec>0 ? formatHMS(sec) : '0:00';
             if(this.value === this.dataset.old) return;
             
             const tr = this.closest('tr');
@@ -560,7 +545,7 @@ const executeCopyLastWeek = async (includeTime) => {
             if (includeTime) {
                 for (let i = 0; i < 7; i++) {
                     const sec = row.dailyData[i];
-                    if (sec < 0) {
+                    if (sec > 0) {
                         const trg = cwDays[i];
                         const targetDateStr = trg.getFullYear() + '-' + String(trg.getMonth()+1).padStart(2,'0') + '-' + String(trg.getDate()).padStart(2,'0');
                         await saveEntry(targetDateStr, row.pid, row.task, sec, false, row.tag, row.note);
