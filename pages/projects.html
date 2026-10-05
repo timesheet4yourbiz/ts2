@@ -70,30 +70,61 @@
             </button>
         </div>
 
-        <!-- KPI Cards -->
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl">📁</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Total Projects</div><div class="text-2xl font-black text-gray-800" id="kpiTotal">0</div></div>
+       <!-- KPI Cards -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <!-- Kad 1: Total Projects (Biru) -->
+            <div class="glass-card p-4 flex items-center gap-4">
+                <div class="w-14 h-14 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Projects</div>
+                    <div class="text-2xl font-black text-gray-800 truncate" id="kpiTotal">0</div>
                 </div>
             </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center text-xl">▶️</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Active Projects</div><div class="text-2xl font-black text-gray-800" id="kpiActive">0</div></div>
+
+            <!-- Kad 2: Active Projects (Hijau) -->
+            <div class="glass-card p-4 flex items-center gap-4">
+                <div class="w-14 h-14 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Active Projects</div>
+                    <div class="text-2xl font-black text-gray-800 truncate" id="kpiActive">0</div>
                 </div>
             </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl">⏱️</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Total Tracked Hours</div><div class="text-2xl font-black text-gray-800" id="kpiTracked">0.0<span class="text-sm text-gray-500 ml-1">hrs</span></div></div>
+
+            <!-- Kad 3: Total Tracked Hours (Ungu) -->
+            <div class="glass-card p-4 flex items-center gap-4">
+                <div class="w-14 h-14 bg-purple-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Tracked Hours</div>
+                    <div class="text-2xl font-black text-gray-800 truncate" id="kpiTracked">0.0<span class="text-sm text-gray-500 ml-1 font-medium lowercase">hrs</span></div>
                 </div>
             </div>
-            <div class="glass-card p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-xl">👥</div>
-                    <div><div class="text-[10px] font-bold text-gray-500 uppercase">Clients</div><div class="text-2xl font-black text-gray-800" id="kpiClients">0</div></div>
+
+            <!-- Kad 4: Clients (Oren) -->
+            <div class="glass-card p-4 flex items-center gap-4">
+                <div class="w-14 h-14 bg-amber-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-none">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Clients</div>
+                    <div class="text-2xl font-black text-gray-800 truncate" id="kpiClients">0</div>
                 </div>
             </div>
         </section>
