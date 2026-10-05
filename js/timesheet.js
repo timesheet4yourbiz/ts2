@@ -328,9 +328,16 @@ const loadData = async () => {
         const pName = e.project ? e.project.project_name : 'General';
         const tName = e.task ? e.task.task_name : '';
         
-        let dObj = e.work_date ? new Date(e.work_date) : new Date(e.start_time);
-        const dStr = dObj.getFullYear() + '-' + String(dObj.getMonth()+1).padStart(2,'0') + '-' + String(dObj.getDate()).padStart(2,'0');
-        
+        // --- FIX: READ DATE STRING DIRECTLY TO AVOID TIMEZONE SHIFT ---
+        let dStr = '';
+        if (e.work_date) {
+            // Ambil tepat YYYY-MM-DD dari teks asal database
+            dStr = String(e.work_date).split('T')[0];
+        } else if (e.start_time) {
+            let dObj = new Date(e.start_time);
+            dStr = dObj.getFullYear() + '-' + String(dObj.getMonth()+1).padStart(2,'0') + '-' + String(dObj.getDate()).padStart(2,'0');
+        }
+
         if (!matrix[key]) {
             matrix[key] = { name: pName, taskName: tName, pid: pid, task: e.task_id||'', tag: e.tag_id||'', note: e.notes||'', arr: {}, color: projColors[colorIdx % projColors.length] };
             colorIdx++;
@@ -339,9 +346,12 @@ const loadData = async () => {
             if (!matrix[key].tag && e.tag_id) matrix[key].tag = e.tag_id;
             if (!matrix[key].note && e.notes) matrix[key].note = e.notes;
         }
+        
+        // --- FIX: ENSURE NUMBER TYPE AND MATCH DAY EXACTLY ---
         if (matrix[key].arr[dStr] !== undefined) {
-            matrix[key].arr[dStr] += (e.duration_seconds || 0);
-            if(e.duration_seconds < 0) activeDays.add(dStr);
+            let dur = parseInt(e.duration_seconds) || 0;
+            matrix[key].arr[dStr] += dur;
+            if (dur > 0) activeDays.add(dStr);
         }
     });
 
