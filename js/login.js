@@ -2,6 +2,7 @@ import { supabase } from './supabase.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     
+    // 1. Fetch Company Settings (Logo & Background)
     const { data: settingsData, error: settingsError } = await supabase
         .from('settings')
         .select('logo_url, bg_url')
@@ -17,11 +18,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // 2. Check Active Session
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
         window.location.href = 'timesheet.html';
     }
     
+    // 3. Login Form Handling
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
@@ -62,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            // --- Last Seen
+            // --- UPDATE LAST SEEN WITH ERROR DETECTION ---
             try {
                 const { data: updateData, error: updateErr } = await supabase
                     .from('employees')
@@ -75,9 +78,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     console.log("Successfully updated last_seen for:", emailInput.value.trim());
                 }
             } catch (err) {
-                console.error("Unexpected error while updating last_seen:" err);
+                console.error("Unexpected error while updating last_seen:", err);
             }
-            // -----------------------------------------------
+            // ----------------------------------------------
 
             window.location.href = 'timesheet.html';
         }
