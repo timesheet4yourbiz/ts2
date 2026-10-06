@@ -62,14 +62,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            
+            // --- Last Seen
             try {
-                await supabase
+                const { data: updateData, error: updateErr } = await supabase
                     .from('employees')
                     .update({ last_seen: new Date().toISOString() })
-                    .eq('id', userId);
-            } catch (updateError) {
-                console.error("Failed to update last_seen:", updateError);
+                    .eq('email', emailInput.value.trim());
+
+                if (updateErr) {
+                    console.error("Failed to update last_seen from Supabase:", updateErr);
+                } else {
+                    console.log("Successfully updated last_seen for:", emailInput.value.trim());
+                }
+            } catch (err) {
+                console.error("Unexpected error while updating last_seen:" err);
             }
             // -----------------------------------------------
 
