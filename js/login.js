@@ -1,6 +1,6 @@
 import { supabase } from './supabase.js';
 
-document.addEventListener('DOMContentLoaded', async () =(TUTUP) {
+document.addEventListener('DOMContentLoaded', async () => {
     
     const { data: settingsData, error: settingsError } = await supabase
         .from('settings')
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () =(TUTUP) {
     const loginBtn = document.getElementById('loginBtn');
     const errorMessage = document.getElementById('errorMessage');
 
-    loginForm.addEventListener('submit', async (e) =(TUTUP) {
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault(); 
         
         loginBtn.textContent = 'Signing in...';
