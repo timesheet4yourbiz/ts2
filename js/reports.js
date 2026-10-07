@@ -107,12 +107,13 @@ function bindAllButtons() {
 }
 
 async function populateFilters() {
+    // Betulkan filter projek untuk gunakan nama projek dan bukannya ID
     try {
-        const { data: projs } = await supabase.from('projects').select('id, project_name').order('project_name');
+        const { data: projs } = await supabase.from('projects').select('project_name').order('project_name');
         const projSelect = document.getElementById('filterProject');
         if (projs && projSelect) {
             projs.forEach(p => {
-                projSelect.innerHTML += '<option value="' + p.id + '">' + p.project_name + '</option>';
+                projSelect.innerHTML += '<option value="' + p.project_name + '">' + p.project_name + '</option>';
             });
         }
     } catch (e) {}
@@ -169,7 +170,6 @@ async function generateReport() {
     const tableProject = document.getElementById('exportTableProject');
     const tableCustom = document.getElementById('exportTableCustom');
 
-    // Sembunyikan semua jadual terlebih dahulu
     tableProject.style.display = 'none';
     tableCustom.style.display = 'none';
 
@@ -218,16 +218,16 @@ async function generateReport() {
     const step = 999;
     let hasMore = true;
 
+    // SKRIP MAGIK YANG TELAH DIBETULKAN
     while (hasMore) {
         let query = supabase
             .from('time_entries')
-            .select('duration_seconds, work_date, start_time, employee_id, project_id, task_name, employees(email), project:projects(project_name)')
-            .eq('status', 'STOPPED')
+            .select('duration_hours, work_date, start_time, employee_id, project_name, task_name, employees(email)')
             .gte('work_date', startStr)
             .lte('work_date', endStr)
             .range(from, from + step);
 
-        if (selectedProject !== 'ALL') query = query.eq('project_id', selectedProject);
+        if (selectedProject !== 'ALL') query = query.eq('project_name', selectedProject);
         if (selectedUser !== 'ALL') query = query.eq('employee_id', selectedUser);
 
         const { data, error } = await query;
@@ -268,14 +268,16 @@ function generateProjectReport(allEntries, weeks) {
 
     if (allEntries.length > 0) {
         allEntries.forEach(item => {
-            const pName = (item.project ? item.project.project_name : 'General Project').toUpperCase();
+            // Gunakan project_name dari jadual terus
+            const pName = (item.project_name || 'General Project').toUpperCase();
             if (!projectGroups[pName]) projectGroups[pName] = { w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, total: 0 };
             
             let dObj = new Date(item.work_date || item.start_time);
             dObj.setHours(0,0,0,0);
 
             const itemTime = dObj.getTime();
-            const hrs = (item.duration_seconds || 0) / 3600;
+            // Ambil kira duration_hours
+            const hrs = parseFloat(item.duration_hours) || 0;
             
             if (weeks[0].start && itemTime >= w1S && itemTime <= w1E) projectGroups[pName].w1 += hrs;
             else if (weeks[1].start && itemTime >= w2S && itemTime <= w2E) projectGroups[pName].w2 += hrs;
@@ -329,10 +331,10 @@ function generateCustomReport(allEntries) {
 
     if (allEntries.length > 0) {
         allEntries.forEach(item => {
-            const pName = (item.project ? item.project.project_name : 'General Project').toUpperCase();
+            const pName = (item.project_name || 'General Project').toUpperCase();
             const task = (item.task_name || 'No Task').toUpperCase();
             const email = item.employees ? item.employees.email : 'Unknown';
-            const hrs = (item.duration_seconds || 0) / 3600;
+            const hrs = parseFloat(item.duration_hours) || 0;
             
             const key = pName + '|' + task + '|' + email;
             
