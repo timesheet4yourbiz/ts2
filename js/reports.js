@@ -221,7 +221,7 @@ async function generateReport() {
     while (hasMore) {
         let query = supabase
             .from('time_entries')
-            .select('duration_seconds, work_date, start_time, employee_id, project_id, task_name, employees!fk_time_entries_employee(email), project:projects!fk_time_entries_project(project_name)')
+            .select('duration_seconds, work_date, start_time, employee_id, project_id, task_name, employees(email), project:projects(project_name)')
             .eq('status', 'STOPPED')
             .gte('work_date', startStr)
             .lte('work_date', endStr)
