@@ -1,5 +1,9 @@
 import { supabase } from './supabase.js';
 
+// Peta memori untuk elak ralat JOIN Supabase
+let globalProjMap = {};
+let globalEmpMap = {};
+
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -12,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const now = new Date();
             const m = String(now.getMonth() + 1).padStart(2, '0');
             rm.value = now.getFullYear() + '-' + m;
-            
+
             autoFillCustomWeeks(now.getFullYear(), now.getMonth() + 1);
 
             rm.addEventListener('change', (e) => {
@@ -24,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        bindAllButtons(); 
+        bindAllButtons();
 
         const previewPanel = document.querySelector('.preview-panel');
         if (previewPanel) previewPanel.style.display = 'none';
@@ -37,8 +41,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 function autoFillCustomWeeks(year, month) {
     const safeDateStr = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     let firstDay = new Date(year, month - 1, 1);
-    let dayOfWeek = firstDay.getDay(); 
-    
+    let dayOfWeek = firstDay.getDay();
+
     let firstMonday;
     if (dayOfWeek === 1 || dayOfWeek === 2 || dayOfWeek === 3) {
         let diff = dayOfWeek === 1 ? 0 : (dayOfWeek === 2 ? -1 : -2);
@@ -52,14 +56,14 @@ function autoFillCustomWeeks(year, month) {
     for (let i = 1; i <= 5; i++) {
         let startInput = document.getElementById('w' + i + '_s');
         let endInput = document.getElementById('w' + i + '_e');
-        
+
         let wednesday = new Date(currentMon);
         wednesday.setDate(wednesday.getDate() + 2);
-        
+
         if (wednesday.getMonth() === (month - 1) || i <= 4) {
             let endSun = new Date(currentMon);
             endSun.setDate(endSun.getDate() + 6);
-            
+
             if (startInput) startInput.value = safeDateStr(currentMon);
             if (endInput) endInput.value = safeDateStr(endSun);
         } else {
@@ -78,11 +82,11 @@ function bindAllButtons() {
         card.addEventListener('click', function() {
             reportCards.forEach(c => c.classList.remove('active'));
             this.classList.add('active');
-            
+
             const typeMap = { 'project': 'PROJECT_MANHOUR', 'historical': 'HISTORICAL', 'budget': 'BUDGET', 'team': 'TEAM', 'client': 'CLIENT', 'custom': 'CUSTOM' };
             const clickedType = this.getAttribute('data-report-type');
             if (reportTypeSelect && typeMap[clickedType]) reportTypeSelect.value = typeMap[clickedType];
-            
+
             const previewPanel = document.querySelector('.preview-panel');
             if (previewPanel) previewPanel.style.display = 'none';
         });
@@ -107,13 +111,13 @@ function bindAllButtons() {
 }
 
 async function populateFilters() {
-    // Betulkan filter projek untuk gunakan nama projek dan bukannya ID
     try {
-        const { data: projs } = await supabase.from('projects').select('project_name').order('project_name');
+        const { data: projs } = await supabase.from('projects').select('id, project_name').order('project_name');
         const projSelect = document.getElementById('filterProject');
-        if (projs && projSelect) {
+        if (projs) {
             projs.forEach(p => {
-                projSelect.innerHTML += '<option value="' + p.project_name + '">' + p.project_name + '</option>';
+                globalProjMap[p.id] = p.project_name;
+                if(projSelect) projSelect.innerHTML += '<option value="' + p.id + '">' + p.project_name + '</option>';
             });
         }
     } catch (e) {}
@@ -121,10 +125,11 @@ async function populateFilters() {
     try {
         const { data: emps } = await supabase.from('employees').select('id, name, email').order('name');
         const userSelect = document.getElementById('filterUser');
-        if (emps && userSelect) {
+        if (emps) {
             emps.forEach(e => {
+                globalEmpMap[e.id] = e.email;
                 const displayName = e.name || e.email.split('@')[0];
-                userSelect.innerHTML += '<option value="' + e.id + '">' + displayName + '</option>';
+                if(userSelect) userSelect.innerHTML += '<option value="' + e.id + '">' + displayName + '</option>';
             });
         }
     } catch (e) {}
@@ -136,18 +141,18 @@ function getCustomWeekDates() {
         const mStr = dt.toLocaleString('en-US', {month:'short'});
         return String(dt.getDate()).padStart(2, '0') + ' - ' + mStr;
     };
-    
+
     for (let i = 1; i <= 5; i++) {
         const startInput = document.getElementById('w' + i + '_s');
         const endInput = document.getElementById('w' + i + '_e');
-        
+
         if (startInput && endInput && startInput.value && endInput.value) {
             let start = new Date(startInput.value);
             start.setHours(0, 0, 0, 0);
-            
+
             let end = new Date(endInput.value);
             end.setHours(23, 59, 59, 999);
-            
+
             weeks.push({ start: start, end: end, text: formatFull(start) + ' - ' + formatFull(end) });
         } else {
             weeks.push({ start: null, end: null, text: 'N/A' });
@@ -159,7 +164,7 @@ function getCustomWeekDates() {
 async function generateReport() {
     const monthInput = document.getElementById('reportMonth').value;
     if (!monthInput) return;
-    
+
     const reportType = document.getElementById('reportType').value;
     const selectEl = document.getElementById('reportType');
     const subtitle = document.getElementById('previewSubtitle');
@@ -183,7 +188,7 @@ async function generateReport() {
 
     const weeks = getCustomWeekDates();
     const validWeeks = weeks.filter(w => w.start !== null);
-    
+
     if(validWeeks.length === 0) {
         alert("Please set the Start and End dates for at least Week 1 in the Custom Week Setup section.");
         return;
@@ -196,7 +201,7 @@ async function generateReport() {
     const month = parseInt(monthInput.split('-')[1]);
     const selectedProject = document.getElementById('filterProject').value;
     const selectedUser = document.getElementById('filterUser').value;
-    
+
     const monthName = new Date(year, month - 1).toLocaleString('en-US', { month: 'long' }).toUpperCase();
     const badge = document.getElementById('badgeMonthYear');
     if (badge) badge.innerHTML = monthName + '<br>' + year;
@@ -218,20 +223,24 @@ async function generateReport() {
     const step = 999;
     let hasMore = true;
 
-    // SKRIP MAGIK YANG TELAH DIBETULKAN
+    // SISTEM TARIK DATA PALING KEBAL (Tanpa Join)
     while (hasMore) {
         let query = supabase
             .from('time_entries')
-            .select('duration_hours, work_date, start_time, employee_id, project_name, task_name, employees(email)')
+            .select('duration_seconds, work_date, start_time, employee_id, project_id, task_name')
             .gte('work_date', startStr)
             .lte('work_date', endStr)
             .range(from, from + step);
 
-        if (selectedProject !== 'ALL') query = query.eq('project_name', selectedProject);
+        if (selectedProject !== 'ALL') query = query.eq('project_id', selectedProject);
         if (selectedUser !== 'ALL') query = query.eq('employee_id', selectedUser);
 
         const { data, error } = await query;
-        if (error) { console.error('Fetch Error:', error); break; }
+        if (error) { 
+            console.error('Fetch Error:', error); 
+            alert("Ralat Pangkalan Data: " + error.message);
+            break; 
+        }
 
         if (data && data.length > 0) {
             allEntries = allEntries.concat(data);
@@ -268,16 +277,14 @@ function generateProjectReport(allEntries, weeks) {
 
     if (allEntries.length > 0) {
         allEntries.forEach(item => {
-            // Gunakan project_name dari jadual terus
-            const pName = (item.project_name || 'General Project').toUpperCase();
+            const pName = (globalProjMap[item.project_id] || 'General Project').toUpperCase();
             if (!projectGroups[pName]) projectGroups[pName] = { w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, total: 0 };
             
             let dObj = new Date(item.work_date || item.start_time);
             dObj.setHours(0,0,0,0);
 
             const itemTime = dObj.getTime();
-            // Ambil kira duration_hours
-            const hrs = parseFloat(item.duration_hours) || 0;
+            const hrs = (item.duration_seconds || 0) / 3600;
             
             if (weeks[0].start && itemTime >= w1S && itemTime <= w1E) projectGroups[pName].w1 += hrs;
             else if (weeks[1].start && itemTime >= w2S && itemTime <= w2E) projectGroups[pName].w2 += hrs;
@@ -331,10 +338,10 @@ function generateCustomReport(allEntries) {
 
     if (allEntries.length > 0) {
         allEntries.forEach(item => {
-            const pName = (item.project_name || 'General Project').toUpperCase();
+            const pName = (globalProjMap[item.project_id] || 'General Project').toUpperCase();
             const task = (item.task_name || 'No Task').toUpperCase();
-            const email = item.employees ? item.employees.email : 'Unknown';
-            const hrs = parseFloat(item.duration_hours) || 0;
+            const email = globalEmpMap[item.employee_id] || 'Unknown';
+            const hrs = (item.duration_seconds || 0) / 3600;
             
             const key = pName + '|' + task + '|' + email;
             
