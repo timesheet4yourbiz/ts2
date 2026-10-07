@@ -13,10 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const m = String(now.getMonth() + 1).padStart(2, '0');
             rm.value = now.getFullYear() + '-' + m;
             
-            // Auto-fill minggu sewaktu page di-load
             autoFillCustomWeeks(now.getFullYear(), now.getMonth() + 1);
 
-            // Auto-fill semula setiap kali Admin tukar bulan
             rm.addEventListener('change', (e) => {
                 const val = e.target.value;
                 if (val) {
@@ -36,7 +34,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// ENJIN PINTAR AUTO-FILL KOTAK TARIKH (LOGIK ADMIN)
 function autoFillCustomWeeks(year, month) {
     const safeDateStr = (d) => {
         return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -98,7 +95,7 @@ function bindAllButtons() {
 
     if (reportTypeSelect) {
         reportTypeSelect.addEventListener('change', function() {
-            const reverseMap = { 'PROJECT_MANHOUR': 'project', 'HISTORICAL': 'historical', 'BUDGET': 'budget', 'TEAM': 'TEAM', 'CLIENT': 'client', 'CUSTOM': 'custom' };
+            const reverseMap = { 'PROJECT_MANHOUR': 'project', 'HISTORICAL': 'historical', 'BUDGET': 'budget', 'TEAM': 'team', 'CLIENT': 'client', 'CUSTOM': 'custom' };
             const mappedType = reverseMap[this.value];
             reportCards.forEach(c => {
                 c.classList.remove('active');
@@ -265,10 +262,10 @@ async function generateReport() {
     let hasMore = true;
 
     while (hasMore) {
-        // PERUBAHAN 1: Tambah 'task_name' di dalam query select ini
+        // PERUBAHAN: Gunakan total_minutes dan ambil relasi dari tabel tasks
         let query = supabase
             .from('time_entries')
-            .select('duration_seconds, work_date, start_time, employee_id, project_id, task_name, project:projects!fk_time_entries_project(project_name)')
+            .select('total_minutes, work_date, start_time, employee_id, project_id, task_id, tasks(*), project:projects!fk_time_entries_project(project_name)')
             .eq('status', 'STOPPED')
             .gte('work_date', startStr)
             .lte('work_date', endStr)
@@ -299,11 +296,17 @@ async function generateReport() {
 
     if (allEntries.length > 0) {
         allEntries.forEach(item => {
-            // PERUBAHAN 2: Kumpul data mengikut Project dan Task
             const pName = (item.project ? item.project.project_name : 'General Project').toUpperCase();
-            const tName = (item.task_name || 'NO TASK SPECIFIED').toUpperCase();
             
-            // Kunci unik untuk memisahkan setiap task di bawah projek yang sama
+            // Logika baru mencari nama task di dalam tabel yang direlasikan
+            let tName = 'NO TASK SPECIFIED';
+            if (item.tasks) {
+                tName = item.tasks.task_name || item.tasks.name || item.tasks.title || ('TASK ID ' + item.task_id);
+            } else if (item.task_id) {
+                tName = 'TASK ID ' + item.task_id;
+            }
+            tName = tName.toUpperCase();
+            
             const groupKey = pName + '|' + tName;
 
             if (!projectGroups[groupKey]) {
@@ -324,7 +327,9 @@ async function generateReport() {
             dObj.setHours(0,0,0,0);
 
             const itemTime = dObj.getTime();
-            const hrs = (item.duration_seconds || 0) / 3600;
+            
+            // PERUBAHAN: Gunakan total_minutes dibagi 60 untuk mendapatkan jumlah jam
+            const hrs = (item.total_minutes || 0) / 60;
             
             if (weeks[0].start && itemTime >= w1S && itemTime <= w1E) projectGroups[groupKey].w1 += hrs;
             else if (weeks[1].start && itemTime >= w2S && itemTime <= w2E) projectGroups[groupKey].w2 += hrs;
@@ -353,7 +358,6 @@ function renderTable(projectGroups, weeks) {
     if (Object.keys(projectGroups).length === 0) {
         tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No man-hour records found for this period.</td></tr>';
     } else {
-        // Susun mengikut abjad (Projek dahulu, kemudian Task)
         const sortedKeys = Object.keys(projectGroups).sort();
         
         sortedKeys.forEach(key => {
@@ -361,7 +365,6 @@ function renderTable(projectGroups, weeks) {
             sumWeekly[0] += row.w1; sumWeekly[1] += row.w2; sumWeekly[2] += row.w3;
             sumWeekly[3] += row.w4; sumWeekly[4] += row.w5; grandTotal += row.total;
             
-            // PERUBAHAN 3: Cantikkan paparan. Nama Task akan muncul sedikit ke bawah dengan anak panah
             tbody.innerHTML += '<tr>' +
                 '<td class="index">' + idx++ + '</td>' +
                 '<td class="project-name" style="text-align:left; line-height:1.4;">' + 
