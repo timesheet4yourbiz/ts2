@@ -11,11 +11,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+
+        
         body { background-color: #f4f7fb; -webkit-font-smoothing: antialiased; min-width: 1280px !important; overflow-x: auto !important; font-family: 'Inter', system-ui, -apple-system, sans-serif; margin: 0; }
         
         /* Topbar Styles Maintained from original */
         .topbar { height: 60px; background: rgba(255,255,255,.97); border-bottom: 1px solid #e4edf7; display: flex; align-items: center; padding: 0 24px; gap: 22px; position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 12px rgba(7,26,59,.04) !important; }
+        .brand { min-width: 195px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #071a3b; }
+        .brand-mark { width: 34px; height: 38px; position: relative; flex: 0 0 auto; display: grid; place-items: center; }
+        .brand-mark::before, .brand-mark::after { content: ""; position: absolute; width: 19px; height: 19px; transform: rotate(30deg) skew(-4deg); border-radius: 4px; }
+        .brand-mark::before { background: linear-gradient(135deg, #0d6efd 0 52%, #f59e0b 52% 100%); top: 3px; left: 3px; }
+        .brand-mark::after { background: linear-gradient(135deg, #0b2d60 0 52%, #ef4444 52% 100%); bottom: 3px; right: 1px; }
+        .brand-copy strong { display: block; font-size: 19px; line-height: 18px; letter-spacing: -.8px; font-weight: 800; }
+        .brand-copy strong span { color: #0d6efd; }
+        .brand-copy small { display: block; margin-top: 3px; font-size: 9px; font-weight: 800; letter-spacing: .35px; color: #34527d; }
         
+        .nav { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 0; }
+        .nav-link { height: 40px; padding: 0 11px; border-radius: 8px; display: inline-flex; align-items: center; gap: 7px; color: #122b54; text-decoration: none; font-size: 12px; font-weight: 600; white-space: nowrap; transition: .2s ease; }
+        .nav-link:hover { background: #f0f6ff; }
+        .nav-link.active { color: white; background: linear-gradient(135deg, #0d6efd, #187bff); box-shadow: 0 6px 14px rgba(13,110,253,.22); }
+        
+        .profile { height: 40px; display: flex; align-items: center; gap: 9px; padding-left: 3px; cursor: pointer; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; color: white; background: #1677ff; font-weight: 700; font-size: 15px; }
         .main-card {
             background: #ffffff;
             border-radius: 16px;
