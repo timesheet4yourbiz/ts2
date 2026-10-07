@@ -1,9 +1,5 @@
 import { supabase } from './supabase.js';
 
-// Peta memori untuk elak ralat JOIN Supabase
-let globalProjMap = {};
-let globalEmpMap = {};
-
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -16,9 +12,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const now = new Date();
             const m = String(now.getMonth() + 1).padStart(2, '0');
             rm.value = now.getFullYear() + '-' + m;
-
+            
+            // Auto-fill minggu sewaktu page di-load
             autoFillCustomWeeks(now.getFullYear(), now.getMonth() + 1);
 
+            // Auto-fill semula setiap kali Admin tukar bulan
             rm.addEventListener('change', (e) => {
                 const val = e.target.value;
                 if (val) {
@@ -28,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        bindAllButtons();
+        bindAllButtons(); 
 
         const previewPanel = document.querySelector('.preview-panel');
         if (previewPanel) previewPanel.style.display = 'none';
@@ -38,16 +36,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+// ENJIN PINTAR AUTO-FILL KOTAK TARIKH (LOGIK ADMIN)
 function autoFillCustomWeeks(year, month) {
-    const safeDateStr = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const safeDateStr = (d) => {
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    };
+    
     let firstDay = new Date(year, month - 1, 1);
-    let dayOfWeek = firstDay.getDay();
-
+    let dayOfWeek = firstDay.getDay(); 
+    
     let firstMonday;
+    // Jika 1hb jatuh pada Isnin, Selasa, atau Rabu (Majoriti hari bekerja di bulan ini)
     if (dayOfWeek === 1 || dayOfWeek === 2 || dayOfWeek === 3) {
         let diff = dayOfWeek === 1 ? 0 : (dayOfWeek === 2 ? -1 : -2);
         firstMonday = new Date(year, month - 1, 1 + diff);
-    } else {
+    } 
+    // Jika 1hb jatuh pada Khamis, Jumaat, Sabtu, atau Ahad (Majoriti hari bekerja di bulan depan)
+    else {
         let diff = dayOfWeek === 0 ? 1 : (8 - dayOfWeek);
         firstMonday = new Date(year, month - 1, 1 + diff);
     }
@@ -56,21 +61,24 @@ function autoFillCustomWeeks(year, month) {
     for (let i = 1; i <= 5; i++) {
         let startInput = document.getElementById('w' + i + '_s');
         let endInput = document.getElementById('w' + i + '_e');
-
+        
+        // Periksa adakah minggu ini tergolong dalam bulan semasa?
         let wednesday = new Date(currentMon);
         wednesday.setDate(wednesday.getDate() + 2);
-
+        
+        // Kita paksa at least 4 minggu. Minggu ke-5 hanya keluar kalau Rabu jatuh dalam bulan tersebut
         if (wednesday.getMonth() === (month - 1) || i <= 4) {
             let endSun = new Date(currentMon);
             endSun.setDate(endSun.getDate() + 6);
-
+            
             if (startInput) startInput.value = safeDateStr(currentMon);
             if (endInput) endInput.value = safeDateStr(endSun);
         } else {
             if (startInput) startInput.value = '';
             if (endInput) endInput.value = '';
         }
-        currentMon.setDate(currentMon.getDate() + 7);
+        
+        currentMon.setDate(currentMon.getDate() + 7); // Pergi ke Isnin seterusnya
     }
 }
 
@@ -82,11 +90,11 @@ function bindAllButtons() {
         card.addEventListener('click', function() {
             reportCards.forEach(c => c.classList.remove('active'));
             this.classList.add('active');
-
+            
             const typeMap = { 'project': 'PROJECT_MANHOUR', 'historical': 'HISTORICAL', 'budget': 'BUDGET', 'team': 'TEAM', 'client': 'CLIENT', 'custom': 'CUSTOM' };
             const clickedType = this.getAttribute('data-report-type');
             if (reportTypeSelect && typeMap[clickedType]) reportTypeSelect.value = typeMap[clickedType];
-
+            
             const previewPanel = document.querySelector('.preview-panel');
             if (previewPanel) previewPanel.style.display = 'none';
         });
@@ -108,16 +116,49 @@ function bindAllButtons() {
     document.getElementById('btnGenerate')?.addEventListener('click', generateReport);
     document.getElementById('btnPrint')?.addEventListener('click', () => window.print());
     document.getElementById('btnExcel')?.addEventListener('click', exportCSV);
+    
+    document.getElementById('btnPdf')?.addEventListener('click', () => {
+        alert('PDF Export: Please select "Save as PDF" in the print dialog.');
+        window.print(); 
+    });
+    
+    document.getElementById('btnSaveTemplate')?.addEventListener('click', () => {
+        alert('Report template saved successfully!');
+    });
+
+    document.getElementById('btnLoadSavedFilter')?.addEventListener('click', () => {
+        alert('Loading saved filters...');
+    });
+
+    document.getElementById('btnReset')?.addEventListener('click', () => {
+        if(reportTypeSelect) reportTypeSelect.value = 'PROJECT_MANHOUR';
+        document.getElementById('reportPeriod').value = 'MONTHLY_WEEK';
+        document.getElementById('filterProject').value = 'ALL';
+        document.getElementById('filterClient').value = 'ALL';
+        document.getElementById('filterUser').value = 'ALL';
+        document.getElementById('filterStatus').value = 'ALL';
+        
+        const now = new Date();
+        document.getElementById('reportMonth').value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+
+        autoFillCustomWeeks(now.getFullYear(), now.getMonth() + 1); // Reset kepada default auto-fill
+
+        reportCards.forEach(c => c.classList.remove('active'));
+        const firstCard = document.querySelector('.report-type[data-report-type="project"]');
+        if(firstCard) firstCard.classList.add('active');
+
+        const previewPanel = document.querySelector('.preview-panel');
+        if (previewPanel) previewPanel.style.display = 'none';
+    });
 }
 
 async function populateFilters() {
     try {
         const { data: projs } = await supabase.from('projects').select('id, project_name').order('project_name');
         const projSelect = document.getElementById('filterProject');
-        if (projs) {
+        if (projs && projSelect) {
             projs.forEach(p => {
-                globalProjMap[p.id] = p.project_name;
-                if(projSelect) projSelect.innerHTML += '<option value="' + p.id + '">' + p.project_name + '</option>';
+                projSelect.innerHTML += '<option value="' + p.id + '">' + p.project_name + '</option>';
             });
         }
     } catch (e) {}
@@ -125,11 +166,10 @@ async function populateFilters() {
     try {
         const { data: emps } = await supabase.from('employees').select('id, name, email').order('name');
         const userSelect = document.getElementById('filterUser');
-        if (emps) {
+        if (emps && userSelect) {
             emps.forEach(e => {
-                globalEmpMap[e.id] = e.email;
                 const displayName = e.name || e.email.split('@')[0];
-                if(userSelect) userSelect.innerHTML += '<option value="' + e.id + '">' + displayName + '</option>';
+                userSelect.innerHTML += '<option value="' + e.id + '">' + displayName + '</option>';
             });
         }
     } catch (e) {}
@@ -141,19 +181,23 @@ function getCustomWeekDates() {
         const mStr = dt.toLocaleString('en-US', {month:'short'});
         return String(dt.getDate()).padStart(2, '0') + ' - ' + mStr;
     };
-
+    
     for (let i = 1; i <= 5; i++) {
         const startInput = document.getElementById('w' + i + '_s');
         const endInput = document.getElementById('w' + i + '_e');
-
+        
         if (startInput && endInput && startInput.value && endInput.value) {
             let start = new Date(startInput.value);
             start.setHours(0, 0, 0, 0);
-
+            
             let end = new Date(endInput.value);
             end.setHours(23, 59, 59, 999);
-
-            weeks.push({ start: start, end: end, text: formatFull(start) + ' - ' + formatFull(end) });
+            
+            weeks.push({
+                start: start,
+                end: end,
+                text: formatFull(start) + ' - ' + formatFull(end)
+            });
         } else {
             weeks.push({ start: null, end: null, text: 'N/A' });
         }
@@ -164,47 +208,48 @@ function getCustomWeekDates() {
 async function generateReport() {
     const monthInput = document.getElementById('reportMonth').value;
     if (!monthInput) return;
-
+    
     const reportType = document.getElementById('reportType').value;
     const selectEl = document.getElementById('reportType');
     const subtitle = document.getElementById('previewSubtitle');
     if (subtitle && selectEl) subtitle.textContent = selectEl.options[selectEl.selectedIndex].text + ' - Generated';
 
-    const btnGen = document.getElementById('btnGenerate');
-    const previewPanel = document.querySelector('.preview-panel');
-    const tableProject = document.getElementById('exportTableProject');
-    const tableCustom = document.getElementById('exportTableCustom');
-
-    tableProject.style.display = 'none';
-    tableCustom.style.display = 'none';
-
-    if (reportType !== 'PROJECT_MANHOUR' && reportType !== 'CUSTOM') {
+    if (reportType !== 'PROJECT_MANHOUR') {
+        const previewPanel = document.querySelector('.preview-panel');
         if (previewPanel) previewPanel.style.display = 'block';
-        tableProject.style.display = 'table';
         const tbody = document.getElementById('tableBodyProjects');
         if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="empty-state" style="padding:50px !important;"><strong style="font-size:14px; color:#1e293b;">Engine under development</strong><br>The engine for this specific report type will be available in the next phase.</td></tr>';
         return;
     }
+    
+    const btnGen = document.getElementById('btnGenerate');
 
     const weeks = getCustomWeekDates();
     const validWeeks = weeks.filter(w => w.start !== null);
-
+    
     if(validWeeks.length === 0) {
         alert("Please set the Start and End dates for at least Week 1 in the Custom Week Setup section.");
         return;
     }
 
     if (btnGen) { btnGen.disabled = true; btnGen.innerHTML = '⏳ Loading...'; }
+    
+    const previewPanel = document.querySelector('.preview-panel');
     if (previewPanel) previewPanel.style.display = 'block';
 
     const year = parseInt(monthInput.split('-')[0]);
     const month = parseInt(monthInput.split('-')[1]);
     const selectedProject = document.getElementById('filterProject').value;
     const selectedUser = document.getElementById('filterUser').value;
-
+    
     const monthName = new Date(year, month - 1).toLocaleString('en-US', { month: 'long' }).toUpperCase();
     const badge = document.getElementById('badgeMonthYear');
     if (badge) badge.innerHTML = monthName + '<br>' + year;
+
+    weeks.forEach((w, i) => {
+        const el = document.getElementById('dtW' + (i+1));
+        if (el) el.textContent = w.text || '-';
+    });
 
     let minTime = validWeeks[0].start.getTime();
     let maxTime = validWeeks[0].end.getTime();
@@ -223,11 +268,11 @@ async function generateReport() {
     const step = 999;
     let hasMore = true;
 
-    // SISTEM TARIK DATA PALING KEBAL (Tanpa Join)
     while (hasMore) {
         let query = supabase
             .from('time_entries')
-            .select('duration_seconds, work_date, start_time, employee_id, project_id, task_name')
+            .select('duration_seconds, work_date, start_time, employee_id, project_id, project:projects!fk_time_entries_project(project_name)')
+            .eq('status', 'STOPPED')
             .gte('work_date', startStr)
             .lte('work_date', endStr)
             .range(from, from + step);
@@ -236,11 +281,7 @@ async function generateReport() {
         if (selectedUser !== 'ALL') query = query.eq('employee_id', selectedUser);
 
         const { data, error } = await query;
-        if (error) { 
-            console.error('Fetch Error:', error); 
-            alert("Ralat Pangkalan Data: " + error.message);
-            break; 
-        }
+        if (error) { console.error('Fetch Error:', error); break; }
 
         if (data && data.length > 0) {
             allEntries = allEntries.concat(data);
@@ -251,24 +292,8 @@ async function generateReport() {
         }
     }
 
-    if (reportType === 'PROJECT_MANHOUR') {
-        tableProject.style.display = 'table';
-        generateProjectReport(allEntries, weeks);
-    } else if (reportType === 'CUSTOM') {
-        tableCustom.style.display = 'table';
-        generateCustomReport(allEntries);
-    }
-
-    if (btnGen) { btnGen.disabled = false; btnGen.innerHTML = '▽ Generate Report'; }
-}
-
-function generateProjectReport(allEntries, weeks) {
-    weeks.forEach((w, i) => {
-        const el = document.getElementById('dtW' + (i+1));
-        if (el) el.textContent = w.text || '-';
-    });
-
     let projectGroups = {};
+    
     const w1S = weeks[0].start ? weeks[0].start.getTime() : 0; const w1E = weeks[0].end ? weeks[0].end.getTime() : 0;
     const w2S = weeks[1].start ? weeks[1].start.getTime() : 0; const w2E = weeks[1].end ? weeks[1].end.getTime() : 0;
     const w3S = weeks[2].start ? weeks[2].start.getTime() : 0; const w3E = weeks[2].end ? weeks[2].end.getTime() : 0;
@@ -277,10 +302,16 @@ function generateProjectReport(allEntries, weeks) {
 
     if (allEntries.length > 0) {
         allEntries.forEach(item => {
-            const pName = (globalProjMap[item.project_id] || 'General Project').toUpperCase();
+            const pName = (item.project ? item.project.project_name : 'General Project').toUpperCase();
             if (!projectGroups[pName]) projectGroups[pName] = { w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, total: 0 };
             
-            let dObj = new Date(item.work_date || item.start_time);
+            let dObj;
+            if (item.work_date) {
+                const pts = item.work_date.split('-');
+                dObj = new Date(parseInt(pts[0]), parseInt(pts[1])-1, parseInt(pts[2]));
+            } else {
+                dObj = new Date(item.start_time);
+            }
             dObj.setHours(0,0,0,0);
 
             const itemTime = dObj.getTime();
@@ -296,6 +327,12 @@ function generateProjectReport(allEntries, weeks) {
         });
     }
 
+    renderTable(projectGroups, weeks);
+
+    if (btnGen) { btnGen.disabled = false; btnGen.innerHTML = '▽  Generate Report'; }
+}
+
+function renderTable(projectGroups, weeks) {
     const tbody = document.getElementById('tableBodyProjects');
     if (!tbody) return;
     tbody.innerHTML = '';
@@ -305,7 +342,7 @@ function generateProjectReport(allEntries, weeks) {
     let idx = 1;
 
     if (Object.keys(projectGroups).length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No man-hour records found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No man-hour records found for this period.</td></tr>';
     } else {
         Object.keys(projectGroups).sort().forEach(pName => {
             const row = projectGroups[pName];
@@ -327,65 +364,18 @@ function generateProjectReport(allEntries, weeks) {
 
     for (let i = 0; i < 5; i++) {
         const el = document.getElementById('totW' + (i+1));
-        if (el) el.textContent = (weeks[i].text === 'N/A') ? '-' : sumWeekly[i].toFixed(1);
+        if (el) {
+            if(weeks[i].text === 'N/A') el.textContent = '-';
+            else el.textContent = sumWeekly[i].toFixed(1);
+        }
     }
     const tg = document.getElementById('totGrand');
     if (tg) tg.textContent = grandTotal.toFixed(1);
 }
 
-function generateCustomReport(allEntries) {
-    let customGroups = {};
-
-    if (allEntries.length > 0) {
-        allEntries.forEach(item => {
-            const pName = (globalProjMap[item.project_id] || 'General Project').toUpperCase();
-            const task = (item.task_name || 'No Task').toUpperCase();
-            const email = globalEmpMap[item.employee_id] || 'Unknown';
-            const hrs = (item.duration_seconds || 0) / 3600;
-            
-            const key = pName + '|' + task + '|' + email;
-            
-            if (!customGroups[key]) {
-                customGroups[key] = { project: pName, task: task, email: email, total: 0 };
-            }
-            customGroups[key].total += hrs;
-        });
-    }
-
-    const tbody = document.getElementById('tableBodyCustom');
-    if (!tbody) return;
-    tbody.innerHTML = '';
-    
-    let grandTotal = 0;
-    let idx = 1;
-
-    const rows = Object.values(customGroups).sort((a, b) => a.project.localeCompare(b.project));
-
-    if (rows.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No man-hour records found.</td></tr>';
-    } else {
-        rows.forEach(row => {
-            grandTotal += row.total;
-            tbody.innerHTML += '<tr>' +
-                '<td class="index">' + idx++ + '</td>' +
-                '<td class="project-name">' + row.project + '</td>' +
-                '<td style="text-align:left;">' + row.task + '</td>' +
-                '<td style="text-align:left;">' + row.email + '</td>' +
-                '<td class="total-col">' + row.total.toFixed(1) + '</td>' +
-                '</tr>';
-        });
-    }
-
-    const tg = document.getElementById('totCustomGrand');
-    if (tg) tg.textContent = grandTotal.toFixed(1);
-}
-
 function exportCSV() {
     let csv = [];
-    const reportType = document.getElementById('reportType').value;
-    const activeTable = reportType === 'CUSTOM' ? document.getElementById('exportTableCustom') : document.getElementById('exportTableProject');
-    
-    const rows = activeTable.querySelectorAll("tr");
+    const rows = document.querySelectorAll("table#exportTable tr");
     for (let i = 0; i < rows.length; i++) {
         let row = [], cols = rows[i].querySelectorAll("td, th");
         for (let j = 0; j < cols.length; j++) {
@@ -396,7 +386,7 @@ function exportCSV() {
     }
     const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
     const downloadLink = document.createElement("a");
-    downloadLink.download = (reportType === 'CUSTOM' ? "Custom_Report.csv" : "Project_ManHour_Report.csv");
+    downloadLink.download = "Project_ManHour_Report.csv";
     downloadLink.href = window.URL.createObjectURL(csvFile);
     downloadLink.style.display = "none";
     document.body.appendChild(downloadLink);
