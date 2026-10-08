@@ -99,3 +99,59 @@ if (pwdForm) {
         }
     });
 }
+
+
+
+// 1. Klik butang kamera akan buka tetingkap pilih fail
+document.getElementById('cameraButton').addEventListener('click', () => {
+    document.getElementById('avatarInput').click();
+});
+
+// 2. Apabila user pilih gambar
+document.getElementById('avatarInput').addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Dapatkan ID user semasa (pastikan session ada)
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session.user.id;
+
+    // Bina nama fail unik
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${userId}-${Math.random()}.${fileExt}`;
+
+    try {
+        // Tunjuk status loading jika perlu
+        alert("Sedang memuat naik...");
+
+        // A) Upload fail ke Supabase Storage (Bucket: 'avatars')
+        const { error: uploadError } = await supabase.storage
+            .from('avatars')
+            .upload(fileName, file, { upsert: true });
+
+        if (uploadError) throw uploadError;
+
+        // B) Dapatkan Public URL gambar yang baru diupload
+        const { data: publicUrlData } = supabase.storage
+            .from('avatars')
+            .getPublicUrl(fileName);
+            
+        const avatarUrl = publicUrlData.publicUrl;
+
+        // C) Simpan URL gambar ini ke dalam table database bos (contoh table: 'employees' atau 'users')
+        const { error: updateError } = await supabase
+            .from('employees') // Ganti dengan nama jadual sebenar bos
+            .update({ avatar_url: avatarUrl }) // Pastikan ada lajur avatar_url dalam database
+            .eq('id', userId);
+
+        if (updateError) throw updateError;
+
+        // D) Tukar gambar secara live di paparan skrin
+        document.getElementById('profileImage').src = avatarUrl;
+        alert("Avatar berjaya dikemaskini!");
+
+    } catch (error) {
+        console.error("Ralat muat naik:", error);
+        alert("Gagal memuat naik gambar.");
+    }
+});
