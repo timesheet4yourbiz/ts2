@@ -176,7 +176,7 @@ const togglePopup = async (e) => {
     popup.style.display = 'block';
     popup.innerHTML = '<div style="padding:15px; color:#64748b; font-size:0.85rem; text-align:center;">Loading list...</div>';
     
-    const { data: projs } = await supabase.from('projects').select('*').order('project_name');
+    const { data: projs } = await supabase.from('projects').select('*').order('project_name', { ascending: true });
     
     let pLen = projs ? projs.length : 0;
     let pList = '<div style="padding: 10px; border-bottom: 1px solid #e2e8f0;">' +
