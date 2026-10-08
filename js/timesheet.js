@@ -342,8 +342,12 @@ const loadData = async () => {
         }
     });
 
-    let html = ''; let idx = 1; let chartLabels = []; let chartData = [];
-    Object.values(matrix).forEach(row => {
+let html = ''; let idx = 1; let chartLabels = []; let chartData = [];
+    
+    // Susun data dalam matriks mengikut abjad (A-Z)
+    const sortedRows = Object.values(matrix).sort((a, b) => a.name.localeCompare(b.name));
+    
+    sortedRows.forEach(row => {
         let rTotal = 0;
         
         let tagOpts = '<option value="">- Select Tag -</option>';
