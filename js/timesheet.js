@@ -13,23 +13,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (sessionError || !session) return window.location.href = '../pages/login.html';
 
         // --- MAINTENANCE MODE START ---
-        const adminEmails = ['timesheet4yourbiz@gmail.com']; // Tambah email bos yang lain jika ada
+    //    const adminEmails = ['timesheet4yourbiz@gmail.com']; // Tambah email bos yang lain jika ada
         
-        if (!adminEmails.includes(session.user.email)) {
-            document.body.innerHTML = `
-                <div style="display:flex; height:100vh; width:100%; justify-content:center; align-items:center; background-color:#f8fafc; font-family: 'Inter', sans-serif; text-align:center; padding: 20px;">
-                    <div>
-                        <svg style="width:64px; height:64px; color:#f59e0b; margin: 0 auto 20px auto;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                        <h1 style="color:#0f172a; font-size:1.8rem; font-weight:800; margin-bottom:12px;">System Under Maintenance</h1>
-                        <p style="color:#64748b; font-size:1rem; max-width: 450px; margin: 0 auto 20px auto; line-height: 1.6;">
-                            We are currently upgrading our database to serve you better. The timesheet system is temporarily unavailable for updates. 
-                            <br><br>Please check back shortly. We apologize for any inconvenience.
-                        </p>
-                    </div>
-                </div>
-            `;
-            return; // Ini penting untuk stop sistem dari load jadual timesheet
-        }
+   //     if (!adminEmails.includes(session.user.email)) {
+   //         document.body.innerHTML = `
+    //            <div style="display:flex; height:100vh; width:100%; justify-content:center; align-items:center; background-color:#f8fafc; font-family: 'Inter', sans-serif; text-align:center; padding: 20px;">
+     //               <div>
+       //                 <svg style="width:64px; height:64px; color:#f59e0b; margin: 0 auto 20px auto;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+           //             <h1 style="color:#0f172a; font-size:1.8rem; font-weight:800; margin-bottom:12px;">System Under Maintenance</h1>
+          //              <p style="color:#64748b; font-size:1rem; max-width: 450px; margin: 0 auto 20px auto; line-height: 1.6;">
+              //              We are currently upgrading our database to serve you better. The timesheet system is temporarily unavailable for updates. 
+             //               <br><br>Please check back shortly. We apologize for any inconvenience.
+           //             </p>
+          //          </div>
+          //      </div>
+       //     `;
+  //          return; // Ini penting untuk stop sistem dari load jadual timesheet
+//        }
         // --- MAINTENANCE MODE END ---
         
         const avatarInitial = document.getElementById('avatarInitial');
