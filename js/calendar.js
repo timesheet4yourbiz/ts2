@@ -372,15 +372,14 @@ function renderGridAndEvents() {
             }
         });
 
-        gridArea.querySelectorAll('.cal-day-col').forEach(col => {
+       gridArea.querySelectorAll('.cal-day-col').forEach(col => {
             col.addEventListener('click', (e) => {
                 if(e.target === col) {
                     const rect = col.getBoundingClientRect();
                     const clickY = e.clientY - rect.top;
                     const clickHrs = START_HOUR + (clickY / ROW_HEIGHT);
-                    const clickH = Math.floor(clickHrs);
-                    const clickM = Math.floor((clickHrs % 1) * 60);
-                    
+                    const clickH = Math.floor(clickHrs);                    
+                    const clickM = 0;                     
                     const dateStr = col.getAttribute('data-date');
                     openEntryModal(null, dateStr, clickH, clickM);
                 }
