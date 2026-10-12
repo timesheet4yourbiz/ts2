@@ -328,8 +328,23 @@ function renderGridAndEvents() {
             const col = gridArea.querySelector('.cal-day-col[data-date="' + dStr + '"]');
             
             if (col) {
-                let startDt = new Date(entry.start_time);
-                let startH = startDt.getHours() + (startDt.getMinutes() / 60);
+                // Betulkan masalah zon masa dengan membaca terus dari ISO string (GMT) kemudian tambah 8 jam
+                let rawIso = entry.start_time;
+                let startH = 9.0; // Default 9:00 AM
+                
+                if (rawIso && rawIso.includes('T')) {
+                    const timePart = rawIso.split('T')[1];
+                    const [hrs, mins] = timePart.split(':');
+                    
+                    let gmtHour = parseInt(hrs);
+                    const minute = parseInt(mins) / 60;
+                    
+                    // Convert GMT ke waktu Malaysia (GMT+8)
+                    let myHour = gmtHour + 8;
+                    if (myHour >= 24) myHour -= 24; // Handle kalau cross midnight
+                    
+                    startH = myHour + minute;
+                }
                 
                 
                 
