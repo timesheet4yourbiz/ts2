@@ -331,9 +331,7 @@ function renderGridAndEvents() {
                 let startDt = new Date(entry.start_time);
                 let startH = startDt.getHours() + (startDt.getMinutes() / 60);
                 
-                if(startDt.getUTCHours() === 0 && startDt.getUTCMinutes() === 0 && startDt.getUTCSeconds() === 0) {
-                    startH = 9.0; 
-                }
+                
                 
                 const durHrs = (entry.duration_seconds || 3600) / 3600;
                 let topPx = (startH - START_HOUR) * ROW_HEIGHT;
@@ -557,48 +555,18 @@ function setupModal() {
                 notes: notes,
                 status: 'STOPPED'
             };
-
-           
+          
             
             
-            try {
+try {
                 if (activeEntryId) {
-                    // Update kalau user edit kotak sedia ada
                     await supabase.from('time_entries').update(payload).eq('id', activeEntryId);
                 } else {
-                    // Check kalau ada tugasan yang sama pada hari yang sama
-                    let query = supabase.from('time_entries').select('id, duration_seconds, start_time').eq('employee_id', empId).eq('work_date', dStr);
-                    if (projId) query = query.eq('project_id', projId); else query = query.is('project_id', null);
-                    if (taskId) query = query.eq('task_id', taskId); else query = query.is('task_id', null);
-                    
-                    const { data: ext } = await query;
-                    
-                    if (ext && ext.length > 0) {
-                        // Kalau dah wujud tugasan yang sama, kita CAMPURKAN masa (duration_seconds)
-                        const combinedSecs = (ext[0].duration_seconds || 0) + diffSecs;
-                        
-                        // Cari waktu mula paling awal antara rekod sedia ada vs rekod baru
-                        const existingStart = new Date(ext[0].start_time).getTime();
-                        const newStart = sDate.getTime();
-                        const earliestStartIso = existingStart < newStart ? ext[0].start_time : sDate.toISOString();
-                        
-                        await supabase.from('time_entries').update({ 
-                            duration_seconds: combinedSecs,
-                            start_time: earliestStartIso, // Kekalkan blok kalendar di waktu terawal
-                            notes: notes ? notes : ext[0].notes // Update remark jika ada
-                        }).eq('id', ext[0].id);
-                        
-                    } else {
-                        // Kalau tak pernah ada, insert macam biasa
-                        await supabase.from('time_entries').insert([payload]);
-                    }
+                    await supabase.from('time_entries').insert([payload]);
                 }
-                
                 if(modal) modal.style.display = 'none';
                 fetchEntries();
-            } catch (err) { 
-                alert('Error: ' + err.message); 
-            }
+            } catch (err) { alert('Error: ' + err.message); }
             
             
             
