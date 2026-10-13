@@ -157,10 +157,10 @@ async function populateFilters() {
  //   } catch (e) {}
 
 try {
-        const { data: emps } = await supabase.from('employees').select('id, name, email, system_role').order('name');
+        const { data: emps } = await supabase.from('employees').select('id, name, email').order('name');
         const userSelect = document.getElementById('filterUser');
-        if (emps && userSelect) {
-        const filteredEmps = emps.filter(e => e.system_role !== 'Admin' && e.system_role !== 'Administrator');
+        if (emps && userSelect) {            
+            const filteredEmps = emps.filter(e => e.email !== 'timesheet4yourbiz@gmail.com');            
             filteredEmps.forEach(e => {
                 const displayName = e.name || e.email.split('@')[0];
                 userSelect.innerHTML += '<option value="' + e.id + '">' + displayName + '</option>';
