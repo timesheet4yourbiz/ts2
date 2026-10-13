@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error || !session) return window.location.href = '../pages/login.html';
 
-        // KEMAS KINI: Gunakan carian e-mel kalis huruf besar/kecil untuk pengesahan Admin
+        
         const { data: profiles } = await supabase
             .from('employees')
             .select('system_role')
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// FUNGSI BAHARU: TUKAR TIMESTAMP KEPADA GAYA 'TIME AGO'
+
 function timeAgo(dateString) {
     if (!dateString) return 'Never';
     const date = new Date(dateString);
@@ -81,21 +81,39 @@ function setupTabs() {
     });
 }
 
+//async function fetchMembers() {
+//       const { data, error } = await supabase
+//       .from('employees')
+//     .select('id, name, email, employee_no, phone, department, position, system_role, group_id, billable_rate, status, last_seen, groups!group_id(group_name)')
+//        .order('name');
+//    if (!error) {
+//        membersData = data || [];
+//        updateKPIs();
+//        populateDepartmentFilter();
+//        populateManagerDropdown();
+//        filterMembers(); 
+//    }
+//}
+
+
 async function fetchMembers() {
-    // KEMAS KINI: Tambah carian column 'last_seen'
-    const { data, error } = await supabase
+        const { data, error } = await supabase
         .from('employees')
         .select('id, name, email, employee_no, phone, department, position, system_role, group_id, billable_rate, status, last_seen, groups!group_id(group_name)')
         .order('name');
-
     if (!error) {
-        membersData = data || [];
+        const rawMembers = data || [];
+        membersData = rawMembers.filter(m => m.email !== 'timesheet4yourbiz@gmail.com');        
         updateKPIs();
         populateDepartmentFilter();
         populateManagerDropdown();
         filterMembers(); 
     }
 }
+
+
+
+
 
 function updateKPIs() {
     const tMembers = membersData.length;
@@ -189,7 +207,7 @@ function renderMembersTable(data) {
         
         const isAct = (m.status || '').toUpperCase() === 'ACTIVE';
         
-        // KEMAS KINI: Susun status ACTIVE/INACTIVE dan selitkan Last Seen di bawahnya
+        
         const seenText = timeAgo(m.last_seen);
         
         const stHtml = isAct 
