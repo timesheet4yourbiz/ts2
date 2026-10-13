@@ -146,15 +146,29 @@ function bindAllButtons() {
 }
 
 async function populateFilters() {
-    try {
-        const { data: projs } = await supabase.from('projects').select('id, project_name').order('project_name');
-        const projSelect = document.getElementById('filterProject');
-        if (projs && projSelect) {
-            projs.forEach(p => {
-                projSelect.innerHTML += '<option value="' + p.id + '">' + p.project_name + '</option>';
+  //  try {
+   //     const { data: projs } = await supabase.from('projects').select('id, project_name').order('project_name');
+    //    const projSelect = document.getElementById('filterProject');
+   //     if (projs && projSelect) {
+     //       projs.forEach(p => {
+      //          projSelect.innerHTML += '<option value="' + p.id + '">' + p.project_name + '</option>';
+       //    });
+      //  }
+ //   } catch (e) {}
+
+try {
+        const { data: emps } = await supabase.from('employees').select('id, name, email, system_role').order('name');
+        const userSelect = document.getElementById('filterUser');
+        if (emps && userSelect) {
+        const filteredEmps = emps.filter(e => e.system_role !== 'Admin' && e.system_role !== 'Administrator');
+            filteredEmps.forEach(e => {
+                const displayName = e.name || e.email.split('@')[0];
+                userSelect.innerHTML += '<option value="' + e.id + '">' + displayName + '</option>';
             });
         }
     } catch (e) {}
+
+    
 
     try {
         const { data: emps } = await supabase.from('employees').select('id, name, email').order('name');
