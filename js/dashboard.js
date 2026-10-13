@@ -86,9 +86,19 @@ async function refreshDashboardData() {
     const [entriesResult, employeesResult] = await Promise.all([query, supabase.from('employees').select('id, email, name, system_role').order('name')]);
     if (entriesResult.error || employeesResult.error) return;   
     let rawEmployees = employeesResult.data || [];
-    const employees = rawEmployees.filter(e => e.system_role !== 'Admin' && e.system_role !== 'Administrator');
+   // const employees = rawEmployees.filter(e => e.system_role !== 'Admin' && e.system_role !== 'Administrator');
 
 
+     const employees = rawEmployees.filter(e => {
+     const role = (e.system_role || '').toLowerCase();
+     return role !== 'admin' && role !== 'administrator';
+    });
+
+
+
+
+
+    
     
     const projectMap = new Map((projectCatalog || []).map(p => [String(p.id), p]));
     
