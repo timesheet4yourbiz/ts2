@@ -205,13 +205,23 @@ function renderCalendarHeaders() {
     }
 }
 async function loadDropdowns() {
-    const [{ data: emps }, { data: projs }, { data: tasks }] = await Promise.all([
-        supabase.from('employees').select('id, name, email').order('name'),
+  //  const [{ data: emps }, { data: projs }, { data: tasks }] = await Promise.all([
+  //      supabase.from('employees').select('id, name, email').order('name'),
+  //      supabase.from('projects').select('id, project_name').order('project_name'),
+  //     supabase.from('tasks').select('id, project_id, task_name')
+  //  ]);
+  //  employeesData = emps || [];
+
+    const [{ data: emps }, { data: projs }, { data: tasks }] = await Promise.all([       
+        supabase.from('employees').select('id, name, email, system_role').order('name'),
         supabase.from('projects').select('id, project_name').order('project_name'),
         supabase.from('tasks').select('id, project_id, task_name')
-    ]);
+    ]);  
+    employeesData = (emps || []).filter(e => e.system_role !== 'Admin' && e.system_role !== 'Administrator');
 
-    employeesData = emps || [];
+
+    
+    
     projectsData = projs || [];
     tasksData = tasks || [];
 
