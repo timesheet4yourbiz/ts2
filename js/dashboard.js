@@ -76,9 +76,21 @@ async function refreshDashboardData() {
     let query = supabase.from('time_entries').select('id, duration_seconds, start_time, work_date, status, description, employee_id, project_id').gte('start_time', startIso).lte('start_time', endIso).order('start_time', { ascending: false });
     if (filterState.projectId !== 'all') query = query.eq('project_id', filterState.projectId);
     if (filterState.teamId !== 'all') query = query.eq('employee_id', filterState.teamId);
-    const [entriesResult, employeesResult] = await Promise.all([query, supabase.from('employees').select('id, email, name').order('name')]);
-    if (entriesResult.error || employeesResult.error) return;
-    const employees = employeesResult.data || [], projectMap = new Map((projectCatalog || []).map(p => [String(p.id), p]));
+    
+    
+    // const [entriesResult, employeesResult] = await Promise.all([query, supabase.from('employees').select('id, email, name').order('name')]);
+    // if (entriesResult.error || employeesResult.error) return;
+    // const employees = employeesResult.data || [], 
+
+
+    const [entriesResult, employeesResult] = await Promise.all([query, supabase.from('employees').select('id, email, name, system_role').order('name')]);
+    if (entriesResult.error || employeesResult.error) return;   
+    let rawEmployees = employeesResult.data || [];
+    const employees = rawEmployees.filter(e => e.system_role !== 'Admin' && e.system_role !== 'Administrator');
+
+
+    
+    projectMap = new Map((projectCatalog || []).map(p => [String(p.id), p]));
     const entries = (entriesResult.data || []).map(e => ({ ...e, project: projectMap.get(String(e.project_id)) || null }));
     ['filterTeam', 'filterTeam2'].forEach(id => { const select = document.getElementById(id); if (select && select.options.length <= 1) employees.forEach(emp => select.innerHTML += '<option value="' + emp.id + '">' + formatCapitalize(emp.name || emp.email) + '</option>'); });
     processKPI(entries); processBarChart(entries); processDonutAndRanking(entries); teamDataList = processTeamActivitiesData(entries, employees); renderPremiumDashboard(entries, employees); currentPage = 1; applySortingAndRender();
