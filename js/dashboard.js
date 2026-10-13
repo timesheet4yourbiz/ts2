@@ -51,7 +51,7 @@ function bindFilters() {
     ['filterProject', 'filterProject2'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => { filterState.projectId = e.target.value; refreshDashboardData(); }));
     ['filterTeam', 'filterTeam2'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => { filterState.teamId = e.target.value; refreshDashboardData(); }));
     
-    // PENGIKAT BUTANG APPLY FILTER
+    
     document.getElementById('applyDashboardFilter')?.addEventListener('click', () => { refreshDashboardData(); });
 }
 
@@ -90,7 +90,8 @@ async function refreshDashboardData() {
 
 
     
-    projectMap = new Map((projectCatalog || []).map(p => [String(p.id), p]));
+    const projectMap = new Map((projectCatalog || []).map(p => [String(p.id), p]));
+    
     const entries = (entriesResult.data || []).map(e => ({ ...e, project: projectMap.get(String(e.project_id)) || null }));
     ['filterTeam', 'filterTeam2'].forEach(id => { const select = document.getElementById(id); if (select && select.options.length <= 1) employees.forEach(emp => select.innerHTML += '<option value="' + emp.id + '">' + formatCapitalize(emp.name || emp.email) + '</option>'); });
     processKPI(entries); processBarChart(entries); processDonutAndRanking(entries); teamDataList = processTeamActivitiesData(entries, employees); renderPremiumDashboard(entries, employees); currentPage = 1; applySortingAndRender();
