@@ -312,7 +312,7 @@ async function generateReport() {
         allEntries.forEach(item => {
             const pName = (item.project ? item.project.project_name : 'General Project').toUpperCase();
             
-            // Logika baru mencari nama task di dalam tabel yang direlasikan
+            // Cari nama task (untuk kegunaan Away-from-work)
             let tName = 'NO TASK SPECIFIED';
             if (item.tasks) {
                 tName = item.tasks.task_name || item.tasks.name || item.tasks.title || ('TASK ID ' + item.task_id);
@@ -321,16 +321,21 @@ async function generateReport() {
             }
             tName = tName.toUpperCase();
             
-            const groupKey = pName + '|' + tName;
+            // KOD MAGIK: Kalau projek tu AWAY-FROM-WORK, kita asingkan ikut Task. Kalau projek biasa, kita gabungkan.
+            let groupKey;
+            if (pName.includes('AWAY-FROM-WORK') || pName.includes('AWAY FROM WORK')) {
+                groupKey = pName + '|' + tName;
+            } else {
+                groupKey = pName;
+            }
 
             if (!projectGroups[groupKey]) {
                 projectGroups[groupKey] = { 
                     projectName: pName, 
-                    taskName: tName, 
+                    taskName: tName, // Simpan nama task untuk dipaparkan nanti
                     w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, total: 0 
                 };
-            }
-            
+            }            
             let dObj;
             if (item.work_date) {
                 const pts = item.work_date.split('-');
