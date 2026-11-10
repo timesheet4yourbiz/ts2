@@ -379,16 +379,22 @@ function renderTable(projectGroups, weeks) {
     } else {
         const sortedKeys = Object.keys(projectGroups).sort();
         
-        sortedKeys.forEach(key => {
+       sortedKeys.forEach(key => {
             const row = projectGroups[key];
             sumWeekly[0] += row.w1; sumWeekly[1] += row.w2; sumWeekly[2] += row.w3;
             sumWeekly[3] += row.w4; sumWeekly[4] += row.w5; grandTotal += row.total;
             
+            // Hanya tunjuk nama Task jika projek adalah AWAY FROM WORK
+            let displayTask = '';
+            if (row.projectName.includes('AWAY-FROM-WORK') || row.projectName.includes('AWAY FROM WORK')) {
+                displayTask = '<br><span style="font-size:10.5px; color:#60779b;">↳ ' + row.taskName + '</span>';
+            }
+            
             tbody.innerHTML += '<tr>' +
                 '<td class="index">' + idx++ + '</td>' +
                 '<td class="project-name" style="text-align:left; line-height:1.4;">' + 
-                    '<strong style="color:#0a214a;">' + row.projectName + '</strong><br>' +
-                    '<span style="font-size:10.5px; color:#60779b;">↳ Task: ' + row.taskName + '</span>' +
+                    '<strong style="color:#0a214a;">' + row.projectName + '</strong>' +
+                    displayTask +
                 '</td>' +
                 '<td>' + row.w1.toFixed(1) + '</td>' +
                 '<td>' + row.w2.toFixed(1) + '</td>' +
