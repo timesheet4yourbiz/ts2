@@ -408,9 +408,10 @@ function renderTable(projectGroups, weeks) {
 
 function exportCSV() {
     let csv = [];
-    // Tukar carian kepada jadual yang betul: #exportTableProject
-    const rows = document.querySelectorAll("#exportTableProject tr"); 
+    const rows = document.querySelectorAll("#exportTableProject tr");
     for (let i = 0; i < rows.length; i++) {
+        let row = [], cols = rows[i].querySelectorAll("td, th");
+        for (let j = 0; j < cols.length; j++) {
             let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ");
             row.push('"' + data + '"');
         }
